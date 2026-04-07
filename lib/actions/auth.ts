@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { buildAppUrl } from "@/lib/app-url";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function signInWithMagicLink(formData: FormData) {
@@ -10,7 +11,7 @@ export async function signInWithMagicLink(formData: FormData) {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback` }
+    options: { emailRedirectTo: buildAppUrl("/auth/callback") }
   });
 
   if (error) throw new Error(error.message);
