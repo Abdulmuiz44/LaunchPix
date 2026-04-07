@@ -1,0 +1,2 @@
+export const metadata = { title: "Privacy | LaunchPix", description: "LaunchPix privacy policy placeholder for MVP launch readiness." };
+export default function PrivacyPage() { return <main className="mx-auto max-w-4xl px-6 py-20"><h1 className="text-3xl font-semibold">Privacy</h1><p className="mt-3 text-muted-foreground">We only process data required to generate assets and provide billing services.</p></main>; }
