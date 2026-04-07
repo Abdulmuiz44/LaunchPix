@@ -45,11 +45,21 @@ export async function upsertProjectIdentity(formData: FormData) {
   const { data, error } = await query;
   if (error || !data) throw new Error(error?.message || "Unable to save project.");
 
-  const { error: genError } = await supabase
+  const { data: existingDraft, error: existingDraftError } = await supabase
     .from("generations")
-    .upsert({ project_id: data.id, status: "draft" }, { onConflict: "project_id" });
+    .select("id")
+    .eq("project_id", data.id)
+    .eq("status", "draft")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-  if (genError) throw new Error(genError.message);
+  if (existingDraftError) throw new Error(existingDraftError.message);
+
+  if (!existingDraft) {
+    const { error: genError } = await supabase.from("generations").insert({ project_id: data.id, status: "draft" });
+    if (genError) throw new Error(genError.message);
+  }
 
   await trackEvent({ userId: user.id, projectId: data.id, eventType: "project_created" });
   revalidatePath("/dashboard/projects");

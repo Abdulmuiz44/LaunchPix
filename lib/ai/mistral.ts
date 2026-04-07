@@ -40,9 +40,9 @@ export async function mistralGenerateAssetPlan(input: {
   });
 
   try {
-    const response = await client.chat.complete({
-      model: visionModel,
-      responseFormat: { type: "json_object" },
+    const response = await client.chat.parse({
+      model: textModel,
+      responseFormat: generationPlanSchema,
       messages: [
         {
           role: "system",
@@ -50,18 +50,17 @@ export async function mistralGenerateAssetPlan(input: {
         },
         {
           role: "user",
-          content: [
-            { type: "text", text: prompt },
-            ...input.uploads.map((u) => ({ type: "image_url" as const, imageUrl: u.file_url }))
-          ]
+          content: prompt
         }
       ]
     });
 
-    const raw = response.choices?.[0]?.message?.content;
-    const text = Array.isArray(raw) ? raw.map((x: any) => (x.type === "text" ? x.text : "")).join(" ") : String(raw || "{}");
-    const parsedJson = JSON.parse(text);
-    return generationPlanSchema.parse(parsedJson);
+    const parsed = response.choices?.[0]?.message?.parsed;
+    if (!parsed) {
+      throw new Error("Mistral returned no parsed plan.");
+    }
+
+    return generationPlanSchema.parse(parsed);
   } catch (error) {
     console.error("Mistral generation failed:", redactError(error));
     throw new Error("Unable to generate plan with Mistral.");
