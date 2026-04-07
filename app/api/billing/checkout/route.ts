@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { buildAppUrl } from "@/lib/app-url";
 import { requireUser } from "@/lib/supabase/auth";
 import { initializeCheckout } from "@/lib/payments/paystack";
 import { trackEvent } from "@/lib/services/analytics/events";
@@ -20,7 +19,7 @@ export async function POST(req: Request) {
       email,
       planId: body.planId,
       metadata: { user_id: user.id },
-      callbackUrl: buildAppUrl("/settings/billing?checkout=success", req)
+      callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing?checkout=success`
     });
 
     return NextResponse.json({ authorization_url: data.authorization_url, reference: data.reference });

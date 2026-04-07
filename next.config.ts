@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@resvg/resvg-js"],
+  experimental: {
+    typedRoutes: true
+  },
   images: {
     remotePatterns: [{ protocol: "https", hostname: "**" }]
   }
