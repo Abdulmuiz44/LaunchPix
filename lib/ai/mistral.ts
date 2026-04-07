@@ -52,7 +52,7 @@ export async function mistralGenerateAssetPlan(input: {
           role: "user",
           content: [
             { type: "text", text: prompt },
-            ...input.uploads.map((u) => ({ type: "image_url", imageUrl: u.file_url }))
+            ...input.uploads.map((u) => ({ type: "image_url" as const, imageUrl: u.file_url }))
           ]
         }
       ]
