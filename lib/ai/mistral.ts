@@ -53,7 +53,7 @@ export async function mistralGenerateAssetPlan(input: {
           content: [
             { type: "text", text: prompt },
             ...input.uploads.map((u) => ({ type: "image_url", imageUrl: u.file_url }))
-          ]
+          ] as any
         }
       ]
     });

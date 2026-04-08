@@ -3,7 +3,8 @@ import { getOrCreateSubscription } from "@/lib/services/billing/subscription";
 
 export async function getAccessContext(userId: string) {
   const subscription = await getOrCreateSubscription(userId);
-  const plan = PLAN_CONFIG[(subscription.plan || "free") as keyof typeof PLAN_CONFIG] || PLAN_CONFIG.free;
+  const planKey = (subscription?.plan || "free") as keyof typeof PLAN_CONFIG;
+  const plan = PLAN_CONFIG[planKey] || PLAN_CONFIG.free;
   return { subscription, plan };
 }
 
