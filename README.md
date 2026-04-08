@@ -31,6 +31,7 @@ Minimum required:
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `DATABASE_URL`
 - `MISTRAL_API_KEY`
 - `MISTRAL_MODEL_VISION`
 - `MISTRAL_MODEL_TEXT`
@@ -38,14 +39,24 @@ Minimum required:
 - `PAYSTACK_PUBLIC_KEY`
 - `PAYSTACK_WEBHOOK_SECRET`
 
+Optional for Supabase CLI workflows:
+- `SUPABASE_ACCESS_TOKEN`
+- `SUPABASE_DB_PASSWORD`
+
 ## Local setup
 1. Copy env:
    - `cp .env.example .env.local`
 2. Install dependencies:
    - `npm install`
-3. Run database migrations in Supabase SQL editor (`supabase/migrations/*` in order).
-4. Start dev server:
+4. Apply database migrations using one of these options:
+   - Supabase CLI: `npx supabase db push --linked`
+   - or run the SQL files in `supabase/migrations/` in order
+5. Start dev server:
    - `npm run dev`
+
+Recommended validation commands:
+- `npm run typecheck`
+- `npm run build`
 
 ## Supabase notes
 - Enable email auth.
@@ -54,11 +65,13 @@ Minimum required:
   - `project-uploads-normalized`
   - `launchpix-assets`
 - Apply RLS policies from migrations.
+- If you use the Supabase CLI, link the project first with `npx supabase link`.
 
 ## Mistral notes
 - Mistral is used for structured product/copy/layout planning.
 - Rendering remains deterministic and template-driven.
 - Default model: `mistral-small-2506` (configurable via env).
+- The app currently uses the text model for schema-constrained planning and does not rely on image-vision inputs during generation.
 
 ## Paystack notes
 - Checkout init: `POST /api/billing/checkout`
@@ -74,8 +87,16 @@ Minimum required:
 
 ## Deployment notes
 - Set all env vars in hosting provider.
+- `NEXT_PUBLIC_APP_URL` must be set in the hosting provider's production environment to your live domain; `.env.local` is only used locally.
 - Use HTTPS and production callback URLs for Paystack.
+- Auth confirmation and billing redirects are built from `NEXT_PUBLIC_APP_URL`, so production must not point this to localhost.
+- Keep `package-lock.json` committed so CI and hosting builds install the same dependency tree.
 - Confirm webhook signature secret matches deployment env.
+
+## Netlify notes
+- Build command: `npm run build`
+- Install command: `npm install` or `npm ci`
+- The app relies on `@resvg/resvg-js` during server rendering, so the current `next.config.ts` must be preserved in deployments.
 
 ## Known MVP constraints
 - Rate limiting is lightweight (in-memory).
