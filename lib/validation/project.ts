@@ -20,13 +20,26 @@ export const STYLE_PRESET_OPTIONS = ["minimal", "bold", "dark", "gradient", "cor
 
 export const PROJECT_STATUS_OPTIONS = ["draft", "ready", "queued", "analyzing", "generating_copy", "rendering_assets", "generating", "completed", "failed"] as const;
 
+const optionalWebsiteUrlSchema = z.preprocess((value) => {
+  if (typeof value !== "string") return value;
+
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return "";
+
+  if (/^https?:\/\//i.test(trimmedValue)) {
+    return trimmedValue;
+  }
+
+  return `https://${trimmedValue}`;
+}, z.union([z.literal(""), z.string().url("Enter a valid URL.")]));
+
 export const defineIdentitySchema = z.object({
   name: z.string().min(2, "Project name is required."),
   productType: z.enum(PRODUCT_TYPE_OPTIONS),
   platform: z.enum(PLATFORM_OPTIONS),
   description: z.string().min(10, "Add a one-sentence product description."),
   audience: z.string().min(3, "Target audience is required."),
-  websiteUrl: z.union([z.literal(""), z.string().url("Enter a valid URL.")]).optional(),
+  websiteUrl: optionalWebsiteUrlSchema.optional(),
   primaryColor: z.string().regex(/^#([A-Fa-f0-9]{6})$/, "Use a hex color like #4F46E5."),
   stylePreset: z.enum(STYLE_PRESET_OPTIONS)
 });
