@@ -1,5 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
-
 export function ProjectSummaryCard({
   name,
   productType,
@@ -15,18 +13,34 @@ export function ProjectSummaryCard({
   style: string;
   screenshotCount: number;
 }) {
+  const rows = [
+    { label: "Project", value: name || "Untitled" },
+    { label: "Type", value: productType || "—" },
+    { label: "Platform", value: platform || "—" },
+    { label: "Audience", value: audience || "—" },
+    { label: "Style", value: style || "—" },
+    { label: "Screenshots", value: `${screenshotCount}/5` }
+  ];
+
   return (
-    <Card className="sticky top-24">
-      <CardContent className="space-y-3 p-5 text-sm">
-        <h3 className="text-base font-semibold">Project summary</h3>
-        <p><span className="text-muted-foreground">Name:</span> {name || "Untitled"}</p>
-        <p><span className="text-muted-foreground">Type:</span> {productType || "-"}</p>
-        <p><span className="text-muted-foreground">Platform:</span> {platform || "-"}</p>
-        <p><span className="text-muted-foreground">Audience:</span> {audience || "-"}</p>
-        <p><span className="text-muted-foreground">Style:</span> {style || "-"}</p>
-        <p><span className="text-muted-foreground">Screenshots:</span> {screenshotCount}/5</p>
-        <div className="rounded-lg bg-muted p-3 text-xs text-muted-foreground">Expected output: 5 listing screenshots + 1 promo tile + 1 hero banner.</div>
-      </CardContent>
-    </Card>
+    <aside className="surface sticky top-28 space-y-5 p-5 sm:p-6">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Snapshot</p>
+        <h3 className="mt-3 text-lg font-semibold">Project summary</h3>
+      </div>
+
+      <div className="space-y-3">
+        {rows.map((row) => (
+          <div key={row.label} className="flex items-start justify-between gap-4 border-b border-border/50 pb-3 text-sm last:border-b-0 last:pb-0">
+            <span className="text-muted-foreground">{row.label}</span>
+            <span className="max-w-[60%] text-right font-medium text-foreground">{row.value}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="surface-muted p-4 text-sm leading-7 text-muted-foreground">
+        Expected output: five listing visuals, one promo tile, and one hero banner with a cohesive launch narrative.
+      </div>
+    </aside>
   );
 }

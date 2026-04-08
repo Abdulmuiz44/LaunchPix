@@ -12,13 +12,73 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const { project, uploads } = await getProjectOverview(id, user.id);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+    <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
       <div className="space-y-6">
-        <Card><CardContent className="space-y-4 p-6"><div className="flex items-start justify-between"><div><h1 className="text-2xl font-semibold">{project.name}</h1><p className="text-sm text-muted-foreground">Your control center for copy, generation, and export readiness.</p></div><StatusBadge status={project.status} /></div><div className="flex gap-3"><Button asChild><Link href={`/dashboard/projects/${id}/generate`}>Generate assets</Link></Button><Button asChild variant="outline"><Link href={`/dashboard/projects/new?projectId=${id}&step=1`}>Edit project</Link></Button></div></CardContent></Card>
-        <Card><CardContent className="p-6"><h2 className="font-semibold">Identity</h2><p className="mt-3 text-sm text-muted-foreground">{project.description}</p><div className="mt-3 grid gap-2 text-sm md:grid-cols-2"><p><span className="text-muted-foreground">Type:</span> {project.product_type}</p><p><span className="text-muted-foreground">Platform:</span> {project.platform}</p><p><span className="text-muted-foreground">Audience:</span> {project.audience}</p><p><span className="text-muted-foreground">Website:</span> {project.website_url || "—"}</p></div></CardContent></Card>
-        <Card><CardContent className="p-6"><h2 className="font-semibold">Screenshots</h2><p className="mt-1 text-sm text-muted-foreground">{uploads.length} uploaded and ordered for narrative flow.</p><div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">{uploads.slice(0,4).map((u)=><img key={u.id} src={u.file_url} alt={u.original_filename} className="h-20 w-full rounded-lg border border-border object-cover" />)}{uploads.length===0?<p className="text-sm text-muted-foreground">No uploads yet.</p>:null}</div></CardContent></Card>
+        <section className="surface p-6 sm:p-8">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <p className="eyebrow">Project detail</p>
+              <h2 className="mt-4 text-3xl font-semibold">{project.name}</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+                Review identity, screenshot readiness, and the next best action before generating the final asset pack.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <StatusBadge status={project.status} />
+              <Button asChild>
+                <Link href={`/dashboard/projects/${id}/generate`}>Generate assets</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href={`/dashboard/projects/new?projectId=${id}&step=1`}>Edit brief</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        <Card>
+          <CardContent className="space-y-5">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Identity</p>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">{project.description}</p>
+            </div>
+            <div className="grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
+              <div><p className="text-muted-foreground">Type</p><p className="mt-1 font-medium">{project.product_type}</p></div>
+              <div><p className="text-muted-foreground">Platform</p><p className="mt-1 font-medium">{project.platform}</p></div>
+              <div><p className="text-muted-foreground">Audience</p><p className="mt-1 font-medium">{project.audience}</p></div>
+              <div><p className="text-muted-foreground">Website</p><p className="mt-1 font-medium">{project.website_url || "Not set"}</p></div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="space-y-5">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Screenshot stack</p>
+                <h3 className="mt-2 text-xl font-semibold">{uploads.length} upload{uploads.length === 1 ? "" : "s"} ready</h3>
+              </div>
+              <Button asChild variant="outline" size="sm">
+                <Link href={`/dashboard/projects/new?projectId=${id}&step=2`}>Manage uploads</Link>
+              </Button>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {uploads.length ? uploads.slice(0, 4).map((upload) => (
+                <img key={upload.id} src={upload.file_url} alt={upload.original_filename} className="h-32 w-full rounded-[20px] border border-border/60 object-cover" />
+              )) : <p className="text-sm text-muted-foreground">No uploads yet.</p>}
+            </div>
+          </CardContent>
+        </Card>
       </div>
-      <ProjectSummaryCard name={project.name} productType={project.product_type} platform={project.platform} audience={project.audience} style={project.style_preset} screenshotCount={uploads.length} />
+
+      <ProjectSummaryCard
+        name={project.name}
+        productType={project.product_type}
+        platform={project.platform}
+        audience={project.audience}
+        style={project.style_preset}
+        screenshotCount={uploads.length}
+      />
     </div>
   );
 }
