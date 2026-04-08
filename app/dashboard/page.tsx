@@ -6,7 +6,6 @@ import { getAccessContext } from "@/lib/services/access/permissions";
 
 export default async function DashboardPage() {
   const { user } = await requireUser();
-  const { subscription, plan } = await getAccessContext(user.id);
 
   return (
     <section className="space-y-6">

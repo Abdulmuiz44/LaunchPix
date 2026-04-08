@@ -2,10 +2,10 @@ import Link from "next/link";
 import { LayoutDashboard, FolderKanban, Settings, CreditCard } from "lucide-react";
 
 const items = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/dashboard/projects", label: "Projects", icon: FolderKanban },
-  { href: "/settings", label: "Settings", icon: Settings },
-  { href: "/settings/billing", label: "Billing", icon: CreditCard }
+  { href: "/dashboard" as const, label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/projects" as const, label: "Projects", icon: FolderKanban },
+  { href: "/settings" as const, label: "Settings", icon: Settings },
+  { href: "/settings/billing" as const, label: "Billing", icon: CreditCard }
 ];
 
 export function DashboardSidebar() {

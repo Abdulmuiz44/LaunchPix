@@ -1,22 +1,21 @@
 import { cookies } from "next/headers";
-import { createServerClient, type CookieMethodsServer } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
-  const cookieMethods: CookieMethodsServer = {
-    getAll() {
-      return cookieStore.getAll();
-    },
-    setAll(cookiesToSet) {
-      cookiesToSet?.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
-    }
-  };
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL || "",
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
     {
-      cookies: cookieMethods
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet: any[]) {
+          cookiesToSet.forEach(({ name, value, options }: any) => cookieStore.set(name, value, options));
+        }
+      }
     }
   );
 }

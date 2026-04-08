@@ -26,7 +26,7 @@ export function AssetsManager({ projectId, generation, assets, canDownloadFull }
   return (
     <div className="space-y-6">
       {!canDownloadFull ? (
-        <Card className="border-primary/30 bg-primary/5"><CardContent className="p-4 text-sm"><p className="font-medium">Preview mode on Free plan</p><p className="mt-1 text-muted-foreground">You can review watermarked assets now. Upgrade to unlock full-resolution PNG and ZIP export for launch use.</p></CardContent></Card>
+        <Card className="border-primary/30 bg-primary/5"><CardContent className="p-4 text-sm"><p className="font-medium">Preview mode on Free plan</p><p className="mt-1 text-muted-foreground">You can review watermarked assets now. Upgrade when you are ready to export full-resolution PNG and ZIP files for launch use.</p><a href="/settings/billing" className="mt-3 inline-flex rounded-lg border border-border px-3 py-1.5 text-xs font-medium">Upgrade plan</a></CardContent></Card>
       ) : null}
 
       <div className="flex flex-wrap gap-3">
