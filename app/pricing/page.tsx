@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { MarketingFooter } from "@/components/marketing/footer";
+import { MarketingPageShell } from "@/components/marketing/page-shell";
 
 const plans = [
   { id: "free", name: "Free", price: "₦0", desc: "Preview mode for first-time testing", tag: "Preview", features: ["1 project", "3 preview generations", "Watermarked preview exports"] },
@@ -20,38 +21,79 @@ export const metadata: Metadata = {
 
 export default function PricingPage() {
   return (
-    <main>
-      <section className="mx-auto max-w-6xl px-6 py-20">
-        <h1 className="text-4xl font-semibold tracking-tight">Choose a plan that fits your launch cycle</h1>
-        <p className="mt-3 max-w-2xl text-muted-foreground">Free is for preview and fit-checking. Launch Pack is the easiest one-time start. Starter and Pro are for recurring launch work.</p>
+    <MarketingPageShell
+      eyebrow="Pricing"
+      title="Choose the plan that matches your launch rhythm."
+      description="Start free to preview the quality, move into a one-time pack for a single release, or run a recurring monthly workflow when you ship often."
+    >
+      <div className="grid gap-5 xl:grid-cols-4">
+        {plans.map((plan) => (
+          <Card key={plan.id} className={plan.id === "starter" ? "border-primary/30 shadow-[0_24px_60px_rgba(99,102,241,0.18)]" : undefined}>
+            <CardContent className="flex h-full flex-col gap-5">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">{plan.tag}</p>
+                <h2 className="mt-3 text-2xl font-semibold">{plan.name}</h2>
+                <p className="mt-2 text-3xl font-semibold tracking-tight">{plan.price}</p>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">{plan.desc}</p>
+              </div>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {plans.map((p) => (
-            <Card key={p.id} className={p.id === "starter" ? "border-primary shadow-sm" : p.id === "launch_pack" ? "border-primary/40" : ""}>
-              <CardContent className="p-6">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground">{p.tag}</p>
-                <p className="mt-2 text-xl font-semibold">{p.name}</p>
-                <p className="mt-1 text-2xl font-semibold">{p.price}</p>
-                <p className="mt-2 text-sm text-muted-foreground">{p.desc}</p>
-                <ul className="mt-4 space-y-2 text-sm">{p.features.map((f)=><li key={f}>• {f}</li>)}</ul>
-                <Button asChild className="mt-6 w-full" variant={p.id === "starter" ? "default" : "outline"}><Link href={p.id === "free" ? "/dashboard/projects/new" : "/settings/billing"}>{p.id === "free" ? "Preview with Free" : "Choose this plan"}</Link></Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              <div className="space-y-3 text-sm">
+                {plan.features.map((feature) => (
+                  <div key={feature} className="flex items-start gap-3">
+                    <CheckCircle2 className="mt-0.5 size-4 text-primary" />
+                    <span className="text-muted-foreground">{feature}</span>
+                  </div>
+                ))}
+              </div>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
-          <Card><CardContent className="p-6"><h2 className="text-lg font-semibold">How credits work</h2><p className="mt-2 text-sm text-muted-foreground">1 generation run uses 1 credit. Credits reset monthly for Starter/Pro. Launch Pack credits are one-time and consume until exhausted.</p></CardContent></Card>
-          <Card><CardContent className="p-6"><h2 className="text-lg font-semibold">Preview vs full export</h2><p className="mt-2 text-sm text-muted-foreground">Free plan supports watermarked previews so you can validate quality before paying. Paid plans unlock full-resolution PNG and ZIP export.</p></CardContent></Card>
-        </div>
+              <Button asChild className="mt-auto w-full" variant={plan.id === "starter" ? "default" : "outline"}>
+                <Link href={plan.id === "free" ? "/dashboard/projects/new" : "/settings/billing"}>
+                  {plan.id === "free" ? "Preview with Free" : "Choose this plan"}
+                  <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-        <div className="mt-10 rounded-2xl border border-border bg-muted/20 p-6 text-center">
-          <h3 className="text-xl font-semibold">Ready to ship launch visuals with confidence?</h3>
-          <p className="mt-2 text-sm text-muted-foreground">Start free, preview your output, then upgrade only when you’re ready for production export.</p>
-          <Button asChild className="mt-4"><Link href="/dashboard/projects/new">Create your first project</Link></Button>
+      <div className="mt-10 grid gap-4 lg:grid-cols-3">
+        {[
+          {
+            title: "How credits work",
+            text: "One generation run uses one credit. Monthly plans refresh on renewal, while Launch Pack credits stay available until consumed."
+          },
+          {
+            title: "Preview before paying",
+            text: "The Free plan keeps watermarked previews active so you can validate layout quality before upgrading."
+          },
+          {
+            title: "Export readiness",
+            text: "Paid plans unlock full-resolution PNG exports and ZIP download for launch delivery and handoff."
+          }
+        ].map((item) => (
+          <div key={item.title} className="surface-muted p-5">
+            <h3 className="text-lg font-semibold">{item.title}</h3>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.text}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="surface-muted mt-10 flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Launch faster</p>
+          <h3 className="mt-3 text-2xl font-semibold">Ship polished visuals with less tool-hopping.</h3>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+            Start free, check the output quality, and upgrade only when your team is ready for production export.
+          </p>
         </div>
-      </section>
-      <MarketingFooter />
-    </main>
+        <Button asChild size="lg">
+          <Link href="/dashboard/projects/new">
+            Create your first project
+            <ArrowRight className="size-4" />
+          </Link>
+        </Button>
+      </div>
+    </MarketingPageShell>
   );
 }

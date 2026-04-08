@@ -7,11 +7,11 @@ export default async function SettingsLayout({ children }: { children: ReactNode
   await requireUser();
 
   return (
-    <div className="flex min-h-screen">
+    <div className="min-h-screen bg-background">
       <DashboardSidebar />
-      <div className="flex-1">
+      <div className="flex min-h-screen flex-1 flex-col">
         <DashboardTopbar />
-        <main className="p-6">{children}</main>
+        <main className="app-shell flex-1 py-8">{children}</main>
       </div>
     </div>
   );

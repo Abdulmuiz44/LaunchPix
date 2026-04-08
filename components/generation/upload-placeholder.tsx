@@ -4,10 +4,12 @@ import { Card, CardContent } from "@/components/ui/card";
 export function UploadPlaceholder() {
   return (
     <Card>
-      <CardContent className="flex min-h-56 flex-col items-center justify-center rounded-2xl border border-dashed border-border text-center">
-        <UploadCloud className="size-8 text-muted-foreground" />
-        <p className="mt-4 font-medium">Upload raw screenshots</p>
-        <p className="mt-1 text-sm text-muted-foreground">PNG or JPG up to 10MB each. Deterministic templates are applied after upload.</p>
+      <CardContent className="surface-muted flex min-h-64 flex-col items-center justify-center rounded-[28px] border border-dashed border-border/70 text-center">
+        <UploadCloud className="size-9 text-primary" />
+        <p className="mt-5 text-lg font-semibold">Upload raw screenshots</p>
+        <p className="mt-2 max-w-md text-sm leading-7 text-muted-foreground">
+          PNG, JPG, or WEBP up to 10MB each. Deterministic templates are applied after upload so the final pack stays consistent.
+        </p>
       </CardContent>
     </Card>
   );

@@ -1,20 +1,46 @@
 import Link from "next/link";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 export function EmptyProjectsState() {
   return (
-    <Card className="max-w-3xl">
-      <CardContent className="space-y-4 p-8">
-        <h2 className="text-xl font-semibold">Start your first LaunchPix project</h2>
-        <p className="text-sm text-muted-foreground">Upload raw screenshots, choose a style direction, and generate a full launch pack. Free mode lets you preview before upgrading.</p>
-        <div className="grid gap-2 text-sm text-muted-foreground md:grid-cols-3">
-          <p><strong className="text-foreground">1.</strong> Add screenshots</p>
-          <p><strong className="text-foreground">2.</strong> Set style + audience</p>
-          <p><strong className="text-foreground">3.</strong> Generate pack</p>
+    <section className="surface overflow-hidden p-8 sm:p-10 lg:p-12">
+      <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+        <div className="space-y-5">
+          <span className="eyebrow">Start here</span>
+          <h1 className="section-title max-w-2xl">Design your first sleek launch pack from real product screenshots.</h1>
+          <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
+            Create one workspace, upload your best screenshots, define the tone, and let LaunchPix build the entire asset sequence around them.
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            <Button asChild size="lg">
+              <Link href="/dashboard/projects/new">
+                Create first project
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/pricing">Compare plans</Link>
+            </Button>
+          </div>
         </div>
-        <Button asChild className="mt-2"><Link href="/dashboard/projects/new">Create first project</Link></Button>
-      </CardContent>
-    </Card>
+
+        <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          {[
+            "Brief your product and audience",
+            "Upload up to five screenshots",
+            "Generate the full 7-asset pack"
+          ].map((step, index) => (
+            <div key={step} className="surface-muted flex items-start gap-4 px-4 py-4 text-sm text-muted-foreground">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                {index === 2 ? <Sparkles className="size-4" /> : index + 1}
+              </span>
+              <span>{step}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

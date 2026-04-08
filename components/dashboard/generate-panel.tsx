@@ -4,17 +4,16 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 type Gen = { id: string; status: string; error_message?: string | null } | null;
 
 const statusLabel: Record<string, string> = {
-  queued: "Queued",
-  analyzing: "Analyzing product context",
-  generating_copy: "Generating conversion copy",
-  rendering_assets: "Rendering deterministic assets",
-  completed: "Completed",
-  failed: "Failed"
+  queued: "Queued for processing",
+  analyzing: "Reading product context",
+  generating_copy: "Building asset messaging",
+  rendering_assets: "Rendering launch visuals",
+  completed: "Asset pack completed",
+  failed: "Generation failed"
 };
 
 export function GeneratePanel({ projectId, ready, missing }: { projectId: string; ready: boolean; missing: string[] }) {
@@ -35,12 +34,14 @@ export function GeneratePanel({ projectId, ready, missing }: { projectId: string
 
   useEffect(() => {
     void fetchState();
-    const i = setInterval(fetchState, 3500);
-    return () => clearInterval(i);
+    const intervalId = setInterval(fetchState, 3500);
+    return () => clearInterval(intervalId);
   }, [projectId]);
 
   useEffect(() => {
-    if (generation?.status === "completed") router.push(`/dashboard/projects/${projectId}/assets`);
+    if (generation?.status === "completed") {
+      router.push(`/dashboard/projects/${projectId}/assets`);
+    }
   }, [generation?.status, projectId, router]);
 
   async function generate() {
@@ -57,30 +58,49 @@ export function GeneratePanel({ projectId, ready, missing }: { projectId: string
   const missingText = useMemo(() => missing.join(", "), [missing]);
 
   return (
-    <Card>
-      <CardContent className="space-y-4 p-6">
+    <section className="surface space-y-6 p-6 sm:p-8">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Generation progress</h2>
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Generation</p>
+          <h2 className="mt-3 text-2xl font-semibold">Launch pack progress</h2>
+        </div>
+        <div className="surface-muted px-4 py-3 text-sm text-muted-foreground">
+          {statusLabel[currentStatus] || "Ready when you are"}
+        </div>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="surface-muted space-y-4 p-5">
           {!ready ? (
-            <p className="mt-1 text-sm text-rose-500">To continue, add: {missingText}.</p>
+            <p className="text-sm leading-7 text-rose-500">You still need: {missingText}.</p>
           ) : (
-            <p className="mt-1 text-sm text-emerald-600">Ready to produce your full 7-asset launch pack.</p>
+            <p className="text-sm leading-7 text-muted-foreground">
+              Your project is ready. LaunchPix will create the full seven-asset sequence and redirect you to the asset view once rendering completes.
+            </p>
           )}
+
+          <div className="h-2 overflow-hidden rounded-full bg-background/80">
+            <div className={`h-full rounded-full bg-primary transition-all ${busy ? "w-2/3 animate-pulse" : generation?.status === "completed" ? "w-full" : "w-1/4"}`} />
+          </div>
+
+          {generation?.status === "failed" ? <p className="text-sm text-rose-500">{generation.error_message || "Generation failed. Please retry."}</p> : null}
+          {apiError ? <p className="text-sm text-rose-500">{apiError}</p> : null}
         </div>
 
-        <div className="rounded-xl border border-border bg-muted/30 p-4">
-          <p className="text-sm font-medium">Current status</p>
-          <p className="mt-1 text-sm text-muted-foreground">{statusLabel[currentStatus] || "Ready"}</p>
-          {busy ? <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted"><div className="h-full w-2/3 animate-pulse rounded-full bg-primary" /></div> : null}
-          {generation?.status === "failed" ? <p className="mt-3 text-sm text-rose-500">{generation.error_message || "Generation failed. Please retry."}</p> : null}
-          {apiError ? <p className="mt-2 text-sm text-rose-500">{apiError}</p> : null}
+        <div className="surface-muted flex flex-col gap-3 p-5 text-sm text-muted-foreground">
+          <p className="font-semibold text-foreground">What gets rendered</p>
+          <p>Five listing frames, one promo tile, and one hero banner built from your uploaded screenshots and structured copy plan.</p>
         </div>
+      </div>
 
-        <div className="flex flex-wrap gap-2">
-          <Button disabled={!ready || pending || busy} onClick={() => startTransition(() => void generate())}>{generation?.status === "failed" ? "Retry generation" : "Generate assets"}</Button>
-          <Button asChild variant="outline"><Link href={`/dashboard/projects/${projectId}`}>Back to project</Link></Button>
-        </div>
-      </CardContent>
-    </Card>
+      <div className="flex flex-wrap gap-3">
+        <Button disabled={!ready || pending || busy} onClick={() => startTransition(() => void generate())}>
+          {generation?.status === "failed" ? "Retry generation" : "Generate assets"}
+        </Button>
+        <Button asChild variant="outline">
+          <Link href={`/dashboard/projects/${projectId}`}>Back to project</Link>
+        </Button>
+      </div>
+    </section>
   );
 }

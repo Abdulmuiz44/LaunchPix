@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MarketingPageShell } from "@/components/marketing/page-shell";
 
 export const metadata: Metadata = {
   title: "Terms | LaunchPix",
@@ -7,16 +8,43 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <main className="mx-auto max-w-4xl px-6 py-20">
-      <h1 className="text-3xl font-semibold">Terms of Use</h1>
-      <p className="mt-3 text-sm text-muted-foreground">Last updated: April 7, 2026</p>
-      <div className="mt-8 space-y-6 text-sm text-muted-foreground">
-        <section><h2 className="text-lg font-semibold text-foreground">Acceptable use</h2><p className="mt-2">Use LaunchPix only for lawful product marketing workflows. You are responsible for rights to any screenshots and content you upload.</p></section>
-        <section><h2 className="text-lg font-semibold text-foreground">Plans and credits</h2><p className="mt-2">Each generation run consumes one credit. Plan limits and credit balances apply to generation and export access.</p></section>
-        <section><h2 className="text-lg font-semibold text-foreground">Export access by plan</h2><p className="mt-2">Free plan provides watermarked previews. Paid plans unlock full-resolution PNG and ZIP exports for launch use.</p></section>
-        <section><h2 className="text-lg font-semibold text-foreground">Commercial use</h2><p className="mt-2">Commercial-use positioning is available on paid plans. Free mode is intended for preview and evaluation workflows.</p></section>
-        <section><h2 className="text-lg font-semibold text-foreground">Service availability</h2><p className="mt-2">We aim for reliable service but provide LaunchPix on an “as available” basis during MVP stage.</p></section>
+    <MarketingPageShell
+      eyebrow="Terms"
+      title="The operating terms for using LaunchPix."
+      description="These terms cover acceptable use, plan access, credit consumption, and the current MVP service posture for LaunchPix."
+    >
+      <div className="grid gap-4 lg:grid-cols-2 legal-copy">
+        <section className="surface-muted p-6">
+          <h2 className="text-xl font-semibold text-foreground">Acceptable use</h2>
+          <p className="mt-3">
+            Use LaunchPix only for lawful product marketing workflows. You are responsible for the rights to any screenshots, copy, and content you upload.
+          </p>
+        </section>
+        <section className="surface-muted p-6">
+          <h2 className="text-xl font-semibold text-foreground">Plans and credits</h2>
+          <p className="mt-3">
+            Each generation run consumes one credit. Plan limits, credit balances, and export entitlements determine what you can generate and download.
+          </p>
+        </section>
+        <section className="surface-muted p-6">
+          <h2 className="text-xl font-semibold text-foreground">Export access by plan</h2>
+          <p className="mt-3">
+            Free mode provides watermarked previews. Paid plans unlock full-resolution PNG downloads and ZIP export for launch delivery.
+          </p>
+        </section>
+        <section className="surface-muted p-6">
+          <h2 className="text-xl font-semibold text-foreground">Commercial use</h2>
+          <p className="mt-3">
+            Commercial-use positioning is available on paid plans. The Free plan is intended for evaluation and preview workflows.
+          </p>
+        </section>
+        <section className="surface-muted p-6 lg:col-span-2">
+          <h2 className="text-xl font-semibold text-foreground">Service availability</h2>
+          <p className="mt-3">
+            We aim for reliable service, but LaunchPix is currently offered on an as-available basis while the product is in MVP stage.
+          </p>
+        </section>
       </div>
-    </main>
+    </MarketingPageShell>
   );
 }
