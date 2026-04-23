@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+﻿import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 export async function createSupabaseServerClient() {
@@ -13,7 +13,18 @@ export async function createSupabaseServerClient() {
           return cookieStore.getAll();
         },
         setAll(cookiesToSet: any[]) {
-          cookiesToSet.forEach(({ name, value, options }: any) => cookieStore.set(name, value, options));
+          cookiesToSet.forEach(({ name, value, options }: any) => {
+            try {
+              cookieStore.set(name, value, options);
+            } catch (error) {
+              const message = error instanceof Error ? error.message : "";
+              if (!message.includes("Cookies can only be modified in a Server Action or Route Handler")) {
+                throw error;
+              }
+              // In Server Components, cookie writes are blocked. Supabase can still function
+              // for read-only requests, so we safely skip writes in this context.
+            }
+          });
         }
       }
     }

@@ -1,8 +1,8 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, CreditCard, Folder, Gem, Home, ImageIcon, Settings, Wand2 } from "lucide-react";
+import { CreditCard, Folder, Gem, Home, ImageIcon, Settings, Wand2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -22,16 +22,6 @@ function getInitials(email: string) {
   return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
 }
 
-function getDisplayName(email: string) {
-  const alias = email.split("@")[0] || "launchpix";
-  return alias
-    .replace(/[._-]+/g, " ")
-    .split(" ")
-    .filter(Boolean)
-    .map((part) => part[0]?.toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
 export function DashboardSidebar({
   credits,
   planLabel,
@@ -46,31 +36,33 @@ export function DashboardSidebar({
   const progress = Math.min(100, Math.round((credits / maxCredits) * 100));
 
   return (
-    <aside className="hidden h-screen w-[300px] shrink-0 border-r border-[#1a2752] bg-[#000d2b] px-3 py-4 lg:block">
-      <div className="flex h-full flex-col">
-        <div className="mb-6 flex items-center gap-3 px-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#57c0ff] to-[#6e4dff] text-white shadow-lg shadow-[#5f5fff]/30">
-            <span className="text-lg font-bold">L</span>
-          </div>
-          <div>
-            <p className="text-[33px] leading-none font-semibold text-white">LaunchPix</p>
-            <p className="mt-1 text-sm text-[#95a7cf]">Launch Studio</p>
-          </div>
-        </div>
+    <aside className="hidden h-screen w-64 shrink-0 border-r border-slate-800 bg-[#07101f] lg:block">
+      <div className="flex h-full flex-col px-4 py-5">
+        <Link href="/dashboard" className="flex items-center gap-3 px-2">
+          <span className="flex size-9 items-center justify-center rounded-lg bg-cyan-400 text-sm font-bold text-slate-950">
+            L
+          </span>
+          <span>
+            <span className="block text-base font-semibold text-white">LaunchPix</span>
+            <span className="block text-xs text-slate-400">Launch studio</span>
+          </span>
+        </Link>
 
-        <nav className="space-y-1.5 px-1">
+        <nav className="mt-8 space-y-1">
           {navItems.map((item) => {
-            const active = item.href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(item.href.split("?")[0]);
+            const baseHref = item.href.split("?")[0];
+            const active = item.href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(baseHref);
+
             return (
               <Link
                 key={`${item.href}-${item.label}`}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-4 py-3 text-[22px] font-medium text-[#c8d5ff] transition",
-                  active ? "bg-gradient-to-r from-[#2c348f] to-[#1d255f] text-white" : "hover:bg-[#101a44]"
+                  "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition",
+                  active ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-900 hover:text-slate-100"
                 )}
               >
-                <item.icon className="size-5" />
+                <item.icon className="size-4" />
                 {item.label}
               </Link>
             );
@@ -78,42 +70,37 @@ export function DashboardSidebar({
         </nav>
 
         <div className="mt-auto space-y-4">
-          <div className="rounded-2xl border border-[#24366a] bg-[#0a1638] p-4">
-            <p className="text-xs uppercase tracking-[0.15em] text-[#8fa2cf]">Current plan</p>
-            <div className="mt-3 flex items-center gap-2 text-white">
-              <Gem className="size-4 text-[#8b6dff]" />
-              <p className="text-[28px] font-semibold">{planLabel}</p>
+          <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-4">
+            <div className="flex items-center gap-2">
+              <Gem className="size-4 text-cyan-300" />
+              <p className="text-sm font-semibold text-white">{planLabel}</p>
             </div>
-            <p className="mt-5 text-sm text-[#8fa2cf]">Credits Left</p>
-            <p className="mt-1 text-[44px] font-semibold text-white">
-              {credits} <span className="text-[24px] font-medium text-[#8fa2cf]">/ {maxCredits}</span>
-            </p>
-            <div className="mt-3 h-3 overflow-hidden rounded-full bg-[#1c2950]">
-              <div className="h-full rounded-full bg-gradient-to-r from-[#5d79ff] to-[#6f42ff]" style={{ width: `${progress}%` }} />
+            <div className="mt-4 flex items-end justify-between">
+              <div>
+                <p className="text-xs text-slate-500">Credits left</p>
+                <p className="text-2xl font-semibold text-white">{credits}</p>
+              </div>
+              <p className="text-xs text-slate-500">/ {maxCredits}</p>
             </div>
-            <Link
-              href="/settings/billing"
-              className="mt-4 flex h-11 items-center justify-center rounded-lg bg-gradient-to-r from-[#5d79ff] to-[#6f42ff] text-sm font-semibold text-white"
-            >
-              Upgrade Plan
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
+              <div className="h-full rounded-full bg-cyan-400" style={{ width: `${progress}%` }} />
+            </div>
+            <Link href="/settings/billing" className="mt-4 flex h-9 items-center justify-center rounded-md bg-cyan-400 text-sm font-semibold text-slate-950">
+              Upgrade
             </Link>
           </div>
 
-          <div className="flex items-center justify-between rounded-xl border border-[#24366a] bg-[#091636] px-3 py-3">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-full border border-[#3e5288] bg-[#112452] text-sm font-semibold text-white">
-                {getInitials(userEmail)}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-white">{getDisplayName(userEmail)}</p>
-                <p className="text-xs text-[#8fa2cf]">{userEmail}</p>
-              </div>
-            </div>
-            <ChevronDown className="size-4 text-[#8fa2cf]" />
+          <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
+            <span className="flex size-9 items-center justify-center rounded-full bg-slate-800 text-xs font-semibold text-white">
+              {getInitials(userEmail)}
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-medium text-white">{userEmail.split("@")[0]}</span>
+              <span className="block truncate text-xs text-slate-500">{userEmail}</span>
+            </span>
           </div>
         </div>
       </div>
     </aside>
   );
 }
-
