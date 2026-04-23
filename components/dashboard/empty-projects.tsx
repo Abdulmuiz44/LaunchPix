@@ -1,46 +1,64 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, FolderPlus, ImageIcon, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function EmptyProjectsState() {
   return (
-    <section className="surface overflow-hidden p-8 sm:p-10 lg:p-12">
-      <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-        <div className="space-y-5">
-          <span className="eyebrow">Start here</span>
-          <h1 className="section-title max-w-2xl">Design your first sleek launch pack from real product screenshots.</h1>
-          <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-            Create one workspace, upload your best screenshots, define the tone, and let LaunchPix build the entire asset sequence around them.
-          </p>
+    <div className="dashboard-page">
+      <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <div className="dashboard-card relative overflow-hidden p-6 sm:p-7">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.18),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(47,199,230,0.12),transparent_26%)]" />
+          <div className="relative max-w-2xl">
+            <p className="dashboard-label text-cyan-300">Projects</p>
+            <h2 className="mt-3 text-3xl font-semibold text-white">Create the first launch workspace and fill the dashboard with real output.</h2>
+            <p className="mt-4 text-sm leading-7 text-slate-300">
+              Add the project brief, upload screenshots, and move directly into generation from a workspace built for fast launch execution.
+            </p>
 
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg">
-              <Link href="/dashboard/projects/new">
-                Create first project
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/pricing">Compare plans</Link>
-            </Button>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button asChild>
+                <Link href="/dashboard/projects/new">
+                  Create first project
+                  <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/pricing">Compare plans</Link>
+              </Button>
+            </div>
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-          {[
-            "Brief your product and audience",
-            "Upload up to five screenshots",
-            "Generate the full 7-asset pack"
-          ].map((step, index) => (
-            <div key={step} className="surface-muted flex items-start gap-4 px-4 py-4 text-sm text-muted-foreground">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                {index === 2 ? <Sparkles className="size-4" /> : index + 1}
-              </span>
-              <span>{step}</span>
+        <div className="dashboard-card p-6 sm:p-7">
+          <p className="dashboard-label">What happens here</p>
+          <div className="mt-5 space-y-3">
+            {[
+              { icon: FolderPlus, title: "Define the brief", text: "Name the product, audience, and platform so the pack stays consistent." },
+              { icon: ImageIcon, title: "Upload screenshots", text: "Add the source frames you want to convert into polished launch visuals." },
+              { icon: Sparkles, title: "Generate the pack", text: "Review and export listing images, promo tiles, and hero banners." }
+            ].map((item) => (
+              <div key={item.title} className="dashboard-card-muted p-4">
+                <div className="flex items-center gap-3">
+                  <item.icon className="size-4 text-cyan-300" />
+                  <p className="text-sm font-semibold text-white">{item.title}</p>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-slate-500">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="dashboard-card p-6 sm:p-7">
+        <div className="grid gap-4 md:grid-cols-3">
+          {["Brief", "Screenshots", "Generate"].map((label, index) => (
+            <div key={label} className="dashboard-card-muted p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Step {index + 1}</p>
+              <p className="mt-3 text-lg font-semibold text-white">{label}</p>
             </div>
           ))}
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

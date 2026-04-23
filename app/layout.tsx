@@ -6,6 +6,9 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 export const metadata: Metadata = {
   title: "LaunchPix",
   description: "Turn raw screenshots into polished launch visuals in minutes.",
+  icons: {
+    icon: "/icon.svg"
+  },
   openGraph: {
     title: "LaunchPix",
     description: "Deterministic AI-assisted launch visuals for product teams.",

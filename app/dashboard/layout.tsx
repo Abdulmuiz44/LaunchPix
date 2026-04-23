@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { DashboardSidebar } from "@/components/dashboard/sidebar";
 import { DashboardTopbar } from "@/components/dashboard/topbar";
 import { getAccessContext } from "@/lib/services/access/permissions";
@@ -9,11 +9,11 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   const { subscription, plan } = await getAccessContext(user.id);
 
   return (
-    <div className="min-h-screen bg-[#020819] text-[#e6ecff]">
+    <div className="flex min-h-screen bg-[#050b16] text-[#f7f9fc]">
       <DashboardSidebar credits={subscription.credits_remaining} planLabel={plan.label} userEmail={user.email ?? "user@launchpix.app"} />
-      <div className="flex min-h-screen flex-1 flex-col">
+      <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <DashboardTopbar credits={subscription.credits_remaining} planLabel={plan.label} />
-        <main className="flex-1 px-5 pb-5 pt-4 lg:px-6">{children}</main>
+        <main className="flex-1 px-4 pb-8 pt-5 sm:px-5 lg:px-8">{children}</main>
       </div>
     </div>
   );

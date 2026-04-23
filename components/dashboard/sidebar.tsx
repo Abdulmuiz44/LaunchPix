@@ -36,19 +36,19 @@ export function DashboardSidebar({
   const progress = Math.min(100, Math.round((credits / maxCredits) * 100));
 
   return (
-    <aside className="hidden h-screen w-64 shrink-0 border-r border-slate-800 bg-[#07101f] lg:block">
-      <div className="flex h-full flex-col px-4 py-5">
-        <Link href="/dashboard" className="flex items-center gap-3 px-2">
-          <span className="flex size-9 items-center justify-center rounded-lg bg-cyan-400 text-sm font-bold text-slate-950">
+    <aside className="hidden w-[252px] shrink-0 border-r border-white/8 bg-[#07101f] lg:block">
+      <div className="sticky top-0 flex h-screen flex-col px-4 py-5">
+        <Link href="/dashboard" className="flex items-center gap-3 px-2 py-2">
+          <span className="flex size-10 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#2fc7e6,#7c3aed)] text-sm font-bold text-white shadow-[0_18px_38px_-24px_rgba(47,199,230,0.9)]">
             L
           </span>
           <span>
-            <span className="block text-base font-semibold text-white">LaunchPix</span>
+            <span className="block text-lg font-semibold text-white">LaunchPix</span>
             <span className="block text-xs text-slate-400">Launch studio</span>
           </span>
         </Link>
 
-        <nav className="mt-8 space-y-1">
+        <nav className="mt-8 space-y-1.5">
           {navItems.map((item) => {
             const baseHref = item.href.split("?")[0];
             const active = item.href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(baseHref);
@@ -58,8 +58,10 @@ export function DashboardSidebar({
                 key={`${item.href}-${item.label}`}
                 href={item.href}
                 className={cn(
-                  "flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition",
-                  active ? "bg-slate-800 text-white" : "text-slate-400 hover:bg-slate-900 hover:text-slate-100"
+                  "flex h-11 items-center gap-3 rounded-[14px] px-3.5 text-sm font-medium transition",
+                  active
+                    ? "bg-[linear-gradient(135deg,rgba(124,58,237,0.24),rgba(31,43,66,0.92))] text-white"
+                    : "text-slate-400 hover:bg-white/5 hover:text-slate-100"
                 )}
               >
                 <item.icon className="size-4" />
@@ -70,7 +72,7 @@ export function DashboardSidebar({
         </nav>
 
         <div className="mt-auto space-y-4">
-          <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-4">
+          <div className="dashboard-card p-4">
             <div className="flex items-center gap-2">
               <Gem className="size-4 text-cyan-300" />
               <p className="text-sm font-semibold text-white">{planLabel}</p>
@@ -83,15 +85,15 @@ export function DashboardSidebar({
               <p className="text-xs text-slate-500">/ {maxCredits}</p>
             </div>
             <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
-              <div className="h-full rounded-full bg-cyan-400" style={{ width: `${progress}%` }} />
+              <div className="h-full rounded-full bg-[linear-gradient(90deg,#2fc7e6,#7c3aed)]" style={{ width: `${progress}%` }} />
             </div>
-            <Link href="/settings/billing" className="mt-4 flex h-9 items-center justify-center rounded-md bg-cyan-400 text-sm font-semibold text-slate-950">
-              Upgrade
+            <Link href="/settings/billing" className="mt-4 flex h-10 items-center justify-center rounded-[14px] bg-[linear-gradient(135deg,#7c3aed,#9f67ff)] text-sm font-semibold text-white">
+              Upgrade plan
             </Link>
           </div>
 
-          <div className="flex items-center gap-3 rounded-lg border border-slate-800 bg-slate-950/50 p-3">
-            <span className="flex size-9 items-center justify-center rounded-full bg-slate-800 text-xs font-semibold text-white">
+          <div className="dashboard-card-muted flex items-center gap-3 p-3.5">
+            <span className="flex size-10 items-center justify-center rounded-full bg-[#0a1426] text-xs font-semibold text-white">
               {getInitials(userEmail)}
             </span>
             <span className="min-w-0">

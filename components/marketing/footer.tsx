@@ -9,19 +9,19 @@ const links = [
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-border/50 py-10">
-      <div className="app-shell flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+    <footer className="border-t border-white/8 bg-[#050b16]">
+      <div className="app-shell grid gap-8 py-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground">LaunchPix</p>
-          <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-            Deterministic, polished launch assets for product teams that need reliable visuals fast.
+          <p className="text-lg font-semibold text-white">LaunchPix</p>
+          <p className="mt-3 max-w-xl text-sm leading-7 text-slate-400">
+            A focused launch studio for turning raw product screenshots into store-ready visuals, promo tiles, and banners.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-5 text-sm text-muted-foreground">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href} className="hover:text-foreground">
-              {link.label}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 lg:justify-end">
+          {links.map((item) => (
+            <Link key={item.href} href={item.href} className="text-sm text-slate-400 hover:text-white">
+              {item.label}
             </Link>
           ))}
         </div>

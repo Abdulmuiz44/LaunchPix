@@ -1,6 +1,7 @@
 import JSZip from "jszip";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { mistralAdapter } from "@/lib/ai/generate-asset-plan";
+import { createDeterministicGenerationPlan } from "@/lib/ai/mistral";
 import { generationPlanSchema } from "@/lib/ai/schemas/asset-plan";
 import { buildDeterministicAssets, renderAssetPng } from "@/lib/render/pipeline";
 import type { ProjectRecord, UploadRecord } from "@/types/project";
@@ -27,7 +28,7 @@ export async function runGenerationForProject(project: ProjectRecord, uploads: U
   try {
     await supabase.from("generations").update({ status: "analyzing" }).eq("id", generation.id);
 
-    const planResponse = await mistralAdapter.generateAssetPlan({
+    const planningInput = {
       project: {
         name: project.name,
         product_type: project.product_type,
@@ -38,6 +39,12 @@ export async function runGenerationForProject(project: ProjectRecord, uploads: U
         style_prompt: project.style_prompt
       },
       uploads: uploads.map((u) => ({ id: u.id, file_url: u.file_url, position: u.position }))
+    };
+
+    const planResponse = await mistralAdapter.generateAssetPlan(planningInput).catch((error) => {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error("AI planning failed; continuing with deterministic plan:", message);
+      return createDeterministicGenerationPlan(planningInput);
     });
 
     const safePlan = generationPlanSchema.parse(planResponse);

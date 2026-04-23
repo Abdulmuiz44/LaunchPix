@@ -3,6 +3,11 @@
 LaunchPix is a Mistral-assisted, deterministic asset generator for product launches.
 It turns raw screenshots into polished listing visuals, promo tiles, and hero banners.
 
+## Design system
+- `DESIGN.md` is the canonical design brain for the product UI.
+- `docs/design-md/google-designmd-spec.md` is a local copy of the Google DESIGN.md specification.
+- `docs/design-md/README.md` explains how to use both files in this repo.
+
 ## Tech stack
 - Next.js App Router + TypeScript
 - Tailwind CSS + reusable UI primitives
