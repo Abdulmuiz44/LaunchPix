@@ -1,46 +1,54 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, FolderPlus, ImageIcon, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function EmptyProjectsState() {
   return (
-    <section className="surface overflow-hidden p-8 sm:p-10 lg:p-12">
-      <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-        <div className="space-y-5">
-          <span className="eyebrow">Start here</span>
-          <h1 className="section-title max-w-2xl">Design your first sleek launch pack from real product screenshots.</h1>
-          <p className="max-w-2xl text-sm leading-7 text-muted-foreground">
-            Create one workspace, upload your best screenshots, define the tone, and let LaunchPix build the entire asset sequence around them.
+    <div className="mx-auto max-w-[1420px] space-y-6">
+      <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
+        <div className="rounded-lg border border-slate-800 bg-[#0a1426] p-6">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-cyan-300">Projects</p>
+          <h2 className="mt-3 text-3xl font-semibold text-white">Create the first launch workspace.</h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+            Add a product brief, upload screenshots, and move straight into generation without leaving the dashboard.
           </p>
 
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg">
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Button asChild>
               <Link href="/dashboard/projects/new">
                 Create first project
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline">
               <Link href="/pricing">Compare plans</Link>
             </Button>
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-          {[
-            "Brief your product and audience",
-            "Upload up to five screenshots",
-            "Generate the full 7-asset pack"
-          ].map((step, index) => (
-            <div key={step} className="surface-muted flex items-start gap-4 px-4 py-4 text-sm text-muted-foreground">
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                {index === 2 ? <Sparkles className="size-4" /> : index + 1}
-              </span>
-              <span>{step}</span>
-            </div>
-          ))}
+        <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-5">
+          <p className="text-sm font-semibold text-white">What you will do here</p>
+          <div className="mt-4 space-y-3">
+            {[
+              { icon: FolderPlus, title: "Define the brief", text: "Name the project, audience, and platform." },
+              { icon: ImageIcon, title: "Upload screenshots", text: "Add the core frames you want to turn into assets." },
+              { icon: Sparkles, title: "Generate the pack", text: "Review and export the final launch visuals." }
+            ].map((item) => (
+              <div key={item.title} className="rounded-lg border border-slate-800 bg-[#0a1426] p-4">
+                <div className="flex items-center gap-3">
+                  <item.icon className="size-4 text-cyan-300" />
+                  <p className="text-sm font-medium text-white">{item.title}</p>
+                </div>
+                <p className="mt-2 text-sm text-slate-500">{item.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section className="rounded-lg border border-dashed border-slate-800 bg-slate-950/40 p-10 text-center">
+        <p className="text-sm text-slate-500">No projects yet.</p>
+      </section>
+    </div>
   );
 }

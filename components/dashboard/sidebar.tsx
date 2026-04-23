@@ -36,7 +36,7 @@ export function DashboardSidebar({
   const progress = Math.min(100, Math.round((credits / maxCredits) * 100));
 
   return (
-    <aside className="hidden h-screen w-64 shrink-0 border-r border-slate-800 bg-[#07101f] lg:block">
+    <aside className="hidden h-screen w-[248px] shrink-0 border-r border-slate-800 bg-[#07101f] lg:block">
       <div className="flex h-full flex-col px-4 py-5">
         <Link href="/dashboard" className="flex items-center gap-3 px-2">
           <span className="flex size-9 items-center justify-center rounded-lg bg-cyan-400 text-sm font-bold text-slate-950">
@@ -48,7 +48,7 @@ export function DashboardSidebar({
           </span>
         </Link>
 
-        <nav className="mt-8 space-y-1">
+        <nav className="mt-7 space-y-1">
           {navItems.map((item) => {
             const baseHref = item.href.split("?")[0];
             const active = item.href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(baseHref);
@@ -70,22 +70,22 @@ export function DashboardSidebar({
         </nav>
 
         <div className="mt-auto space-y-4">
-          <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-4">
+          <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-3.5">
             <div className="flex items-center gap-2">
               <Gem className="size-4 text-cyan-300" />
               <p className="text-sm font-semibold text-white">{planLabel}</p>
             </div>
-            <div className="mt-4 flex items-end justify-between">
+            <div className="mt-3 flex items-end justify-between">
               <div>
                 <p className="text-xs text-slate-500">Credits left</p>
-                <p className="text-2xl font-semibold text-white">{credits}</p>
+                <p className="text-xl font-semibold text-white">{credits}</p>
               </div>
               <p className="text-xs text-slate-500">/ {maxCredits}</p>
             </div>
             <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
               <div className="h-full rounded-full bg-cyan-400" style={{ width: `${progress}%` }} />
             </div>
-            <Link href="/settings/billing" className="mt-4 flex h-9 items-center justify-center rounded-md bg-cyan-400 text-sm font-semibold text-slate-950">
+            <Link href="/settings/billing" className="mt-3 flex h-9 items-center justify-center rounded-md bg-cyan-400 text-sm font-semibold text-slate-950">
               Upgrade
             </Link>
           </div>
