@@ -46,6 +46,7 @@ export function GeneratePanel({ projectId, ready, missing }: { projectId: string
 
   async function generate() {
     setApiError(null);
+    setGeneration((current) => ({ id: current?.id || "pending", status: "queued", error_message: null }));
     const res = await fetch(`/api/generations/${projectId}`, { method: "POST" });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) {

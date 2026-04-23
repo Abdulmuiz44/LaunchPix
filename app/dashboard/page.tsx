@@ -1,15 +1,15 @@
 import Link from "next/link";
-import { ArrowRight, Check, Download, Folder, Gem, ImageIcon, Package, Sparkles, Zap } from "lucide-react";
+import { ArrowRight, Clock3, Download, Folder, Package, Sparkles, Zap } from "lucide-react";
 import { requireUser } from "@/lib/supabase/auth";
 import { getAccessContext } from "@/lib/services/access/permissions";
 import { listUserProjects } from "@/lib/services/projects/queries";
 
-function statusClass(status: unknown) {
+function statusTone(status: unknown) {
   const value = typeof status === "string" ? status.toLowerCase() : "draft";
-  if (value.includes("complete")) return "bg-emerald-400/10 text-emerald-300 ring-emerald-400/20";
-  if (value.includes("progress") || value.includes("generating")) return "bg-cyan-400/10 text-cyan-300 ring-cyan-400/20";
-  if (value.includes("failed")) return "bg-rose-400/10 text-rose-300 ring-rose-400/20";
-  return "bg-slate-700/40 text-slate-300 ring-slate-600";
+  if (value.includes("complete")) return "bg-emerald-400/12 text-emerald-300";
+  if (value.includes("progress") || value.includes("generating")) return "bg-cyan-400/12 text-cyan-300";
+  if (value.includes("failed")) return "bg-rose-400/12 text-rose-300";
+  return "bg-white/8 text-slate-300";
 }
 
 function prettyStatus(status: unknown) {
@@ -29,77 +29,75 @@ export default async function DashboardPage() {
     return total + generations.filter((generation) => generation?.status === "completed").length;
   }, 0);
   const exportReady = plan.fullResolutionExport ? generatedPacksCount + Math.max(0, projects.length - 1) : generatedPacksCount;
-  const creditLimit = Math.max(300, subscription.credits_remaining);
   const uploadCount = activeProject?.uploads?.[0]?.count ?? 0;
 
-  const recentProjects = projects.slice(0, 5).map((project) => ({
-    id: project.id,
-    name: project.name,
-    type: (project.product_type ?? "web app").toString().replaceAll("_", " "),
-    screenshots: project.uploads?.[0]?.count ?? 0,
-    status: project.status
-  }));
-
   const kpis = [
-    { label: "Credits", value: `${subscription.credits_remaining}`, detail: `${creditLimit} available limit`, icon: Zap },
+    { label: "Credits", value: `${subscription.credits_remaining}`, detail: "Available for upcoming generations", icon: Zap },
     { label: "Active projects", value: String(activeProjectsCount), detail: "Drafts and in-progress work", icon: Folder },
     { label: "Generated packs", value: String(generatedPacksCount), detail: "Completed generation runs", icon: Package },
     { label: "Export ready", value: String(exportReady), detail: "Assets available to download", icon: Download }
   ];
 
+  const recentProjects = projects.slice(0, 5);
+
   return (
-    <div className="mx-auto max-w-[1420px] space-y-6">
-      <section className="grid gap-4 xl:grid-cols-[1.4fr_0.6fr]">
-        <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-6">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+    <div className="dashboard-page">
+      <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
+        <div className="dashboard-card relative overflow-hidden p-6 sm:p-7">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.22),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(47,199,230,0.12),transparent_28%)]" />
+          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <p className="text-xs font-medium uppercase tracking-[0.18em] text-cyan-300">Launch workspace</p>
-              <h2 className="mt-3 text-3xl font-semibold text-white">Keep every launch asset moving.</h2>
-              <p className="mt-3 text-sm leading-6 text-slate-400">
-                Review project readiness, generate packs, and export final assets from one focused workspace.
+              <p className="dashboard-label text-cyan-300">Launch workspace</p>
+              <h2 className="mt-3 text-3xl font-semibold text-white sm:text-[2.2rem]">Your launch visuals, organized from first brief to final export.</h2>
+              <p className="mt-4 text-sm leading-7 text-slate-300">
+                Keep project identity, screenshot sequencing, pack generation, and export access in one controlled workspace.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Link href="/dashboard/projects/new" className="flex h-10 items-center gap-2 rounded-lg bg-cyan-400 px-4 text-sm font-semibold text-slate-950">
+              <Link href="/dashboard/projects/new" className="inline-flex h-11 items-center gap-2 rounded-[14px] bg-[linear-gradient(135deg,#7c3aed,#9f67ff)] px-4 text-sm font-semibold text-white">
                 New project
                 <ArrowRight className="size-4" />
               </Link>
-              <Link href="/dashboard/projects" className="flex h-10 items-center rounded-lg border border-slate-700 px-4 text-sm font-medium text-slate-200">
+              <Link href="/dashboard/projects" className="inline-flex h-11 items-center rounded-[14px] border border-white/12 bg-[#111c33] px-4 text-sm font-medium text-slate-100">
                 View projects
               </Link>
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Gem className="size-4 text-cyan-300" />
-              <p className="text-sm font-semibold text-white">{plan.label}</p>
+        <div className="dashboard-card p-6 sm:p-7">
+          <p className="dashboard-label">Plan posture</p>
+          <div className="mt-4 space-y-4 text-sm">
+            <div className="flex items-center justify-between border-b border-white/8 pb-3">
+              <span className="text-slate-500">Current plan</span>
+              <span className="font-medium text-white">{plan.label}</span>
             </div>
-            <span className="rounded-md bg-emerald-400/10 px-2 py-1 text-xs font-medium text-emerald-300">Active</span>
-          </div>
-          <div className="mt-5 grid grid-cols-2 gap-y-3 text-sm">
-            <span className="text-slate-500">Credits left</span>
-            <span className="text-right text-white">{subscription.credits_remaining} / {creditLimit}</span>
-            <span className="text-slate-500">Export access</span>
-            <span className="text-right text-white">{plan.fullResolutionExport ? "Full" : "Preview"}</span>
-            <span className="text-slate-500">Queue</span>
-            <span className="text-right text-white">{plan.priorityGeneration ? "Priority" : "Standard"}</span>
+            <div className="flex items-center justify-between border-b border-white/8 pb-3">
+              <span className="text-slate-500">Credits left</span>
+              <span className="font-medium text-white">{subscription.credits_remaining}</span>
+            </div>
+            <div className="flex items-center justify-between border-b border-white/8 pb-3">
+              <span className="text-slate-500">Export access</span>
+              <span className="font-medium text-white">{plan.fullResolutionExport ? "Full resolution" : "Preview only"}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-slate-500">Queue priority</span>
+              <span className="font-medium text-white">{plan.priorityGeneration ? "Priority" : "Standard"}</span>
+            </div>
           </div>
         </div>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {kpis.map((item) => (
-          <div key={item.label} className="rounded-lg border border-slate-800 bg-[#0a1426] p-4">
-            <div className="flex items-center justify-between gap-4">
+          <div key={item.label} className="dashboard-card p-5">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">{item.label}</p>
-                <p className="mt-2 text-3xl font-semibold text-white">{item.value}</p>
+                <p className="dashboard-label">{item.label}</p>
+                <p className="mt-3 text-3xl font-semibold text-white">{item.value}</p>
               </div>
-              <span className="flex size-10 items-center justify-center rounded-lg bg-slate-900 text-cyan-300">
+              <span className="flex size-11 items-center justify-center rounded-2xl bg-[#111c33] text-cyan-300">
                 <item.icon className="size-5" />
               </span>
             </div>
@@ -108,97 +106,87 @@ export default async function DashboardPage() {
         ))}
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="rounded-lg border border-slate-800 bg-[#0a1426] p-5">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <section className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
+        <div className="dashboard-card p-6 sm:p-7">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div>
-              <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">Current project</p>
-              <h3 className="mt-2 text-2xl font-semibold text-white">{activeProject?.name ?? "No active project yet"}</h3>
-              <p className="mt-2 text-sm text-slate-400">
-                {activeProject ? `${activeProject.product_type.replaceAll("_", " ")} / ${uploadCount} screenshots` : "Create a project to begin generating launch assets."}
+              <p className="dashboard-label">Current project</p>
+              <h3 className="mt-3 text-2xl font-semibold text-white">{activeProject?.name ?? "No active project yet"}</h3>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+                {activeProject
+                  ? `${activeProject.product_type.replaceAll("_", " ")} � ${uploadCount} screenshots uploaded � updated ${new Date(activeProject.updated_at).toLocaleDateString()}`
+                  : "Create a project to define the brief, upload screenshots, and generate the first launch pack."}
               </p>
             </div>
-            {activeProject ? <span className={`rounded-md px-2 py-1 text-xs font-medium ring-1 ${statusClass(activeProject.status)}`}>{prettyStatus(activeProject.status)}</span> : null}
+            {activeProject ? <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusTone(activeProject.status)}`}>{prettyStatus(activeProject.status)}</span> : null}
           </div>
 
           <div className="mt-6 grid gap-3 md:grid-cols-4">
             {[
-              { label: "Define identity", done: true },
+              { label: "Define identity", done: Boolean(activeProject?.description) },
               { label: "Upload screenshots", done: uploadCount > 0 },
               { label: "Generate pack", done: generatedPacksCount > 0 },
               { label: "Export assets", done: exportReady > 0 }
-            ].map((step) => (
-              <div key={step.label} className="rounded-lg border border-slate-800 bg-slate-950/45 p-3">
-                <div className="flex items-center gap-2">
-                  <span className={step.done ? "text-emerald-300" : "text-slate-600"}>
-                    <Check className="size-4" />
+            ].map((step, index) => (
+              <div key={step.label} className="dashboard-card-muted p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-medium text-white">{step.label}</span>
+                  <span className={`flex size-7 items-center justify-center rounded-full text-xs font-semibold ${step.done ? "bg-emerald-400/12 text-emerald-300" : "bg-white/8 text-slate-400"}`}>
+                    {index + 1}
                   </span>
-                  <p className="text-sm font-medium text-slate-200">{step.label}</p>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href={activeProject ? `/dashboard/projects/${activeProject.id}` : "/dashboard/projects/new"} className="flex h-10 items-center rounded-lg bg-cyan-400 px-4 text-sm font-semibold text-slate-950">
+            <Link href={activeProject ? `/dashboard/projects/${activeProject.id}` : "/dashboard/projects/new"} className="inline-flex h-11 items-center rounded-[14px] bg-[linear-gradient(135deg,#7c3aed,#9f67ff)] px-4 text-sm font-semibold text-white">
               {activeProject ? "Open project" : "Create project"}
             </Link>
-            <Link href={activeProject ? `/dashboard/projects/${activeProject.id}/generate` : "/dashboard/projects/new"} className="flex h-10 items-center gap-2 rounded-lg border border-slate-700 px-4 text-sm font-medium text-slate-200">
-              <Sparkles className="size-4" />
-              Generate
+            <Link href={activeProject ? `/dashboard/projects/${activeProject.id}/generate` : "/dashboard/projects/new"} className="inline-flex h-11 items-center rounded-[14px] border border-white/12 bg-[#111c33] px-4 text-sm font-medium text-slate-100">
+              Generate pack
             </Link>
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-800 bg-[#0a1426] p-5">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-semibold text-white">Latest pack</h3>
-            <Link href="/dashboard/projects" className="text-sm text-cyan-300">View all</Link>
+        <div className="grid gap-6">
+          <div className="dashboard-card p-6 sm:p-7">
+            <div className="flex items-center justify-between">
+              <p className="dashboard-label">Recent projects</p>
+              <Link href="/dashboard/projects" className="text-sm text-cyan-300">View all</Link>
+            </div>
+            <div className="mt-5 space-y-3">
+              {recentProjects.length ? recentProjects.map((project) => (
+                <Link key={project.id} href={`/dashboard/projects/${project.id}`} className="dashboard-card-muted flex items-center justify-between gap-4 p-4 hover:border-cyan-400/20">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-white">{project.name}</p>
+                    <p className="mt-1 truncate text-xs text-slate-500">{project.product_type.replaceAll("_", " ")}</p>
+                  </div>
+                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${statusTone(project.status)}`}>{prettyStatus(project.status)}</span>
+                </Link>
+              )) : <p className="text-sm text-slate-500">No projects yet.</p>}
+            </div>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            {["Listing 01", "Listing 02", "Promo", "Hero"].map((asset, index) => (
-              <div key={asset} className="overflow-hidden rounded-lg border border-slate-800 bg-slate-950/50">
-                <div className={index === 2 ? "h-24 bg-amber-400/20" : "h-24 bg-cyan-400/15"} />
-                <div className="p-3">
-                  <p className="text-sm font-medium text-white">{asset}</p>
-                  <p className="mt-1 text-xs text-slate-500">Preview asset</p>
+
+          <div className="dashboard-card p-6 sm:p-7">
+            <p className="dashboard-label">Activity summary</p>
+            <div className="mt-5 space-y-4 text-sm">
+              <div className="flex items-start gap-3">
+                <Clock3 className="mt-0.5 size-4 text-cyan-300" />
+                <div>
+                  <p className="font-medium text-white">Generation workflow stays in one place</p>
+                  <p className="mt-1 text-slate-500">Review project brief, uploads, generation status, and export access without leaving the dashboard.</p>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-        <div className="rounded-lg border border-slate-800 bg-[#0a1426] p-5">
-          <div className="flex items-center justify-between">
-            <h3 className="text-base font-semibold text-white">Recent projects</h3>
-            <Link href="/dashboard/projects" className="text-sm text-cyan-300">View all</Link>
-          </div>
-          <div className="mt-4 divide-y divide-slate-800">
-            {(recentProjects.length ? recentProjects : [{ id: "empty", name: "No projects yet", type: "web app", screenshots: 0, status: "draft" }]).map((project) => (
-              <div key={project.id} className="flex items-center justify-between gap-4 py-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-white">{project.name}</p>
-                  <p className="mt-1 text-xs text-slate-500">{project.type} / {project.screenshots} screenshots</p>
+              <div className="flex items-start gap-3">
+                <Sparkles className="mt-0.5 size-4 text-violet-300" />
+                <div>
+                  <p className="font-medium text-white">Best next step</p>
+                  <p className="mt-1 text-slate-500">{activeProject ? `Continue ${activeProject.name} or generate a fresh pack.` : "Create the first project to activate the full launch workflow."}</p>
                 </div>
-                <span className={`shrink-0 rounded-md px-2 py-1 text-xs font-medium ring-1 ${statusClass(project.status)}`}>{prettyStatus(project.status)}</span>
               </div>
-            ))}
+            </div>
           </div>
-        </div>
-
-        <div className="rounded-lg border border-slate-800 bg-[#0a1426] p-5">
-          <h3 className="text-base font-semibold text-white">Plan summary</h3>
-          <div className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between gap-4"><span className="text-slate-500">Plan</span><span className="text-white">{plan.label}</span></div>
-            <div className="flex justify-between gap-4"><span className="text-slate-500">Credits</span><span className="text-white">{subscription.credits_remaining} / {creditLimit}</span></div>
-            <div className="flex justify-between gap-4"><span className="text-slate-500">Watermark</span><span className="text-white">{plan.watermarkPreview ? "Enabled" : "Disabled"}</span></div>
-            <div className="flex justify-between gap-4"><span className="text-slate-500">Commercial use</span><span className="text-white">{plan.commercialUse ? "Included" : "Upgrade required"}</span></div>
-          </div>
-          <Link href="/settings/billing" className="mt-5 flex h-10 items-center justify-center rounded-lg border border-slate-700 text-sm font-medium text-slate-200">
-            Manage billing
-          </Link>
         </div>
       </section>
     </div>

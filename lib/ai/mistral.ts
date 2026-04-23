@@ -14,7 +14,7 @@ function compactText(value: string, maxLength: number) {
   return value.replace(/\s+/g, " ").trim().slice(0, maxLength);
 }
 
-function fallbackGenerationPlan(input: {
+export function createDeterministicGenerationPlan(input: {
   project: {
     name: string;
     product_type: string;
@@ -91,6 +91,31 @@ function fallbackGenerationPlan(input: {
   });
 }
 
+function parseJsonObject(text: string) {
+  const trimmed = text.trim();
+  const withoutFence = trimmed
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+
+  try {
+    return JSON.parse(withoutFence);
+  } catch {
+    const start = withoutFence.indexOf("{");
+    const end = withoutFence.lastIndexOf("}");
+    if (start === -1 || end === -1 || end <= start) {
+      throw new Error("Mistral did not return a JSON object.");
+    }
+    return JSON.parse(withoutFence.slice(start, end + 1));
+  }
+}
+
+function normalizeMistralPlanPayload(payload: unknown) {
+  if (!payload || typeof payload !== "object") return payload;
+  const record = payload as Record<string, unknown>;
+  return record.plan || record.generation_plan || record.asset_plan || record.data || payload;
+}
+
 export async function mistralGenerateAssetPlan(input: {
   project: {
     name: string;
@@ -105,7 +130,7 @@ export async function mistralGenerateAssetPlan(input: {
 }): Promise<GenerationPlan> {
   if (!process.env.MISTRAL_API_KEY) {
     console.warn("MISTRAL_API_KEY is missing. Using deterministic fallback generation plan.");
-    return fallbackGenerationPlan(input);
+    return createDeterministicGenerationPlan(input);
   }
 
   const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
@@ -139,10 +164,10 @@ export async function mistralGenerateAssetPlan(input: {
 
     const raw = response.choices?.[0]?.message?.content;
     const text = Array.isArray(raw) ? raw.map((item: any) => (item.type === "text" ? item.text : "")).join(" ") : String(raw || "{}");
-    return generationPlanSchema.parse(JSON.parse(text));
+    return generationPlanSchema.parse(normalizeMistralPlanPayload(parseJsonObject(text)));
   } catch (error) {
     console.error("Mistral generation failed; using fallback plan:", redactError(error));
-    return fallbackGenerationPlan(input);
+    return createDeterministicGenerationPlan(input);
   }
 }
 

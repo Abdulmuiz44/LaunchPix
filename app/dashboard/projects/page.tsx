@@ -31,13 +31,13 @@ export default async function ProjectsPage() {
   const totalUploads = projects.reduce((count, project) => count + (project.uploads?.[0]?.count ?? 0), 0);
 
   return (
-    <div className="mx-auto max-w-[1420px] space-y-6">
-      <section className="grid gap-4 xl:grid-cols-[1.3fr_0.7fr]">
-        <div className="rounded-lg border border-slate-800 bg-[#0a1426] p-6">
-          <p className="text-xs font-medium uppercase tracking-[0.18em] text-cyan-300">Projects</p>
-          <h2 className="mt-3 text-3xl font-semibold text-white">All launch workspaces in one view.</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
-            Track progress, spot blocked work, and jump back into the project that needs action.
+    <div className="dashboard-page">
+      <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <div className="dashboard-card p-6 sm:p-7">
+          <p className="dashboard-label text-cyan-300">Projects</p>
+          <h2 className="mt-3 text-3xl font-semibold text-white">All launch workspaces in one operational view.</h2>
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400">
+            Track what is active, what is blocked, and which project is ready for generation or export without digging through separate screens.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
@@ -59,19 +59,19 @@ export default async function ProjectsPage() {
             { label: "Active", value: String(activeCount), icon: Sparkles },
             { label: "Uploads", value: String(totalUploads), icon: Layers3 }
           ].map((item) => (
-            <div key={item.label} className="rounded-lg border border-slate-800 bg-slate-950/60 p-4">
+            <div key={item.label} className="dashboard-card p-5">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">{item.label}</p>
+                <p className="dashboard-label">{item.label}</p>
                 <item.icon className="size-4 text-cyan-300" />
               </div>
-              <p className="mt-3 text-3xl font-semibold text-white">{item.value}</p>
+              <p className="mt-4 text-3xl font-semibold text-white">{item.value}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="overflow-hidden rounded-lg border border-slate-800 bg-[#0a1426]">
-        <div className="grid grid-cols-[minmax(0,1.5fr)_180px_120px_160px_140px] gap-4 border-b border-slate-800 px-5 py-3 text-xs font-medium uppercase tracking-[0.14em] text-slate-500">
+      <section className="dashboard-card overflow-hidden">
+        <div className="grid grid-cols-[minmax(0,1.6fr)_180px_120px_160px_140px] gap-4 border-b border-white/8 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
           <span>Project</span>
           <span>Platform</span>
           <span>Screenshots</span>
@@ -79,12 +79,12 @@ export default async function ProjectsPage() {
           <span>Updated</span>
         </div>
 
-        <div className="divide-y divide-slate-800">
+        <div className="divide-y divide-white/8">
           {projects.map((project) => (
             <Link
               key={project.id}
               href={`/dashboard/projects/${project.id}`}
-              className="grid grid-cols-[minmax(0,1.5fr)_180px_120px_160px_140px] items-center gap-4 px-5 py-4 transition hover:bg-slate-950/40"
+              className="grid grid-cols-[minmax(0,1.6fr)_180px_120px_160px_140px] items-center gap-4 px-6 py-4 transition hover:bg-white/[0.03]"
             >
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-white">{project.name}</p>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="launchpix-icon" x1="12" y1="8" x2="52" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2FC7E6" />
+      <stop offset="1" stop-color="#7C3AED" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="#050B16" />
+  <path d="M18 16h10v25h18v9H18V16Z" fill="url(#launchpix-icon)" />
+  <path d="M37 16l2.4 6.2 6.6 2.4-6.6 2.4L37 33l-2.4-6-6.6-2.4 6.6-2.4L37 16Z" fill="#F7F9FC" />
+</svg>

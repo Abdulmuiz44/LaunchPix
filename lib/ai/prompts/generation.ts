@@ -27,6 +27,15 @@ Rules:
 - Use concise, credible copy.
 - Avoid hype and generic filler.
 - Keep text layout-safe.
+- Return one JSON object with these exact top-level keys:
+  product_summary, value_proposition, target_audience_summary, headline_options,
+  selected_headline, subheadline, feature_callouts, cta_line, color_guidance,
+  recommended_template_family, screenshot_emphasis, assets.
+- color_guidance must contain background_style, accent_usage, contrast_mode.
+- headline_options must contain exactly 3 strings.
+- assets must contain exactly 7 objects.
+- Each asset must contain asset_type, width, height, headline, subheadline,
+  callouts, screenshot_ids, template_family, notes.
 - Generate exactly 7 assets in order:
   1-5 listing screenshot (1280x800)
   6 promo tile (440x280)
