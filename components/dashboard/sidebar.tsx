@@ -1,68 +1,119 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CreditCard, FolderKanban, LayoutDashboard, Settings, Sparkles } from "lucide-react";
+import { ChevronDown, CreditCard, Folder, Gem, Home, ImageIcon, Settings, Wand2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const items = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/dashboard/projects", label: "Projects", icon: FolderKanban },
-  { href: "/settings", label: "Settings", icon: Settings },
-  { href: "/settings/billing", label: "Billing", icon: CreditCard }
+const navItems = [
+  { href: "/dashboard", label: "Overview", icon: Home },
+  { href: "/dashboard/projects", label: "Projects", icon: Folder },
+  { href: "/dashboard/projects/new?step=3", label: "Generations", icon: Wand2 },
+  { href: "/dashboard/projects", label: "Assets", icon: ImageIcon },
+  { href: "/settings/billing", label: "Billing", icon: CreditCard },
+  { href: "/settings", label: "Settings", icon: Settings }
 ] as const;
 
-export function DashboardSidebar() {
-  const pathname = usePathname();
+function getInitials(email: string) {
+  const alias = email.split("@")[0] || "launchpix";
+  const parts = alias.replace(/[._-]+/g, " ").split(" ").filter(Boolean);
+  if (parts.length === 0) return "LP";
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+}
+
+function getDisplayName(email: string) {
+  const alias = email.split("@")[0] || "launchpix";
+  return alias
+    .replace(/[._-]+/g, " ")
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part[0]?.toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+export function DashboardSidebar({
+  credits,
+  planLabel,
+  userEmail
+}: {
+  credits: number;
+  planLabel: string;
+  userEmail: string;
+}) {
+  const pathname = usePathname() ?? "";
+  const maxCredits = Math.max(credits, 300);
+  const progress = Math.min(100, Math.round((credits / maxCredits) * 100));
 
   return (
-    <aside className="hidden w-80 shrink-0 border-r border-border/60 bg-background/70 px-5 py-6 backdrop-blur-xl lg:block">
-      <div className="flex h-full flex-col gap-8">
-        <Link href="/dashboard" className="surface-muted flex items-center gap-3 px-4 py-4">
-          <span className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
-            <Sparkles className="size-4" />
-          </span>
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-muted-foreground">LaunchPix</p>
-            <p className="text-sm font-medium text-foreground">Creative workspace</p>
+    <aside className="hidden h-screen w-[300px] shrink-0 border-r border-[#1a2752] bg-[#000d2b] px-3 py-4 lg:block">
+      <div className="flex h-full flex-col">
+        <div className="mb-6 flex items-center gap-3 px-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#57c0ff] to-[#6e4dff] text-white shadow-lg shadow-[#5f5fff]/30">
+            <span className="text-lg font-bold">L</span>
           </div>
-        </Link>
+          <div>
+            <p className="text-[33px] leading-none font-semibold text-white">LaunchPix</p>
+            <p className="mt-1 text-sm text-[#95a7cf]">Launch Studio</p>
+          </div>
+        </div>
 
-        <nav className="space-y-2">
-          {items.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
-
+        <nav className="space-y-1.5 px-1">
+          {navItems.map((item) => {
+            const active = item.href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(item.href.split("?")[0]);
             return (
               <Link
-                key={item.href}
+                key={`${item.href}-${item.label}`}
                 href={item.href}
                 className={cn(
-                  "flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium transition-all",
-                  active
-                    ? "bg-primary text-primary-foreground shadow-[0_20px_40px_-24px_hsl(var(--primary)/0.95)]"
-                    : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                  "flex items-center gap-3 rounded-xl px-4 py-3 text-[22px] font-medium text-[#c8d5ff] transition",
+                  active ? "bg-gradient-to-r from-[#2c348f] to-[#1d255f] text-white" : "hover:bg-[#101a44]"
                 )}
               >
-                <span className="flex items-center gap-3">
-                  <item.icon className="size-4" />
-                  {item.label}
-                </span>
-                <span className={cn("text-[10px] uppercase tracking-[0.22em]", active ? "text-primary-foreground/70" : "text-muted-foreground/60")}>
-                  Open
-                </span>
+                <item.icon className="size-5" />
+                {item.label}
               </Link>
             );
           })}
         </nav>
 
-        <div className="surface mt-auto space-y-4 p-5">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Workspace rhythm</p>
-          <h3 className="text-lg font-semibold">Keep the flow simple.</h3>
-          <p className="text-sm leading-7 text-muted-foreground">
-            Brief, upload, generate, export. Every page is tuned to that one operator loop.
-          </p>
+        <div className="mt-auto space-y-4">
+          <div className="rounded-2xl border border-[#24366a] bg-[#0a1638] p-4">
+            <p className="text-xs uppercase tracking-[0.15em] text-[#8fa2cf]">Current plan</p>
+            <div className="mt-3 flex items-center gap-2 text-white">
+              <Gem className="size-4 text-[#8b6dff]" />
+              <p className="text-[28px] font-semibold">{planLabel}</p>
+            </div>
+            <p className="mt-5 text-sm text-[#8fa2cf]">Credits Left</p>
+            <p className="mt-1 text-[44px] font-semibold text-white">
+              {credits} <span className="text-[24px] font-medium text-[#8fa2cf]">/ {maxCredits}</span>
+            </p>
+            <div className="mt-3 h-3 overflow-hidden rounded-full bg-[#1c2950]">
+              <div className="h-full rounded-full bg-gradient-to-r from-[#5d79ff] to-[#6f42ff]" style={{ width: `${progress}%` }} />
+            </div>
+            <Link
+              href="/settings/billing"
+              className="mt-4 flex h-11 items-center justify-center rounded-lg bg-gradient-to-r from-[#5d79ff] to-[#6f42ff] text-sm font-semibold text-white"
+            >
+              Upgrade Plan
+            </Link>
+          </div>
+
+          <div className="flex items-center justify-between rounded-xl border border-[#24366a] bg-[#091636] px-3 py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-full border border-[#3e5288] bg-[#112452] text-sm font-semibold text-white">
+                {getInitials(userEmail)}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-white">{getDisplayName(userEmail)}</p>
+                <p className="text-xs text-[#8fa2cf]">{userEmail}</p>
+              </div>
+            </div>
+            <ChevronDown className="size-4 text-[#8fa2cf]" />
+          </div>
         </div>
       </div>
     </aside>
   );
 }
+
