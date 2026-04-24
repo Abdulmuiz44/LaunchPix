@@ -2,3 +2,12 @@
 node_modules/
 tsconfig.tsbuildinfo
 .npm-cache/
+.env*.local
+.playwright-cli/
+supabase/.temp/
+output/*.log
+output/**/*.log
+output/*.png
+output/launchpix-demo.mp4
+output/design-md-temp/
+output/review-frames/

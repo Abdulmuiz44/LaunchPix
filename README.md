@@ -89,6 +89,14 @@ Recommended validation commands:
 - `npm run lint`
 - `npm run typecheck`
 - `npm run build`
+- `npm run video:studio`
+- `npm run video:render`
+- `npm run video:render:chrome` on Windows if Remotion cannot download Chrome Headless Shell
+
+## Demo video
+- The Remotion demo composition lives in `remotion/`.
+- Rendered output is written to `output/launchpix-demo.mp4`.
+- The video explains the core LaunchPix story: project brief, screenshot uploads, Mistral planning, deterministic rendering, exports, credits, and billing.
 
 ## Deployment notes
 - Set all env vars in hosting provider.
