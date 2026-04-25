@@ -25,7 +25,7 @@ export default async function GeneratePage({ params }: { params: Promise<{ id: s
       <section className="surface overflow-hidden p-5 sm:p-6">
         <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
           <div className="min-w-0">
-            <p className="dashboard-label text-cyan-300">Generation workspace</p>
+            <p className="dashboard-label">Generation workspace</p>
             <h2 className="mt-2 truncate text-2xl font-semibold sm:text-3xl">{project.name}</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
               {project.description || "Add a concise project description so LaunchPix can build a sharper asset story."}
@@ -48,9 +48,9 @@ export default async function GeneratePage({ params }: { params: Promise<{ id: s
         </div>
 
         <div className="mt-4 grid gap-2 text-xs text-slate-400 sm:grid-cols-3">
-          <div className="rounded-2xl bg-[#07101f]/80 px-3 py-2"><span className="text-slate-500">Product:</span> {project.product_type}</div>
-          <div className="rounded-2xl bg-[#07101f]/80 px-3 py-2"><span className="text-slate-500">Platform:</span> {project.platform}</div>
-          <div className="rounded-2xl bg-[#07101f]/80 px-3 py-2"><span className="text-slate-500">Audience:</span> {project.audience}</div>
+          <div className="rounded-2xl bg-[#050810] px-3 py-2"><span className="text-slate-500">Product:</span> {project.product_type}</div>
+          <div className="rounded-2xl bg-[#050810] px-3 py-2"><span className="text-slate-500">Platform:</span> {project.platform}</div>
+          <div className="rounded-2xl bg-[#050810] px-3 py-2"><span className="text-slate-500">Audience:</span> {project.audience}</div>
         </div>
       </section>
 

@@ -35,8 +35,8 @@ function isActive(pathname: string, section: (typeof navItems)[number]["section"
 
 function Brand() {
   return (
-    <Link href="/dashboard" className="group flex items-center gap-3 rounded-2xl px-2 py-2 outline-none transition focus-visible:ring-2 focus-visible:ring-cyan-300/50">
-      <span className="flex size-10 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#2fc7e6,#7c3aed)] text-sm font-bold text-white shadow-[0_18px_44px_-22px_rgba(47,199,230,0.85)] transition group-hover:scale-[1.03]">
+    <Link href="/dashboard" className="group flex items-center gap-3 rounded-2xl px-2 py-2 outline-none transition focus-visible:ring-2 focus-visible:ring-white/20">
+      <span className="flex size-10 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#0d1320] text-sm font-bold text-white transition group-hover:bg-[#111827]">
         L
       </span>
       <span className="min-w-0">
@@ -60,16 +60,16 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
             onClick={onNavigate}
             className={cn(
               "group relative flex h-10 items-center gap-3 rounded-2xl px-3 text-[13px] font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-cyan-300/50",
-              active ? "bg-white/[0.075] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : "text-slate-400 hover:bg-white/[0.045] hover:text-slate-100"
+              active ? "bg-[#101622] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : "text-slate-400 hover:bg-[#0b111c] hover:text-slate-100"
             )}
           >
             <span
               className={cn(
                 "absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full transition",
-                active ? "bg-cyan-300 opacity-100" : "bg-transparent opacity-0"
+                active ? "bg-slate-200 opacity-100" : "bg-transparent opacity-0"
               )}
             />
-            <item.icon className={cn("size-4 shrink-0 transition", active ? "text-cyan-200" : "text-slate-500 group-hover:text-slate-300")} />
+            <item.icon className={cn("size-4 shrink-0 transition", active ? "text-slate-100" : "text-slate-500 group-hover:text-slate-300")} />
             <span>{item.label}</span>
           </Link>
         );
@@ -83,11 +83,11 @@ function PlanCard({ credits, planLabel }: { credits: number; planLabel: string }
   const progress = Math.min(100, Math.round((credits / maxCredits) * 100));
 
   return (
-    <div className="rounded-3xl border border-white/[0.08] bg-[linear-gradient(180deg,rgba(17,28,51,0.84),rgba(8,16,31,0.92))] p-3.5 shadow-[0_24px_70px_-48px_rgba(0,0,0,0.85)]">
+    <div className="rounded-3xl border border-white/[0.08] bg-[#070b12] p-3.5 shadow-[0_24px_70px_-54px_rgba(0,0,0,0.95)]">
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-cyan-300/10">
-            <Gem className="size-4 text-cyan-300" />
+          <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-white/[0.04]">
+            <Gem className="size-4 text-slate-300" />
           </span>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-white">{planLabel}</p>
@@ -98,12 +98,12 @@ function PlanCard({ credits, planLabel }: { credits: number; planLabel: string }
       </div>
 
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
-        <div className="h-full rounded-full bg-[linear-gradient(90deg,#2fc7e6,#8b5cf6)]" style={{ width: `${progress}%` }} />
+        <div className="h-full rounded-full bg-slate-300" style={{ width: `${progress}%` }} />
       </div>
 
       <Link
         href="/settings/billing"
-        className="mt-3 flex h-9 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#2fc7e6,#8b5cf6)] text-xs font-semibold text-white shadow-[0_16px_40px_-24px_rgba(47,199,230,0.9)] transition hover:brightness-110"
+        className="mt-3 flex h-9 items-center justify-center rounded-2xl bg-[#5b5ff7] text-xs font-semibold text-white shadow-[0_16px_40px_-28px_rgba(91,95,247,0.85)] transition hover:bg-[#686cf8]"
       >
         Upgrade
       </Link>
@@ -136,7 +136,7 @@ function AccountMenu({
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label="Open account menu"
-        className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.035] p-2.5 text-left outline-none transition hover:border-white/[0.13] hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-cyan-300/50"
+        className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-2.5 text-left outline-none transition hover:border-white/[0.13] hover:bg-white/[0.055] focus-visible:ring-2 focus-visible:ring-white/20"
       >
         <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#101c32] text-xs font-semibold text-white ring-1 ring-white/[0.08]">
           {getInitials(userEmail)}
@@ -173,7 +173,7 @@ function AccountMenu({
                 onNavigate?.();
               }}
               className={cn(
-                "flex h-9 items-center gap-2.5 rounded-xl px-2.5 text-xs font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-cyan-300/40",
+                "flex h-9 items-center gap-2.5 rounded-xl px-2.5 text-xs font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-white/20",
                 action.href === "/auth/signout" ? "text-rose-200 hover:bg-rose-400/10 hover:text-rose-100" : "text-slate-300 hover:bg-white/[0.055] hover:text-white"
               )}
             >
@@ -201,7 +201,7 @@ export function DashboardSidebar({
 
   return (
     <>
-      <div className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#050b16]/95 px-4 py-3 backdrop-blur-2xl lg:hidden">
+      <div className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#02040a]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <Brand />
           <button
@@ -209,14 +209,14 @@ export function DashboardSidebar({
             onClick={() => setMobileOpen((open) => !open)}
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
-            className="grid size-10 place-items-center rounded-2xl border border-white/[0.1] bg-white/[0.045] text-slate-100 transition hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/50"
+            className="grid size-10 place-items-center rounded-2xl border border-white/[0.1] bg-white/[0.04] text-slate-100 transition hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
           >
             {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
 
         {mobileOpen && (
-          <div className="mt-3 rounded-3xl border border-white/[0.08] bg-[#07101f] p-3 shadow-[0_28px_90px_-44px_rgba(0,0,0,0.9)]">
+          <div className="mt-3 rounded-3xl border border-white/[0.08] bg-[#050810] p-3 shadow-[0_28px_90px_-48px_rgba(0,0,0,0.95)]">
             <NavLinks pathname={pathname} onNavigate={() => setMobileOpen(false)} />
             <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr]">
               <PlanCard credits={credits} planLabel={planLabel} />
@@ -226,7 +226,7 @@ export function DashboardSidebar({
         )}
       </div>
 
-      <aside className="hidden w-[236px] shrink-0 border-r border-white/[0.08] bg-[#07101f]/96 lg:block xl:w-[244px]">
+      <aside className="hidden w-[236px] shrink-0 border-r border-white/[0.08] bg-[#050810] lg:block xl:w-[244px]">
         <div className="sticky top-0 flex h-screen min-h-0 flex-col px-3 py-4">
           <Brand />
 

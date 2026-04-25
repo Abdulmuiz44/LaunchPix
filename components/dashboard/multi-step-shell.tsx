@@ -10,7 +10,7 @@ export function MultiStepShell({ step }: { step: number }) {
           key={label}
           className={cn(
             "dashboard-card-muted p-4 text-sm",
-            step === i + 1 ? "border border-violet-400/20 bg-violet-400/10" : ""
+            step === i + 1 ? "border border-white/[0.16] bg-white/[0.07]" : ""
           )}
         >
           <p className="dashboard-label">Step {i + 1}</p>

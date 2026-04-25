@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
@@ -9,11 +9,11 @@ const navItems = [
 
 export function TopNav() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/8 bg-[#050b16]/88 backdrop-blur-2xl">
+    <header className="sticky top-0 z-40 border-b border-white/8 bg-[#02040a]/92 backdrop-blur-xl">
       <div className="app-shell flex h-[78px] items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-3">
-          <span className="flex size-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#2fc7e6,#7c3aed)] text-white shadow-[0_20px_40px_-24px_rgba(47,199,230,0.9)]">
-            <Sparkles className="size-4" />
+          <span className="flex size-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#0d1320] text-sm font-bold text-white">
+            L
           </span>
           <div>
             <p className="text-lg font-semibold text-white">LaunchPix</p>

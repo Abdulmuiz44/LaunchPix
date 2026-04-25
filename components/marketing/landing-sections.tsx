@@ -57,43 +57,42 @@ export function LandingSections() {
             <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {proof.map((item) => (
                 <div key={item} className="flex items-center gap-3 text-sm text-slate-300">
-                  <CheckCircle2 className="size-4 text-cyan-300" />
+                  <CheckCircle2 className="size-4 text-slate-300" />
                   <span>{item}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="dashboard-card relative overflow-hidden p-4 sm:p-5">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.24),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(47,199,230,0.14),transparent_28%)]" />
-            <div className="relative grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="dashboard-card p-4 sm:p-5">
+            <div className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
               <div className="dashboard-card-muted p-5">
                 <p className="dashboard-label">Launch brief</p>
                 <div className="mt-5 space-y-3">
-                  <div className="h-11 rounded-2xl bg-[#0a1426]" />
-                  <div className="h-11 rounded-2xl bg-[#0a1426]" />
-                  <div className="h-28 rounded-[18px] bg-[#0a1426]" />
+                  <div className="h-11 rounded-2xl bg-[#050810]" />
+                  <div className="h-11 rounded-2xl bg-[#050810]" />
+                  <div className="h-28 rounded-[18px] bg-[#050810]" />
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   {["Listing 01", "Listing 02"].map((label, index) => (
-                    <div key={label} className={`rounded-[18px] border p-4 ${index === 0 ? "border-violet-400/30 bg-violet-400/10" : "border-white/10 bg-[#111c33]"}`}>
+                    <div key={label} className={`rounded-[18px] border p-4 ${index === 0 ? "border-white/[0.16] bg-white/[0.06]" : "border-white/10 bg-[#0b111c]"}`}>
                       <p className="dashboard-label">{label}</p>
-                      <div className="mt-4 h-28 rounded-[16px] bg-[#0a1426]" />
+                      <div className="mt-4 h-28 rounded-[16px] bg-[#050810]" />
                       <div className="mt-3 h-3 w-3/4 rounded-full bg-white/10" />
                       <div className="mt-2 h-3 w-1/2 rounded-full bg-white/10" />
                     </div>
                   ))}
                 </div>
 
-                <div className="rounded-[18px] border border-white/10 bg-[#111c33] p-4">
+                <div className="rounded-[18px] border border-white/10 bg-[#0b111c] p-4">
                   <div className="flex items-center justify-between text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                     <span>Hero banner</span>
                     <span>Export ready</span>
                   </div>
-                  <div className="mt-4 h-32 rounded-[16px] bg-[linear-gradient(135deg,rgba(124,58,237,0.32),transparent_55%),linear-gradient(180deg,#0a1426,#111c33)]" />
+                  <div className="mt-4 h-32 rounded-[16px] bg-[#050810]" />
                 </div>
               </div>
             </div>
@@ -115,8 +114,8 @@ export function LandingSections() {
             {workflow.map((item, index) => (
               <div key={item.title} className={`grid gap-4 px-6 py-6 sm:grid-cols-[72px_1fr] sm:px-8 ${index < workflow.length - 1 ? "border-b border-white/8" : ""}`}>
                 <div className="flex items-center gap-3 sm:block">
-                  <span className="text-sm font-semibold text-cyan-300">{item.step}</span>
-                  <item.icon className="size-5 text-violet-300 sm:mt-4" />
+                  <span className="text-sm font-semibold text-slate-300">{item.step}</span>
+                  <item.icon className="size-5 text-slate-400 sm:mt-4" />
                 </div>
                 <div>
                   <h3 className="text-xl font-semibold text-white">{item.title}</h3>
@@ -140,7 +139,7 @@ export function LandingSections() {
 
           <div className="dashboard-card-muted p-6 sm:p-8">
             <div className="flex items-start gap-4">
-              <ShieldCheck className="mt-1 size-5 text-cyan-300" />
+              <ShieldCheck className="mt-1 size-5 text-slate-300" />
               <div>
                 <p className="text-lg font-semibold text-white">Predictable output quality</p>
                 <p className="mt-3 text-sm leading-7 text-slate-400">
@@ -152,7 +151,7 @@ export function LandingSections() {
         </div>
       </section>
 
-      <section className="border-t border-white/8 bg-[#07101f]">
+      <section className="border-t border-white/8 bg-[#050810]">
         <div className="app-shell flex flex-col gap-6 py-14 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
             <p className="eyebrow">Start here</p>

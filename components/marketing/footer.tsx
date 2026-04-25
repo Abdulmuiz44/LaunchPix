@@ -9,7 +9,7 @@ const links = [
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-white/8 bg-[#050b16]">
+    <footer className="border-t border-white/8 bg-[#02040a]">
       <div className="app-shell grid gap-8 py-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
         <div>
           <p className="text-lg font-semibold text-white">LaunchPix</p>

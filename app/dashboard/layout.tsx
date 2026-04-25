@@ -9,7 +9,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   const { subscription, plan } = await getAccessContext(user.id);
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#050b16] text-[#f7f9fc] lg:flex-row">
+    <div className="flex min-h-screen flex-col bg-[#02040a] text-[#f7f9fc] lg:flex-row">
       <DashboardSidebar credits={subscription.credits_remaining} planLabel={plan.label} userEmail={user.email ?? "user@launchpix.app"} />
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <DashboardTopbar credits={subscription.credits_remaining} planLabel={plan.label} />

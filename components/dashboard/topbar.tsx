@@ -18,7 +18,7 @@ export function DashboardTopbar({ credits, planLabel }: { credits: number; planL
   const current = copyMap.find((item) => pathname.startsWith(item.match)) ?? copyMap[copyMap.length - 1];
 
   return (
-    <header className="sticky top-[65px] z-30 border-b border-white/8 bg-[#050b16]/92 px-4 py-2 backdrop-blur-2xl lg:top-0 lg:px-6">
+    <header className="sticky top-[65px] z-30 border-b border-white/[0.08] bg-[#02040a]/95 px-4 py-2 backdrop-blur-xl lg:top-0 lg:px-6">
       <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
         <div className="min-w-0 xl:max-w-[420px]">
           <h1 className="truncate text-xl font-semibold leading-tight tracking-tight text-white sm:text-[22px]">{current.title}</h1>
@@ -26,7 +26,7 @@ export function DashboardTopbar({ credits, planLabel }: { credits: number; planL
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <label className="flex h-8 min-w-[200px] flex-1 items-center gap-2 rounded-xl border border-white/10 bg-[#111c33] px-2.5 xl:w-[280px] xl:flex-none">
+          <label className="flex h-8 min-w-[200px] flex-1 items-center gap-2 rounded-xl border border-white/[0.08] bg-[#070b12] px-2.5 xl:w-[280px] xl:flex-none">
             <Search className="size-3.5 text-slate-500" />
             <input
               placeholder="Search projects, assets, generations..."
@@ -34,17 +34,17 @@ export function DashboardTopbar({ credits, planLabel }: { credits: number; planL
             />
           </label>
 
-          <div className="flex h-8 items-center gap-2 rounded-xl border border-white/10 bg-[#111c33] px-2.5 text-xs text-slate-300">
-            <Bolt className="size-3.5 text-cyan-300" />
+          <div className="flex h-8 items-center gap-2 rounded-xl border border-white/[0.08] bg-[#070b12] px-2.5 text-xs text-slate-300">
+            <Bolt className="size-3.5 text-slate-400" />
             <span className="font-semibold text-white">{credits}</span>
             <span>credits</span>
           </div>
 
-          <div className="hidden h-8 items-center rounded-xl border border-white/10 bg-[#111c33] px-2.5 text-xs text-slate-300 md:flex">
+          <div className="hidden h-8 items-center rounded-xl border border-white/[0.08] bg-[#070b12] px-2.5 text-xs text-slate-300 md:flex">
             {planLabel}
           </div>
 
-          <Link href="/dashboard/projects/new" className="inline-flex h-8 items-center gap-1.5 rounded-xl bg-[linear-gradient(135deg,#7c3aed,#9f67ff)] px-2.5 text-xs font-semibold text-white shadow-[0_18px_42px_-24px_rgba(124,58,237,0.95)]">
+          <Link href="/dashboard/projects/new" className="inline-flex h-8 items-center gap-1.5 rounded-xl bg-[#6d5dfc] px-2.5 text-xs font-semibold text-white shadow-[0_18px_42px_-28px_rgba(109,93,252,0.85)] hover:bg-[#7c70ff]">
             <Plus className="size-3.5" />
             New project
           </Link>
