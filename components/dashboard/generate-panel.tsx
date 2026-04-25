@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AlertCircle, CheckCircle2, Clock3, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Gen = { id: string; status: string; error_message?: string | null } | null;
@@ -13,10 +14,11 @@ const statusLabel: Record<string, string> = {
   generating_copy: "Building asset messaging",
   rendering_assets: "Rendering launch visuals",
   completed: "Asset pack completed",
-  failed: "Generation failed"
+  failed: "Generation failed",
+  idle: "Ready when you are"
 };
 
-export function GeneratePanel({ projectId, ready, missing }: { projectId: string; ready: boolean; missing: string[] }) {
+export function GeneratePanel({ projectId, ready, missing, credits }: { projectId: string; ready: boolean; missing: string[]; credits: number }) {
   const router = useRouter();
   const [generation, setGeneration] = useState<Gen>(null);
   const [pending, startTransition] = useTransition();
@@ -57,50 +59,84 @@ export function GeneratePanel({ projectId, ready, missing }: { projectId: string
   }
 
   const missingText = useMemo(() => missing.join(", "), [missing]);
+  const blockedByCredits = credits <= 0;
+  const progressWidth = busy ? "67%" : generation?.status === "completed" ? "100%" : ready ? "32%" : "18%";
 
   return (
-    <section className="surface space-y-6 p-6 sm:p-8">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+    <section className="surface space-y-5 p-5 sm:p-6">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Generation</p>
-          <h2 className="mt-3 text-2xl font-semibold">Launch pack progress</h2>
+          <p className="dashboard-label text-cyan-300">Launch pack progress</p>
+          <h2 className="mt-2 text-2xl font-semibold">Generate seven export-ready visuals.</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+            Five listing frames, one promo tile, and one hero banner generated from your screenshots and structured copy plan.
+          </p>
         </div>
-        <div className="surface-muted px-4 py-3 text-sm text-muted-foreground">
+        <div className="inline-flex w-fit items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs font-medium text-slate-300">
+          {busy ? <Clock3 className="size-4 animate-pulse text-cyan-300" /> : ready ? <CheckCircle2 className="size-4 text-emerald-300" /> : <AlertCircle className="size-4 text-amber-300" />}
           {statusLabel[currentStatus] || "Ready when you are"}
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="surface-muted space-y-4 p-5">
+      <div className="grid gap-3 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="rounded-3xl border border-white/[0.08] bg-[#0b1629] p-4">
           {!ready ? (
-            <p className="text-sm leading-7 text-rose-500">You still need: {missingText}.</p>
+            <div className="flex gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-2xl bg-amber-300/10">
+                <AlertCircle className="size-5 text-amber-300" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-white">
+                  {blockedByCredits ? "Add credits to generate this launch pack." : "Complete the missing setup before generating."}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-slate-400">Missing: {missingText}.</p>
+              </div>
+            </div>
           ) : (
-            <p className="text-sm leading-7 text-muted-foreground">
-              Your project is ready. LaunchPix will create the full seven-asset sequence and redirect you to the asset view once rendering completes.
-            </p>
+            <div className="flex gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-2xl bg-emerald-300/10">
+                <Sparkles className="size-5 text-emerald-300" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-white">Everything is ready for generation.</p>
+                <p className="mt-1 text-sm leading-6 text-slate-400">Start the render and LaunchPix will redirect you to the asset view when the pack is complete.</p>
+              </div>
+            </div>
           )}
 
-          <div className="h-2 overflow-hidden rounded-full bg-background/80">
-            <div className={`h-full rounded-full bg-primary transition-all ${busy ? "w-2/3 animate-pulse" : generation?.status === "completed" ? "w-full" : "w-1/4"}`} />
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-background/80">
+            <div className="h-full rounded-full bg-[linear-gradient(90deg,#2fc7e6,#8b5cf6)] transition-all duration-500" style={{ width: progressWidth }} />
           </div>
 
           {generation?.status === "failed" ? <p className="text-sm text-rose-500">{generation.error_message || "Generation failed. Please retry."}</p> : null}
           {apiError ? <p className="text-sm text-rose-500">{apiError}</p> : null}
         </div>
 
-        <div className="surface-muted flex flex-col gap-3 p-5 text-sm text-muted-foreground">
-          <p className="font-semibold text-foreground">What gets rendered</p>
-          <p>Five listing frames, one promo tile, and one hero banner built from your uploaded screenshots and structured copy plan.</p>
+        <div className="rounded-3xl border border-white/[0.08] bg-[#0b1629] p-4">
+          <p className="text-sm font-semibold text-white">Output checklist</p>
+          <div className="mt-3 grid gap-2 text-xs text-slate-400">
+            {["5 app listing frames", "1 promo tile", "1 hero banner", "ZIP export package"].map((item) => (
+              <div key={item} className="flex items-center gap-2">
+                <CheckCircle2 className="size-3.5 text-cyan-300" />
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <Button disabled={!ready || pending || busy} onClick={() => startTransition(() => void generate())}>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <Button disabled={!ready || pending || busy} onClick={() => startTransition(() => void generate())} title={!ready ? `Missing: ${missingText}` : undefined}>
           {generation?.status === "failed" ? "Retry generation" : "Generate assets"}
         </Button>
         <Button asChild variant="outline">
           <Link href={`/dashboard/projects/${projectId}`}>Back to project</Link>
         </Button>
+        {!ready ? (
+          <p className="text-xs text-slate-500 sm:ml-1">
+            {blockedByCredits ? "Generation is disabled until credits are available." : "Generation is disabled until the missing setup is complete."}
+          </p>
+        ) : null}
       </div>
     </section>
   );
