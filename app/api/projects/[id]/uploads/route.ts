@@ -8,7 +8,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const { user, supabase } = await requireUser();
   const { id } = await params;
 
-  const { data: project } = await supabase.from("projects").select("id").eq("id", id).eq("user_id", user.id).single();
+  const { data: project } = await supabase.from("projects").select("id,name").eq("id", id).eq("user_id", user.id).single();
   if (!project) return NextResponse.json({ error: "Project not found" }, { status: 404 });
 
   const form = await req.formData();
@@ -49,6 +49,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (error || !data) return NextResponse.json({ error: error?.message || "Could not save upload" }, { status: 500 });
 
   await enqueueNormalization(data.id);
-  await trackEvent({ userId: user.id, projectId: id, eventType: "screenshots_uploaded", metadata: { uploadId: data.id } });
+  await trackEvent({ userId: user.id, projectId: id, eventType: "screenshots_uploaded", metadata: { uploadId: data.id, projectName: project.name } });
   return NextResponse.json({ upload: data });
 }

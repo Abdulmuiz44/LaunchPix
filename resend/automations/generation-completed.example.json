@@ -1,0 +1,37 @@
+{
+  "name": "LaunchPix - Generation completed",
+  "status": "disabled",
+  "steps": [
+    {
+      "key": "trigger",
+      "type": "trigger",
+      "config": {
+        "eventName": "generation.completed"
+      }
+    },
+    {
+      "key": "send_pack_ready_email",
+      "type": "send_email",
+      "config": {
+        "template": {
+          "id": "tpl_replace_with_pack_ready_template_id",
+          "variables": {
+            "PROJECT_NAME": {
+              "var": "projectName"
+            },
+            "PROJECT_URL": {
+              "var": "projectId"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "connections": [
+    {
+      "from": "trigger",
+      "to": "send_pack_ready_email",
+      "type": "default"
+    }
+  ]
+}
