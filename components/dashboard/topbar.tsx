@@ -18,7 +18,7 @@ export function DashboardTopbar({ credits, planLabel }: { credits: number; planL
   const current = copyMap.find((item) => pathname.startsWith(item.match)) ?? copyMap[copyMap.length - 1];
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/8 bg-[#050b16]/92 px-4 py-4 backdrop-blur-2xl lg:px-8">
+    <header className="sticky top-[65px] z-30 border-b border-white/8 bg-[#050b16]/92 px-4 py-4 backdrop-blur-2xl lg:top-0 lg:px-8">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div>
           <h1 className="text-[28px] font-semibold tracking-tight text-white">{current.title}</h1>
