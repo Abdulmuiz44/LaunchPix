@@ -66,20 +66,20 @@ export function GeneratePanel({ projectId, ready, missing, credits }: { projectI
     <section className="surface space-y-5 p-5 sm:p-6">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <p className="dashboard-label text-cyan-300">Launch pack progress</p>
+          <p className="dashboard-label">Launch pack progress</p>
           <h2 className="mt-2 text-2xl font-semibold">Generate seven export-ready visuals.</h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
             Five listing frames, one promo tile, and one hero banner generated from your screenshots and structured copy plan.
           </p>
         </div>
         <div className="inline-flex w-fit items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs font-medium text-slate-300">
-          {busy ? <Clock3 className="size-4 animate-pulse text-cyan-300" /> : ready ? <CheckCircle2 className="size-4 text-emerald-300" /> : <AlertCircle className="size-4 text-amber-300" />}
+          {busy ? <Clock3 className="size-4 animate-pulse text-slate-300" /> : ready ? <CheckCircle2 className="size-4 text-emerald-300" /> : <AlertCircle className="size-4 text-amber-300" />}
           {statusLabel[currentStatus] || "Ready when you are"}
         </div>
       </div>
 
       <div className="grid gap-3 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="rounded-3xl border border-white/[0.08] bg-[#0b1629] p-4">
+        <div className="rounded-3xl border border-white/[0.08] bg-[#050810] p-4">
           {!ready ? (
             <div className="flex gap-3">
               <span className="grid size-9 shrink-0 place-items-center rounded-2xl bg-amber-300/10">
@@ -104,20 +104,20 @@ export function GeneratePanel({ projectId, ready, missing, credits }: { projectI
             </div>
           )}
 
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-background/80">
-            <div className="h-full rounded-full bg-[linear-gradient(90deg,#2fc7e6,#8b5cf6)] transition-all duration-500" style={{ width: progressWidth }} />
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#0b111c]">
+            <div className="h-full rounded-full bg-slate-300 transition-all duration-500" style={{ width: progressWidth }} />
           </div>
 
           {generation?.status === "failed" ? <p className="text-sm text-rose-500">{generation.error_message || "Generation failed. Please retry."}</p> : null}
           {apiError ? <p className="text-sm text-rose-500">{apiError}</p> : null}
         </div>
 
-        <div className="rounded-3xl border border-white/[0.08] bg-[#0b1629] p-4">
+        <div className="rounded-3xl border border-white/[0.08] bg-[#050810] p-4">
           <p className="text-sm font-semibold text-white">Output checklist</p>
           <div className="mt-3 grid gap-2 text-xs text-slate-400">
             {["5 app listing frames", "1 promo tile", "1 hero banner", "ZIP export package"].map((item) => (
               <div key={item} className="flex items-center gap-2">
-                <CheckCircle2 className="size-3.5 text-cyan-300" />
+                <CheckCircle2 className="size-3.5 text-slate-400" />
                 {item}
               </div>
             ))}

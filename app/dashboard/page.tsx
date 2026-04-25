@@ -7,7 +7,7 @@ import { listUserProjects } from "@/lib/services/projects/queries";
 function statusTone(status: unknown) {
   const value = typeof status === "string" ? status.toLowerCase() : "draft";
   if (value.includes("complete")) return "bg-emerald-400/12 text-emerald-300";
-  if (value.includes("progress") || value.includes("generating")) return "bg-cyan-400/12 text-cyan-300";
+  if (value.includes("progress") || value.includes("generating")) return "bg-slate-300/10 text-slate-200";
   if (value.includes("failed")) return "bg-rose-400/12 text-rose-300";
   return "bg-white/8 text-slate-300";
 }
@@ -43,11 +43,10 @@ export default async function DashboardPage() {
   return (
     <div className="dashboard-page">
       <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
-        <div className="dashboard-card relative overflow-hidden p-6 sm:p-7">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.22),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(47,199,230,0.12),transparent_28%)]" />
-          <div className="relative flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="dashboard-card p-6 sm:p-7">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <p className="dashboard-label text-cyan-300">Launch workspace</p>
+              <p className="dashboard-label">Launch workspace</p>
               <h2 className="mt-3 text-3xl font-semibold text-white sm:text-[2.2rem]">Your launch visuals, organized from first brief to final export.</h2>
               <p className="mt-4 text-sm leading-7 text-slate-300">
                 Keep project identity, screenshot sequencing, pack generation, and export access in one controlled workspace.
@@ -55,11 +54,11 @@ export default async function DashboardPage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Link href="/dashboard/projects/new" className="inline-flex h-11 items-center gap-2 rounded-[14px] bg-[linear-gradient(135deg,#7c3aed,#9f67ff)] px-4 text-sm font-semibold text-white">
+              <Link href="/dashboard/projects/new" className="inline-flex h-11 items-center gap-2 rounded-[14px] bg-[#5b5ff7] px-4 text-sm font-semibold text-white hover:bg-[#686cf8]">
                 New project
                 <ArrowRight className="size-4" />
               </Link>
-              <Link href="/dashboard/projects" className="inline-flex h-11 items-center rounded-[14px] border border-white/12 bg-[#111c33] px-4 text-sm font-medium text-slate-100">
+              <Link href="/dashboard/projects" className="inline-flex h-11 items-center rounded-[14px] border border-white/[0.1] bg-[#070b12] px-4 text-sm font-medium text-slate-100 hover:bg-[#0d1320]">
                 View projects
               </Link>
             </div>
@@ -97,7 +96,7 @@ export default async function DashboardPage() {
                 <p className="dashboard-label">{item.label}</p>
                 <p className="mt-3 text-3xl font-semibold text-white">{item.value}</p>
               </div>
-              <span className="flex size-11 items-center justify-center rounded-2xl bg-[#111c33] text-cyan-300">
+              <span className="flex size-11 items-center justify-center rounded-2xl bg-[#0b111c] text-slate-300">
                 <item.icon className="size-5" />
               </span>
             </div>
@@ -140,10 +139,10 @@ export default async function DashboardPage() {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link href={activeProject ? `/dashboard/projects/${activeProject.id}` : "/dashboard/projects/new"} className="inline-flex h-11 items-center rounded-[14px] bg-[linear-gradient(135deg,#7c3aed,#9f67ff)] px-4 text-sm font-semibold text-white">
+            <Link href={activeProject ? `/dashboard/projects/${activeProject.id}` : "/dashboard/projects/new"} className="inline-flex h-11 items-center rounded-[14px] bg-[#5b5ff7] px-4 text-sm font-semibold text-white hover:bg-[#686cf8]">
               {activeProject ? "Open project" : "Create project"}
             </Link>
-            <Link href={activeProject ? `/dashboard/projects/${activeProject.id}/generate` : "/dashboard/projects/new"} className="inline-flex h-11 items-center rounded-[14px] border border-white/12 bg-[#111c33] px-4 text-sm font-medium text-slate-100">
+            <Link href={activeProject ? `/dashboard/projects/${activeProject.id}/generate` : "/dashboard/projects/new"} className="inline-flex h-11 items-center rounded-[14px] border border-white/[0.1] bg-[#070b12] px-4 text-sm font-medium text-slate-100 hover:bg-[#0d1320]">
               Generate pack
             </Link>
           </div>
@@ -153,11 +152,11 @@ export default async function DashboardPage() {
           <div className="dashboard-card p-6 sm:p-7">
             <div className="flex items-center justify-between">
               <p className="dashboard-label">Recent projects</p>
-              <Link href="/dashboard/projects" className="text-sm text-cyan-300">View all</Link>
+              <Link href="/dashboard/projects" className="text-sm text-slate-300 hover:text-white">View all</Link>
             </div>
             <div className="mt-5 space-y-3">
               {recentProjects.length ? recentProjects.map((project) => (
-                <Link key={project.id} href={`/dashboard/projects/${project.id}`} className="dashboard-card-muted flex items-center justify-between gap-4 p-4 hover:border-cyan-400/20">
+                <Link key={project.id} href={`/dashboard/projects/${project.id}`} className="dashboard-card-muted flex items-center justify-between gap-4 p-4 hover:border-white/[0.14]">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-white">{project.name}</p>
                     <p className="mt-1 truncate text-xs text-slate-500">{project.product_type.replaceAll("_", " ")}</p>
@@ -172,14 +171,14 @@ export default async function DashboardPage() {
             <p className="dashboard-label">Activity summary</p>
             <div className="mt-5 space-y-4 text-sm">
               <div className="flex items-start gap-3">
-                <Clock3 className="mt-0.5 size-4 text-cyan-300" />
+                <Clock3 className="mt-0.5 size-4 text-slate-400" />
                 <div>
                   <p className="font-medium text-white">Generation workflow stays in one place</p>
                   <p className="mt-1 text-slate-500">Review project brief, uploads, generation status, and export access without leaving the dashboard.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Sparkles className="mt-0.5 size-4 text-violet-300" />
+                <Sparkles className="mt-0.5 size-4 text-slate-400" />
                 <div>
                   <p className="font-medium text-white">Best next step</p>
                   <p className="mt-1 text-slate-500">{activeProject ? `Continue ${activeProject.name} or generate a fresh pack.` : "Create the first project to activate the full launch workflow."}</p>

@@ -6,10 +6,9 @@ export function EmptyProjectsState() {
   return (
     <div className="dashboard-page">
       <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <div className="dashboard-card relative overflow-hidden p-6 sm:p-7">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.18),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(47,199,230,0.12),transparent_26%)]" />
-          <div className="relative max-w-2xl">
-            <p className="dashboard-label text-cyan-300">Projects</p>
+        <div className="dashboard-card p-6 sm:p-7">
+          <div className="max-w-2xl">
+            <p className="dashboard-label">Projects</p>
             <h2 className="mt-3 text-3xl font-semibold text-white">Create the first launch workspace and fill the dashboard with real output.</h2>
             <p className="mt-4 text-sm leading-7 text-slate-300">
               Add the project brief, upload screenshots, and move directly into generation from a workspace built for fast launch execution.
@@ -39,7 +38,7 @@ export function EmptyProjectsState() {
             ].map((item) => (
               <div key={item.title} className="dashboard-card-muted p-4">
                 <div className="flex items-center gap-3">
-                  <item.icon className="size-4 text-cyan-300" />
+                  <item.icon className="size-4 text-slate-300" />
                   <p className="text-sm font-semibold text-white">{item.title}</p>
                 </div>
                 <p className="mt-2 text-sm leading-6 text-slate-500">{item.text}</p>

@@ -34,7 +34,7 @@ export default async function ProjectsPage() {
     <div className="dashboard-page">
       <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
         <div className="dashboard-card p-6 sm:p-7">
-          <p className="dashboard-label text-cyan-300">Projects</p>
+          <p className="dashboard-label">Projects</p>
           <h2 className="mt-3 text-3xl font-semibold text-white">All launch workspaces in one operational view.</h2>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-400">
             Track what is active, what is blocked, and which project is ready for generation or export without digging through separate screens.
@@ -62,7 +62,7 @@ export default async function ProjectsPage() {
             <div key={item.label} className="dashboard-card p-5">
               <div className="flex items-center justify-between">
                 <p className="dashboard-label">{item.label}</p>
-                <item.icon className="size-4 text-cyan-300" />
+                <item.icon className="size-4 text-slate-400" />
               </div>
               <p className="mt-4 text-3xl font-semibold text-white">{item.value}</p>
             </div>
