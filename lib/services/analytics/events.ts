@@ -1,4 +1,5 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { sendLifecycleEmail } from "@/lib/email/resend";
 
 export async function trackEvent(input: {
   userId: string;
@@ -12,5 +13,9 @@ export async function trackEvent(input: {
     project_id: input.projectId || null,
     event_type: input.eventType,
     metadata_json: input.metadata || null
+  });
+
+  await sendLifecycleEmail(input).catch((error) => {
+    console.warn("Lifecycle email notification failed:", error instanceof Error ? error.message : error);
   });
 }

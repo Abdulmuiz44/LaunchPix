@@ -23,7 +23,7 @@ export async function runGenerationForProject(project: ProjectRecord, uploads: U
     .single();
 
   if (generationError || !generation) throw new Error(generationError?.message || "Failed to create generation record");
-  await trackEvent({ userId: project.user_id, projectId: project.id, eventType: "generation_started", metadata: { generationId: generation.id } });
+  await trackEvent({ userId: project.user_id, projectId: project.id, eventType: "generation_started", metadata: { generationId: generation.id, projectName: project.name } });
 
   try {
     await supabase.from("generations").update({ status: "analyzing" }).eq("id", generation.id);
@@ -123,14 +123,14 @@ export async function runGenerationForProject(project: ProjectRecord, uploads: U
 
     await supabase.from("generations").update({ status: "completed", style_json: { ...safePlan, zip_url: zipUrl.publicUrl } }).eq("id", generation.id);
     await supabase.from("projects").update({ status: "completed" }).eq("id", project.id);
-    await trackEvent({ userId: project.user_id, projectId: project.id, eventType: "generation_completed", metadata: { generationId: generation.id } });
+    await trackEvent({ userId: project.user_id, projectId: project.id, eventType: "generation_completed", metadata: { generationId: generation.id, projectName: project.name } });
 
     return { generationId: generation.id };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Generation failed";
     await supabase.from("generations").update({ status: "failed", error_message: message }).eq("id", generation.id);
     await supabase.from("projects").update({ status: "failed" }).eq("id", project.id);
-    await trackEvent({ userId: project.user_id, projectId: project.id, eventType: "generation_failed", metadata: { generationId: generation.id, message } });
+    await trackEvent({ userId: project.user_id, projectId: project.id, eventType: "generation_failed", metadata: { generationId: generation.id, projectName: project.name, message } });
     throw error;
   }
 }

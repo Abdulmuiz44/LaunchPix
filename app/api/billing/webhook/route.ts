@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { verifyWebhookSignature } from "@/lib/payments/paystack";
 import { grantPlanCredits } from "@/lib/services/billing/subscription";
 import { trackEvent } from "@/lib/services/analytics/events";
+import { PLAN_CONFIG } from "@/lib/services/billing/plans";
 
 export async function POST(req: Request) {
   const signature = req.headers.get("x-paystack-signature");
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
 
   try {
     await grantPlanCredits(userId, planId, reference);
-    await trackEvent({ userId, eventType: "checkout_completed", metadata: { plan: planId, source: "webhook" } });
+    await trackEvent({ userId, eventType: "checkout_completed", metadata: { plan: PLAN_CONFIG[planId].label, source: "webhook", credits: PLAN_CONFIG[planId].creditsGranted } });
     return NextResponse.json({ ok: true });
   } catch {
     return NextResponse.json({ error: "Webhook processing failed" }, { status: 500 });

@@ -25,6 +25,7 @@ export async function upsertProjectIdentity(formData: FormData) {
   }
 
   const projectId = String(formData.get("projectId") || "");
+  const isNewProject = !projectId;
 
   const payload = {
     user_id: user.id,
@@ -62,7 +63,7 @@ export async function upsertProjectIdentity(formData: FormData) {
     if (genError) throw new Error(genError.message);
   }
 
-  await trackEvent({ userId: user.id, projectId: data.id, eventType: "project_created" });
+  await trackEvent({ userId: user.id, projectId: data.id, eventType: isNewProject ? "project_created" : "project_updated", metadata: { projectName: payload.name } });
   revalidatePath("/dashboard/projects");
   redirect(`/dashboard/projects/new?projectId=${data.id}&step=2`);
 }

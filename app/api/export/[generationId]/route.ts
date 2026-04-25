@@ -18,7 +18,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ generation
 
   const { data: generation } = await supabase
     .from("generations")
-    .select("id, project_id, projects!inner(user_id)")
+    .select("id, project_id, projects!inner(user_id,name)")
     .eq("id", generationId)
     .eq("projects.user_id", user.id)
     .single();
@@ -29,7 +29,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ generation
   const { data, error } = await (await createSupabaseServerClient()).storage.from(ASSET_BUCKET).download(path);
   if (error || !data) return NextResponse.json({ error: "ZIP file is not ready yet. Try again in a moment." }, { status: 404 });
 
-  await trackEvent({ userId: user.id, projectId: generation.project_id, eventType: "zip_export_requested" });
+  await trackEvent({ userId: user.id, projectId: generation.project_id, eventType: "zip_export_requested", metadata: { projectName: (generation.projects as any).name } });
 
   return new NextResponse(data, {
     headers: {
