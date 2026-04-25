@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CreditCard, Folder, Gem, Home, ImageIcon, Menu, Settings, Wand2, X } from "lucide-react";
+import { ChevronUp, CreditCard, Folder, Gem, Home, ImageIcon, LogOut, Menu, Plus, Settings, UserCircle, Wand2, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -111,16 +111,78 @@ function PlanCard({ credits, planLabel }: { credits: number; planLabel: string }
   );
 }
 
-function AccountCard({ userEmail }: { userEmail: string }) {
+const accountActions = [
+  { href: "/settings", label: "Account settings", icon: UserCircle },
+  { href: "/settings/billing", label: "Billing and plan", icon: CreditCard },
+  { href: "/dashboard/projects/new", label: "New project", icon: Plus },
+  { href: "/auth/signout", label: "Sign out", icon: LogOut }
+] as const;
+
+function AccountMenu({
+  userEmail,
+  onNavigate,
+  variant = "desktop"
+}: {
+  userEmail: string;
+  onNavigate?: () => void;
+  variant?: "desktop" | "mobile";
+}) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.035] p-2.5">
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#101c32] text-xs font-semibold text-white">
-        {getInitials(userEmail)}
-      </span>
-      <span className="min-w-0">
-        <span className="block truncate text-sm font-medium text-white">{userEmail.split("@")[0]}</span>
-        <span className="block truncate text-[11px] text-slate-500">{userEmail}</span>
-      </span>
+    <div className="group/account relative">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-label="Open account menu"
+        className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.035] p-2.5 text-left outline-none transition hover:border-white/[0.13] hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-cyan-300/50"
+      >
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#101c32] text-xs font-semibold text-white ring-1 ring-white/[0.08]">
+          {getInitials(userEmail)}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-medium text-white">{userEmail.split("@")[0]}</span>
+          <span className="block truncate text-[11px] text-slate-500">{userEmail}</span>
+        </span>
+        <ChevronUp className={cn("size-4 shrink-0 text-slate-500 transition group-hover/account:text-slate-300", open && "rotate-180 text-slate-300")} />
+      </button>
+
+      <div
+        className={cn(
+          "z-50 rounded-2xl border border-white/[0.09] bg-[#081120]/98 p-1.5 shadow-[0_24px_80px_-34px_rgba(0,0,0,0.92)] backdrop-blur-2xl",
+          variant === "desktop"
+            ? "absolute bottom-[calc(100%+10px)] left-0 right-0 hidden group-hover/account:block group-focus-within/account:block"
+            : "mt-2",
+          variant === "mobile" && !open && "hidden",
+          variant === "desktop" && open && "block"
+        )}
+      >
+        <div className="border-b border-white/[0.07] px-2.5 py-2">
+          <p className="truncate text-xs font-medium text-white">{userEmail}</p>
+          <p className="mt-0.5 text-[11px] text-slate-500">Workspace account</p>
+        </div>
+
+        <div className="mt-1 space-y-0.5">
+          {accountActions.map((action) => (
+            <Link
+              key={action.href}
+              href={action.href}
+              onClick={() => {
+                setOpen(false);
+                onNavigate?.();
+              }}
+              className={cn(
+                "flex h-9 items-center gap-2.5 rounded-xl px-2.5 text-xs font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-cyan-300/40",
+                action.href === "/auth/signout" ? "text-rose-200 hover:bg-rose-400/10 hover:text-rose-100" : "text-slate-300 hover:bg-white/[0.055] hover:text-white"
+              )}
+            >
+              <action.icon className="size-4 shrink-0" />
+              <span>{action.label}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -158,7 +220,7 @@ export function DashboardSidebar({
             <NavLinks pathname={pathname} onNavigate={() => setMobileOpen(false)} />
             <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr]">
               <PlanCard credits={credits} planLabel={planLabel} />
-              <AccountCard userEmail={userEmail} />
+              <AccountMenu userEmail={userEmail} variant="mobile" onNavigate={() => setMobileOpen(false)} />
             </div>
           </div>
         )}
@@ -174,7 +236,7 @@ export function DashboardSidebar({
 
           <div className="mt-4 space-y-3">
             <PlanCard credits={credits} planLabel={planLabel} />
-            <AccountCard userEmail={userEmail} />
+            <AccountMenu userEmail={userEmail} />
           </div>
         </div>
       </aside>
