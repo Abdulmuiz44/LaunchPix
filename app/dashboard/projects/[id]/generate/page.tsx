@@ -1,6 +1,4 @@
 import { GeneratePanel } from "@/components/dashboard/generate-panel";
-import { StatusBadge } from "@/components/dashboard/status-badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { requireUser } from "@/lib/supabase/auth";
 import { getAccessContext } from "@/lib/services/access/permissions";
 import { getLatestGeneration } from "@/lib/services/generations/queries";
@@ -23,50 +21,40 @@ export default async function GeneratePage({ params }: { params: Promise<{ id: s
   const ready = missing.length === 0;
 
   return (
-    <div className="space-y-6">
-      <section className="surface p-6 sm:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="eyebrow">Generate</p>
-            <h2 className="mt-4 text-3xl font-semibold">Create the launch asset pack for {project.name}.</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-              Your render pipeline stays focused: one brief, one screenshot sequence, one export-ready pack.
+    <div className="space-y-4">
+      <section className="surface overflow-hidden p-5 sm:p-6">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
+          <div className="min-w-0">
+            <p className="dashboard-label text-cyan-300">Generation workspace</p>
+            <h2 className="mt-2 truncate text-2xl font-semibold sm:text-3xl">{project.name}</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+              {project.description || "Add a concise project description so LaunchPix can build a sharper asset story."}
             </p>
           </div>
-          <StatusBadge status={generation?.status || (ready ? "ready" : "draft")} />
+
+          <div className="grid shrink-0 grid-cols-2 gap-2 sm:grid-cols-4 xl:w-[560px]">
+            {[
+              ["Plan", plan.label],
+              ["Credits", subscription.credits_remaining.toString()],
+              ["Uploads", `${uploads.length}/5`],
+              ["Export", plan.fullResolutionExport ? "Full" : "Preview"]
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-2xl border border-white/[0.08] bg-white/[0.035] px-3 py-2.5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{label}</p>
+                <p className="mt-1 truncate text-sm font-semibold text-white">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-2 text-xs text-slate-400 sm:grid-cols-3">
+          <div className="rounded-2xl bg-[#07101f]/80 px-3 py-2"><span className="text-slate-500">Product:</span> {project.product_type}</div>
+          <div className="rounded-2xl bg-[#07101f]/80 px-3 py-2"><span className="text-slate-500">Platform:</span> {project.platform}</div>
+          <div className="rounded-2xl bg-[#07101f]/80 px-3 py-2"><span className="text-slate-500">Audience:</span> {project.audience}</div>
         </div>
       </section>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <CardContent className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Brief</p>
-            <div>
-              <h3 className="text-xl font-semibold">{project.name}</h3>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">{project.description}</p>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-3 text-sm">
-              <div><p className="text-muted-foreground">Product</p><p className="mt-1 font-medium">{project.product_type}</p></div>
-              <div><p className="text-muted-foreground">Platform</p><p className="mt-1 font-medium">{project.platform}</p></div>
-              <div><p className="text-muted-foreground">Audience</p><p className="mt-1 font-medium">{project.audience}</p></div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Capacity</p>
-            <div className="grid gap-4 sm:grid-cols-2 text-sm">
-              <div><p className="text-muted-foreground">Plan</p><p className="mt-1 font-medium">{plan.label}</p></div>
-              <div><p className="text-muted-foreground">Credits</p><p className="mt-1 font-medium">{subscription.credits_remaining}</p></div>
-              <div><p className="text-muted-foreground">Uploads ready</p><p className="mt-1 font-medium">{uploads.length}/5</p></div>
-              <div><p className="text-muted-foreground">Export path</p><p className="mt-1 font-medium">{plan.fullResolutionExport ? "Full-resolution" : "Preview mode"}</p></div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <GeneratePanel projectId={id} ready={ready} missing={missing} />
+      <GeneratePanel projectId={id} ready={ready} missing={missing} credits={subscription.credits_remaining} />
     </div>
   );
 }

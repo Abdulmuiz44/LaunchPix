@@ -13,7 +13,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
       <DashboardSidebar credits={subscription.credits_remaining} planLabel={plan.label} userEmail={user.email ?? "user@launchpix.app"} />
       <div className="flex min-h-screen min-w-0 flex-1 flex-col">
         <DashboardTopbar credits={subscription.credits_remaining} planLabel={plan.label} />
-        <main className="flex-1 px-4 pb-8 pt-5 sm:px-5 lg:px-8">{children}</main>
+        <main className="flex-1 px-4 pb-7 pt-3 sm:px-5 lg:px-6">{children}</main>
       </div>
     </div>
   );

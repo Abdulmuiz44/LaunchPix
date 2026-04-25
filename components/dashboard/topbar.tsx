@@ -18,34 +18,34 @@ export function DashboardTopbar({ credits, planLabel }: { credits: number; planL
   const current = copyMap.find((item) => pathname.startsWith(item.match)) ?? copyMap[copyMap.length - 1];
 
   return (
-    <header className="sticky top-[65px] z-30 border-b border-white/8 bg-[#050b16]/92 px-4 py-4 backdrop-blur-2xl lg:top-0 lg:px-8">
-      <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-        <div>
-          <h1 className="text-[28px] font-semibold tracking-tight text-white">{current.title}</h1>
-          <p className="mt-1 text-sm text-slate-400">{current.description}</p>
+    <header className="sticky top-[65px] z-30 border-b border-white/8 bg-[#050b16]/92 px-4 py-2 backdrop-blur-2xl lg:top-0 lg:px-6">
+      <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
+        <div className="min-w-0 xl:max-w-[420px]">
+          <h1 className="truncate text-xl font-semibold leading-tight tracking-tight text-white sm:text-[22px]">{current.title}</h1>
+          <p className="mt-0.5 hidden truncate text-[11px] text-slate-400 md:block xl:hidden">{current.description}</p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <label className="flex h-11 min-w-[250px] flex-1 items-center gap-2 rounded-[14px] border border-white/10 bg-[#111c33] px-3 xl:w-[340px] xl:flex-none">
-            <Search className="size-4 text-slate-500" />
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="flex h-8 min-w-[200px] flex-1 items-center gap-2 rounded-xl border border-white/10 bg-[#111c33] px-2.5 xl:w-[280px] xl:flex-none">
+            <Search className="size-3.5 text-slate-500" />
             <input
               placeholder="Search projects, assets, generations..."
-              className="w-full bg-transparent text-sm text-slate-100 outline-none placeholder:text-slate-500"
+              className="w-full bg-transparent text-xs text-slate-100 outline-none placeholder:text-slate-500"
             />
           </label>
 
-          <div className="flex h-11 items-center gap-2 rounded-[14px] border border-white/10 bg-[#111c33] px-4 text-sm text-slate-300">
-            <Bolt className="size-4 text-cyan-300" />
+          <div className="flex h-8 items-center gap-2 rounded-xl border border-white/10 bg-[#111c33] px-2.5 text-xs text-slate-300">
+            <Bolt className="size-3.5 text-cyan-300" />
             <span className="font-semibold text-white">{credits}</span>
             <span>credits</span>
           </div>
 
-          <div className="hidden h-11 items-center rounded-[14px] border border-white/10 bg-[#111c33] px-4 text-sm text-slate-300 md:flex">
+          <div className="hidden h-8 items-center rounded-xl border border-white/10 bg-[#111c33] px-2.5 text-xs text-slate-300 md:flex">
             {planLabel}
           </div>
 
-          <Link href="/dashboard/projects/new" className="inline-flex h-11 items-center gap-2 rounded-[14px] bg-[linear-gradient(135deg,#7c3aed,#9f67ff)] px-4 text-sm font-semibold text-white shadow-[0_20px_48px_-24px_rgba(124,58,237,0.95)]">
-            <Plus className="size-4" />
+          <Link href="/dashboard/projects/new" className="inline-flex h-8 items-center gap-1.5 rounded-xl bg-[linear-gradient(135deg,#7c3aed,#9f67ff)] px-2.5 text-xs font-semibold text-white shadow-[0_18px_42px_-24px_rgba(124,58,237,0.95)]">
+            <Plus className="size-3.5" />
             New project
           </Link>
         </div>
