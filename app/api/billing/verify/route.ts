@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/supabase/auth";
 import { verifyTransaction } from "@/lib/payments/paystack";
 import { grantPlanCredits } from "@/lib/services/billing/subscription";
 import { trackEvent } from "@/lib/services/analytics/events";
+import { PLAN_CONFIG } from "@/lib/services/billing/plans";
 
 export async function POST(req: Request) {
   try {
@@ -19,7 +20,8 @@ export async function POST(req: Request) {
     }
 
     await grantPlanCredits(user.id, planId, data.reference);
-    await trackEvent({ userId: user.id, eventType: "checkout_completed", metadata: { plan: planId, reference: data.reference } });
+    const planLabel = PLAN_CONFIG[planId].label;
+    await trackEvent({ userId: user.id, eventType: "checkout_completed", metadata: { plan: planLabel, reference: data.reference, credits: PLAN_CONFIG[planId].creditsGranted } });
     await trackEvent({ userId: user.id, eventType: "plan_upgraded", metadata: { plan: planId } });
 
     return NextResponse.json({ ok: true, plan: planId });

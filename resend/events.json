@@ -1,0 +1,79 @@
+[
+  {
+    "name": "project.created",
+    "description": "A LaunchPix project workspace was created.",
+    "schema": {
+      "projectId": "string",
+      "projectName": "string"
+    }
+  },
+  {
+    "name": "screenshots.uploaded",
+    "description": "A project screenshot was uploaded.",
+    "schema": {
+      "projectId": "string",
+      "projectName": "string",
+      "uploadId": "string"
+    }
+  },
+  {
+    "name": "generation.started",
+    "description": "A launch asset generation run started.",
+    "schema": {
+      "projectId": "string",
+      "projectName": "string",
+      "generationId": "string"
+    }
+  },
+  {
+    "name": "generation.completed",
+    "description": "A launch asset generation run completed.",
+    "schema": {
+      "projectId": "string",
+      "projectName": "string",
+      "generationId": "string"
+    }
+  },
+  {
+    "name": "generation.failed",
+    "description": "A launch asset generation run failed.",
+    "schema": {
+      "projectId": "string",
+      "projectName": "string",
+      "generationId": "string",
+      "message": "string"
+    }
+  },
+  {
+    "name": "payment.succeeded",
+    "description": "A Paystack checkout was verified.",
+    "schema": {
+      "plan": "string",
+      "credits": "number",
+      "reference": "string"
+    }
+  },
+  {
+    "name": "asset.downloaded",
+    "description": "A generated asset was downloaded.",
+    "schema": {
+      "projectId": "string",
+      "projectName": "string"
+    }
+  },
+  {
+    "name": "zip.exported",
+    "description": "A generated ZIP pack was requested.",
+    "schema": {
+      "projectId": "string",
+      "projectName": "string"
+    }
+  },
+  {
+    "name": "credits.low",
+    "description": "A workspace has low or exhausted credits.",
+    "schema": {
+      "credits": "number"
+    }
+  }
+]
