@@ -35,13 +35,13 @@ function isActive(pathname: string, section: (typeof navItems)[number]["section"
 
 function Brand() {
   return (
-    <Link href="/dashboard" className="group flex items-center gap-3 rounded-2xl px-2 py-2 outline-none transition focus-visible:ring-2 focus-visible:ring-white/20">
-      <span className="flex size-10 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#0d1320] text-sm font-bold text-white transition group-hover:bg-[#111827]">
+    <Link href="/dashboard" className="group flex items-center gap-3 rounded-2xl px-2 py-2 outline-none transition focus-visible:ring-2 focus-visible:ring-slate-300 dark:focus-visible:ring-white/20">
+      <span className="flex size-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-950 text-sm font-bold text-white transition group-hover:bg-slate-800 dark:border-white/[0.08] dark:bg-[#0d1320] dark:group-hover:bg-[#111827]">
         L
       </span>
       <span className="min-w-0">
-        <span className="block text-[17px] font-semibold leading-tight text-white">LaunchPix</span>
-        <span className="block text-xs text-slate-400">Launch studio</span>
+        <span className="block text-[17px] font-semibold leading-tight text-slate-950 dark:text-white">LaunchPix</span>
+        <span className="block text-xs text-slate-500 dark:text-slate-400">Launch studio</span>
       </span>
     </Link>
   );
@@ -60,16 +60,18 @@ function NavLinks({ pathname, onNavigate }: { pathname: string; onNavigate?: () 
             onClick={onNavigate}
             className={cn(
               "group relative flex h-10 items-center gap-3 rounded-2xl px-3 text-[13px] font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-cyan-300/50",
-              active ? "bg-[#101622] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]" : "text-slate-400 hover:bg-[#0b111c] hover:text-slate-100"
+              active
+                ? "bg-slate-100 text-slate-950 shadow-[inset_0_0_0_1px_rgba(15,23,42,0.08)] dark:bg-[#101622] dark:text-white dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-[#0b111c] dark:hover:text-slate-100"
             )}
           >
             <span
               className={cn(
                 "absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full transition",
-                active ? "bg-slate-200 opacity-100" : "bg-transparent opacity-0"
+                active ? "bg-slate-900 opacity-100 dark:bg-slate-200" : "bg-transparent opacity-0"
               )}
             />
-            <item.icon className={cn("size-4 shrink-0 transition", active ? "text-slate-100" : "text-slate-500 group-hover:text-slate-300")} />
+            <item.icon className={cn("size-4 shrink-0 transition", active ? "text-slate-900 dark:text-slate-100" : "text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300")} />
             <span>{item.label}</span>
           </Link>
         );
@@ -83,22 +85,22 @@ function PlanCard({ credits, planLabel }: { credits: number; planLabel: string }
   const progress = Math.min(100, Math.round((credits / maxCredits) * 100));
 
   return (
-    <div className="rounded-3xl border border-white/[0.08] bg-[#070b12] p-3.5 shadow-[0_24px_70px_-54px_rgba(0,0,0,0.95)]">
+    <div className="rounded-3xl border border-slate-200 bg-white p-3.5 shadow-[0_24px_70px_-54px_rgba(15,23,42,0.35)] dark:border-white/[0.08] dark:bg-[#070b12] dark:shadow-[0_24px_70px_-54px_rgba(0,0,0,0.95)]">
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-white/[0.04]">
+          <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-slate-100 dark:bg-white/[0.04]">
             <Gem className="size-4 text-slate-300" />
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-white">{planLabel}</p>
+            <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{planLabel}</p>
             <p className="text-[11px] text-slate-500">Current plan</p>
           </div>
         </div>
         <p className="text-[11px] font-medium text-slate-400">{credits} / {maxCredits}</p>
       </div>
 
-      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-800">
-        <div className="h-full rounded-full bg-slate-300" style={{ width: `${progress}%` }} />
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
+        <div className="h-full rounded-full bg-slate-900 dark:bg-slate-300" style={{ width: `${progress}%` }} />
       </div>
 
       <Link
@@ -136,13 +138,13 @@ function AccountMenu({
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label="Open account menu"
-        className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-2.5 text-left outline-none transition hover:border-white/[0.13] hover:bg-white/[0.055] focus-visible:ring-2 focus-visible:ring-white/20"
+        className="flex w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white p-2.5 text-left outline-none transition hover:border-slate-300 hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-slate-300 dark:border-white/[0.07] dark:bg-white/[0.03] dark:hover:border-white/[0.13] dark:hover:bg-white/[0.055] dark:focus-visible:ring-white/20"
       >
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#101c32] text-xs font-semibold text-white ring-1 ring-white/[0.08]">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-slate-950 text-xs font-semibold text-white ring-1 ring-slate-200 dark:bg-[#101c32] dark:ring-white/[0.08]">
           {getInitials(userEmail)}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium text-white">{userEmail.split("@")[0]}</span>
+          <span className="block truncate text-sm font-medium text-slate-950 dark:text-white">{userEmail.split("@")[0]}</span>
           <span className="block truncate text-[11px] text-slate-500">{userEmail}</span>
         </span>
         <ChevronUp className={cn("size-4 shrink-0 text-slate-500 transition group-hover/account:text-slate-300", open && "rotate-180 text-slate-300")} />
@@ -150,7 +152,7 @@ function AccountMenu({
 
       <div
         className={cn(
-          "z-50 rounded-2xl border border-white/[0.09] bg-[#081120]/98 p-1.5 shadow-[0_24px_80px_-34px_rgba(0,0,0,0.92)] backdrop-blur-2xl",
+          "z-50 rounded-2xl border border-slate-200 bg-white/98 p-1.5 shadow-[0_24px_80px_-34px_rgba(15,23,42,0.25)] backdrop-blur-2xl dark:border-white/[0.09] dark:bg-[#081120]/98 dark:shadow-[0_24px_80px_-34px_rgba(0,0,0,0.92)]",
           variant === "desktop"
             ? "absolute bottom-[calc(100%+10px)] left-0 right-0 hidden group-hover/account:block group-focus-within/account:block"
             : "mt-2",
@@ -159,7 +161,7 @@ function AccountMenu({
         )}
       >
         <div className="border-b border-white/[0.07] px-2.5 py-2">
-          <p className="truncate text-xs font-medium text-white">{userEmail}</p>
+          <p className="truncate text-xs font-medium text-slate-950 dark:text-white">{userEmail}</p>
           <p className="mt-0.5 text-[11px] text-slate-500">Workspace account</p>
         </div>
 
@@ -174,7 +176,9 @@ function AccountMenu({
               }}
               className={cn(
                 "flex h-9 items-center gap-2.5 rounded-xl px-2.5 text-xs font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-white/20",
-                action.href === "/auth/signout" ? "text-rose-200 hover:bg-rose-400/10 hover:text-rose-100" : "text-slate-300 hover:bg-white/[0.055] hover:text-white"
+                action.href === "/auth/signout"
+                  ? "text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:text-rose-200 dark:hover:bg-rose-400/10 dark:hover:text-rose-100"
+                  : "text-slate-700 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/[0.055] dark:hover:text-white"
               )}
             >
               <action.icon className="size-4 shrink-0" />
@@ -201,7 +205,7 @@ export function DashboardSidebar({
 
   return (
     <>
-      <div className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#02040a]/95 px-4 py-3 backdrop-blur-xl lg:hidden">
+      <div className="sticky top-0 z-40 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur-xl dark:border-white/[0.08] dark:bg-[#02040a]/95 lg:hidden">
         <div className="flex items-center justify-between gap-3">
           <Brand />
           <button
@@ -209,14 +213,14 @@ export function DashboardSidebar({
             onClick={() => setMobileOpen((open) => !open)}
             aria-expanded={mobileOpen}
             aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
-            className="grid size-10 place-items-center rounded-2xl border border-white/[0.1] bg-white/[0.04] text-slate-100 transition hover:bg-white/[0.08] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+            className="grid size-10 place-items-center rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 dark:border-white/[0.1] dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/[0.08] dark:focus-visible:ring-white/20"
           >
             {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
 
         {mobileOpen && (
-          <div className="mt-3 rounded-3xl border border-white/[0.08] bg-[#050810] p-3 shadow-[0_28px_90px_-48px_rgba(0,0,0,0.95)]">
+          <div className="mt-3 rounded-3xl border border-slate-200 bg-white p-3 shadow-[0_28px_90px_-48px_rgba(15,23,42,0.25)] dark:border-white/[0.08] dark:bg-[#050810] dark:shadow-[0_28px_90px_-48px_rgba(0,0,0,0.95)]">
             <NavLinks pathname={pathname} onNavigate={() => setMobileOpen(false)} />
             <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_1fr]">
               <PlanCard credits={credits} planLabel={planLabel} />
@@ -226,7 +230,7 @@ export function DashboardSidebar({
         )}
       </div>
 
-      <aside className="hidden w-[236px] shrink-0 border-r border-white/[0.08] bg-[#050810] lg:block xl:w-[244px]">
+      <aside className="hidden w-[236px] shrink-0 border-r border-slate-200 bg-white lg:block dark:border-white/[0.08] dark:bg-[#050810] xl:w-[244px]">
         <div className="sticky top-0 flex h-screen min-h-0 flex-col px-3 py-4">
           <Brand />
 
