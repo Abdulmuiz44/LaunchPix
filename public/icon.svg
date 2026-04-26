@@ -1,11 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="launchpix-icon" x1="12" y1="8" x2="52" y2="56" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#2FC7E6" />
+    <linearGradient id="launchpix-a" x1="13" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE" />
       <stop offset="1" stop-color="#7C3AED" />
     </linearGradient>
+    <linearGradient id="launchpix-b" x1="16" y1="50" x2="50" y2="14" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E0F2FE" />
+      <stop offset="1" stop-color="#93C5FD" />
+    </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="18" fill="#050B16" />
-  <path d="M18 16h10v25h18v9H18V16Z" fill="url(#launchpix-icon)" />
-  <path d="M37 16l2.4 6.2 6.6 2.4-6.6 2.4L37 33l-2.4-6-6.6-2.4 6.6-2.4L37 16Z" fill="#F7F9FC" />
+  <rect width="64" height="64" rx="18" fill="#02040A" />
+  <path d="M14 13.5C14 10.46 16.46 8 19.5 8h8.5v34h21v8.5c0 3.04-2.46 5.5-5.5 5.5h-24C16.46 56 14 53.54 14 50.5v-37Z" fill="url(#launchpix-a)" />
+  <path d="M28 8h14c3.31 0 6 2.69 6 6v13.5L28 48V8Z" fill="url(#launchpix-b)" opacity=".94" />
+  <path d="M43.5 14.5l1.9 5.4 5.4 1.9-5.4 1.9-1.9 5.4-1.9-5.4-5.4-1.9 5.4-1.9 1.9-5.4Z" fill="#fff" />
 </svg>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LaunchPixLogo } from "@/components/brand/logo";
 
 const links = [
   { href: "/pricing" as const, label: "Pricing" },
@@ -12,11 +13,8 @@ export function MarketingFooter() {
     <footer className="border-t border-slate-200 bg-white dark:border-white/8 dark:bg-[#02040a]">
       <div className="app-shell py-10 sm:py-12">
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-bold text-white dark:bg-white dark:text-slate-950">
-              L
-            </span>
-            <span className="text-lg font-semibold text-slate-950 dark:text-white">LaunchPix</span>
+          <Link href="/" className="rounded-2xl outline-none transition focus-visible:ring-2 focus-visible:ring-slate-300 dark:focus-visible:ring-white/20">
+            <LaunchPixLogo className="justify-center" />
           </Link>
 
           <p className="mt-4 max-w-xl text-balance text-sm leading-7 text-slate-600 dark:text-slate-400">

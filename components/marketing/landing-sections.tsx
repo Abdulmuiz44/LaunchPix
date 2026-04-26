@@ -42,17 +42,79 @@ const workflow = [
   }
 ];
 
-const outputs = [
-  { label: "App listing", size: "1290 x 2796", tone: "bg-[#0f172a]" },
-  { label: "Promo tile", size: "1024 x 1024", tone: "bg-[#111827]" },
-  { label: "Hero banner", size: "1600 x 900", tone: "bg-[#08111f]" }
-];
-
 const trustSignals = [
   { value: "3", label: "asset families per launch" },
   { value: "12", label: "screenshots organized fast" },
   { value: "1", label: "ZIP handoff when approved" }
 ];
+
+function PhoneMockup({ className = "" }: { className?: string }) {
+  return (
+    <div className={`rounded-[22px] border border-white/15 bg-[#050810] p-1.5 shadow-2xl ${className}`}>
+      <div className="overflow-hidden rounded-[18px] border border-white/10 bg-[#0b1220]">
+        <div className="h-5 bg-[#101827]" />
+        <div className="space-y-2 p-3">
+          <div className="h-16 rounded-2xl bg-gradient-to-br from-cyan-300 via-blue-500 to-violet-600" />
+          <div className="h-2 w-4/5 rounded-full bg-white/30" />
+          <div className="h-2 w-3/5 rounded-full bg-white/15" />
+          <div className="grid grid-cols-2 gap-2 pt-1">
+            <div className="h-10 rounded-xl bg-white/10" />
+            <div className="h-10 rounded-xl bg-white/10" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AppListingPreview() {
+  return (
+    <div className="relative mt-4 h-48 overflow-hidden rounded-[18px] bg-gradient-to-br from-[#172554] via-[#1d4ed8] to-[#7c3aed] p-4">
+      <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/45 to-transparent" />
+      <PhoneMockup className="absolute bottom-4 left-5 w-20 -rotate-6" />
+      <PhoneMockup className="absolute bottom-6 right-8 w-24 rotate-6" />
+      <div className="relative z-10 max-w-[8rem] text-white">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-100">Store frame</p>
+        <p className="mt-2 text-lg font-semibold leading-tight">Show the product in one glance.</p>
+      </div>
+    </div>
+  );
+}
+
+function PromoTilePreview() {
+  return (
+    <div className="relative mt-4 h-48 overflow-hidden rounded-[18px] bg-[#f8fafc] p-4 text-slate-950">
+      <div className="absolute -right-8 -top-10 size-32 rounded-full bg-cyan-300/60 blur-2xl" />
+      <div className="absolute -bottom-8 -left-8 size-32 rounded-full bg-violet-400/40 blur-2xl" />
+      <div className="relative z-10">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">Promo tile</p>
+        <p className="mt-2 max-w-[9rem] text-xl font-semibold leading-tight">Launch visuals that stop the scroll.</p>
+      </div>
+      <div className="absolute bottom-4 right-4 grid size-24 place-items-center rounded-[24px] bg-slate-950 shadow-2xl">
+        <div className="size-16 rounded-[18px] bg-gradient-to-br from-cyan-300 to-violet-500" />
+      </div>
+    </div>
+  );
+}
+
+function HeroBannerPreview() {
+  return (
+    <div className="relative mt-4 h-48 overflow-hidden rounded-[18px] bg-[#06111f] p-5">
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(34,211,238,0.18),transparent_48%,rgba(124,58,237,0.25))]" />
+      <div className="relative z-10 grid h-full grid-cols-[0.9fr_1.1fr] items-center gap-4">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-200">Hero banner</p>
+          <p className="mt-2 text-xl font-semibold leading-tight text-white">A cleaner first impression for launch day.</p>
+          <div className="mt-4 h-8 w-28 rounded-full bg-white text-[10px] font-bold leading-8 text-slate-950">Preview pack</div>
+        </div>
+        <div className="relative h-32">
+          <PhoneMockup className="absolute right-16 top-3 w-20 -rotate-6" />
+          <PhoneMockup className="absolute right-2 top-0 w-24 rotate-6" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const useCases = [
   {
@@ -92,17 +154,17 @@ export function LandingSections() {
   return (
     <main>
       <section className="border-b border-slate-200 dark:border-white/8">
-        <div className="app-shell grid min-h-[calc(100svh-74px)] items-center gap-12 py-14 lg:grid-cols-[0.92fr_1.08fr] lg:py-16">
-          <div className="max-w-2xl">
+        <div className="app-shell grid min-h-[calc(100svh-74px)] items-center gap-12 py-14 text-center lg:grid-cols-[0.92fr_1.08fr] lg:py-16">
+          <div className="mx-auto max-w-2xl">
             <p className="eyebrow">Problem</p>
             <h1 className="hero-title mt-5 text-balance">
               Your product is ready. Your screenshots still look unfinished.
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600 dark:text-slate-300">
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-8 text-slate-600 dark:text-slate-300">
               LaunchPix turns raw product screenshots into structured launch packs for app stores, promo posts, and landing pages - without sending every release back through design.
             </p>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Button asChild size="lg" className="sm:min-w-52">
                 <Link href="/dashboard/projects/new">
                   Generate my launch pack
@@ -114,9 +176,9 @@ export function LandingSections() {
               </Button>
             </div>
 
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            <div className="mx-auto mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
               {proof.map((item) => (
-                <div key={item} className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+                <div key={item} className="flex items-center justify-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                   <CheckCircle2 className="size-4 shrink-0 text-cyan-300" />
                   <span>{item}</span>
                 </div>
@@ -137,8 +199,8 @@ export function LandingSections() {
                 </span>
               </div>
 
-              <div className="mt-5 grid gap-4 md:grid-cols-[0.78fr_1.22fr]">
-                <div className="rounded-[22px] border border-white/[0.08] bg-[#080d16] p-4">
+              <div className="mt-5 grid gap-4 md:grid-cols-[0.72fr_1.28fr]">
+                <div className="rounded-[22px] border border-white/[0.08] bg-[#080d16] p-4 text-center">
                   <p className="dashboard-label">Brief</p>
                   <div className="mt-5 space-y-3">
                     {["Audience: founders", "Tone: bold and clear", "Goal: launch week"].map((item) => (
@@ -154,25 +216,27 @@ export function LandingSections() {
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
-                  {outputs.map((item, index) => (
-                    <div
-                      key={item.label}
-                      className={`min-h-44 rounded-[22px] border border-white/[0.09] ${item.tone} p-4 ${index === 2 ? "sm:col-span-2" : ""}`}
-                    >
-                      <div className="flex items-center justify-between text-xs text-slate-400">
-                        <span>{item.label}</span>
-                        <span>{item.size}</span>
-                      </div>
-                      <div className="mt-5 grid h-28 grid-cols-[0.7fr_1fr] gap-3">
-                        <div className="rounded-[18px] bg-gradient-to-br from-cyan-300/80 to-indigo-500/80" />
-                        <div className="space-y-3 pt-2">
-                          <div className="h-3 w-3/4 rounded-full bg-white/20" />
-                          <div className="h-3 w-1/2 rounded-full bg-white/12" />
-                          <div className="h-14 rounded-2xl bg-white/[0.08]" />
-                        </div>
-                      </div>
+                  <div className="rounded-[22px] border border-white/[0.09] bg-[#0f172a] p-4">
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span>App listing</span>
+                      <span>1290 x 2796</span>
                     </div>
-                  ))}
+                    <AppListingPreview />
+                  </div>
+                  <div className="rounded-[22px] border border-white/[0.09] bg-[#111827] p-4">
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span>Promo tile</span>
+                      <span>1024 x 1024</span>
+                    </div>
+                    <PromoTilePreview />
+                  </div>
+                  <div className="rounded-[22px] border border-white/[0.09] bg-[#08111f] p-4 sm:col-span-2">
+                    <div className="flex items-center justify-between text-xs text-slate-400">
+                      <span>Hero banner</span>
+                      <span>1600 x 900</span>
+                    </div>
+                    <HeroBannerPreview />
+                  </div>
                 </div>
               </div>
             </div>
@@ -182,7 +246,7 @@ export function LandingSections() {
 
       <section className="border-b border-slate-200 bg-slate-50 dark:border-white/8 dark:bg-[#03060d]">
         <div className="app-shell grid gap-4 py-5 md:grid-cols-[0.9fr_1.1fr] md:items-center">
-          <p className="text-center text-sm leading-7 text-slate-600 dark:text-slate-400 md:text-left">
+          <p className="text-center text-sm leading-7 text-slate-600 dark:text-slate-400">
             Built for launch teams that need credible visuals before the campaign window closes.
           </p>
           <div className="grid gap-3 sm:grid-cols-3">
@@ -197,11 +261,11 @@ export function LandingSections() {
       </section>
 
       <section id="workflow" className="app-shell app-section">
-        <div className="grid gap-10 lg:grid-cols-[0.74fr_1.26fr] lg:items-start">
-          <div>
+        <div className="grid gap-10 text-center lg:grid-cols-[0.74fr_1.26fr] lg:items-start">
+          <div className="mx-auto max-w-md">
             <p className="eyebrow">PAS framework</p>
             <h2 className="section-title mt-5">From screenshot debt to launch-ready visuals.</h2>
-            <p className="section-copy mt-4 max-w-md">
+            <p className="section-copy mt-4">
               The workflow is built around one job: remove the gap between a finished product and the visuals needed to launch it.
             </p>
           </div>
@@ -209,7 +273,7 @@ export function LandingSections() {
           <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white dark:border-white/[0.08] dark:bg-[#060a12]">
             {workflow.map((item, index) => (
               <div key={item.title} className={`grid gap-5 p-6 sm:grid-cols-[128px_1fr] sm:p-8 ${index < workflow.length - 1 ? "border-b border-slate-200 dark:border-white/8" : ""}`}>
-                <div>
+                <div className="flex flex-col items-center">
                   <div className="flex size-11 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 dark:border-white/[0.08] dark:bg-white/[0.04]">
                     <item.icon className="size-5 text-cyan-200" />
                   </div>
@@ -227,8 +291,8 @@ export function LandingSections() {
 
       <section className="app-shell pb-16 sm:pb-20">
         <div className="grid gap-5 lg:grid-cols-2">
-          <div className="rounded-[28px] border border-slate-200 bg-white p-6 sm:p-8 dark:border-red-400/10 dark:bg-[#070a12]">
-            <div className="flex items-center gap-3 text-sm font-semibold text-red-200">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-6 text-center sm:p-8 dark:border-red-400/10 dark:bg-[#070a12]">
+            <div className="flex items-center justify-center gap-3 text-sm font-semibold text-red-200">
               <XCircle className="size-5" />
               Before LaunchPix
             </div>
@@ -246,8 +310,8 @@ export function LandingSections() {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-cyan-200 bg-cyan-50 p-6 sm:p-8 dark:border-cyan-300/20 dark:bg-[#071017]">
-            <div className="flex items-center gap-3 text-sm font-semibold text-cyan-200">
+          <div className="rounded-[28px] border border-cyan-200 bg-cyan-50 p-6 text-center sm:p-8 dark:border-cyan-300/20 dark:bg-[#071017]">
+            <div className="flex items-center justify-center gap-3 text-sm font-semibold text-cyan-200">
               <CheckCircle2 className="size-5" />
               After LaunchPix
             </div>
@@ -269,12 +333,12 @@ export function LandingSections() {
 
       <section className="app-shell pb-16 sm:pb-20">
         <div className="grid gap-5 lg:grid-cols-[1.08fr_0.92fr] lg:items-stretch">
-          <div className="rounded-[28px] border border-slate-200 bg-white p-6 sm:p-8 dark:border-white/[0.08] dark:bg-[#060a12]">
+          <div className="rounded-[28px] border border-slate-200 bg-white p-6 text-center sm:p-8 dark:border-white/[0.08] dark:bg-[#060a12]">
             <p className="eyebrow">What changes</p>
             <h2 className="section-title mt-5 max-w-2xl">
               Fewer design detours. More consistent launch assets.
             </h2>
-            <p className="section-copy mt-4 max-w-2xl">
+            <p className="section-copy mx-auto mt-4 max-w-2xl">
               LaunchPix keeps the brief, screenshots, generation state, billing, and exports in one workspace so teams can move from product capture to launch delivery without losing context.
             </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
@@ -291,15 +355,15 @@ export function LandingSections() {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-6 sm:p-8 dark:border-white/[0.08] dark:bg-[#080d16]">
-            <ShieldCheck className="size-6 text-cyan-200" />
+          <div className="rounded-[28px] border border-slate-200 bg-slate-50 p-6 text-center sm:p-8 dark:border-white/[0.08] dark:bg-[#080d16]">
+            <ShieldCheck className="mx-auto size-6 text-cyan-200" />
             <h3 className="mt-5 text-2xl font-semibold text-slate-950 dark:text-white">Built for review before commitment.</h3>
             <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-400">
               Preview the visual direction first. Upgrade only when the pack is worth exporting at production quality.
             </p>
             <div className="mt-8 space-y-3">
               {["Watermarked preview flow", "Clear credit usage", "Full-resolution export on paid plans"].map((item) => (
-                <div key={item} className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300">
+                <div key={item} className="flex items-center justify-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                   <Layers3 className="size-4 text-slate-500" />
                   {item}
                 </div>
@@ -311,19 +375,19 @@ export function LandingSections() {
 
       <section className="border-y border-slate-200 bg-slate-50 dark:border-white/8 dark:bg-[#03060d]">
         <div className="app-shell app-section">
-          <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr]">
-            <div>
+          <div className="grid gap-10 text-center lg:grid-cols-[0.78fr_1.22fr]">
+            <div className="mx-auto max-w-md">
               <p className="eyebrow">Use cases</p>
               <h2 className="section-title mt-5">One workflow for the places your launch has to show up.</h2>
-              <p className="section-copy mt-4 max-w-md">
+              <p className="section-copy mt-4">
                 High-converting pages make the next use case obvious. LaunchPix keeps each output tied to the same product story.
               </p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
               {useCases.map((item, index) => (
-                <div key={item.title} className="rounded-[24px] border border-slate-200 bg-white p-5 dark:border-white/[0.08] dark:bg-[#070b12]">
-                  <div className="flex size-10 items-center justify-center rounded-2xl bg-white/[0.04] text-sm font-semibold text-cyan-200">
+                <div key={item.title} className="rounded-[24px] border border-slate-200 bg-white p-5 text-center dark:border-white/[0.08] dark:bg-[#070b12]">
+                  <div className="mx-auto flex size-10 items-center justify-center rounded-2xl bg-white/[0.04] text-sm font-semibold text-cyan-200">
                     0{index + 1}
                   </div>
                   <h3 className="mt-5 text-xl font-semibold text-slate-950 dark:text-white">{item.title}</h3>
@@ -336,7 +400,7 @@ export function LandingSections() {
       </section>
 
       <section className="app-shell app-section">
-        <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+        <div className="grid gap-8 text-center lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <div className="rounded-[28px] border border-slate-200 bg-white p-6 sm:p-8 dark:border-white/[0.08] dark:bg-[#060a12]">
             <p className="eyebrow">Decision support</p>
             <h2 className="section-title mt-5">Answer the objections before they slow the signup.</h2>
@@ -350,7 +414,7 @@ export function LandingSections() {
                 { icon: MessageSquareText, title: "Less guessing", text: "Preview before export keeps risk low." }
               ].map((item) => (
                 <div key={item.title} className="border-t border-slate-200 pt-4 dark:border-white/8">
-                  <item.icon className="size-5 text-cyan-200" />
+                  <item.icon className="mx-auto size-5 text-cyan-200" />
                   <p className="mt-3 font-semibold text-slate-950 dark:text-white">{item.title}</p>
                   <p className="mt-2 text-sm leading-6 text-slate-500">{item.text}</p>
                 </div>
@@ -370,8 +434,8 @@ export function LandingSections() {
       </section>
 
       <section className="border-t border-slate-200 bg-white dark:border-white/8 dark:bg-[#02040a]">
-        <div className="app-shell grid gap-8 py-14 lg:grid-cols-[1fr_0.48fr] lg:items-center">
-          <div className="max-w-2xl">
+        <div className="app-shell grid gap-8 py-14 text-center lg:grid-cols-[1fr_0.48fr] lg:items-center">
+          <div className="mx-auto max-w-2xl">
             <p className="eyebrow">Solution</p>
             <h2 className="section-title mt-5">Stop shipping with screenshots that undersell the product.</h2>
             <p className="section-copy mt-4">

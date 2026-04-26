@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronUp, CreditCard, Folder, Gem, Home, ImageIcon, LogOut, Menu, Plus, Settings, UserCircle, Wand2, X } from "lucide-react";
 import { useState } from "react";
+import { LaunchPixLogo } from "@/components/brand/logo";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -36,13 +37,7 @@ function isActive(pathname: string, section: (typeof navItems)[number]["section"
 function Brand() {
   return (
     <Link href="/dashboard" className="group flex items-center gap-3 rounded-2xl px-2 py-2 outline-none transition focus-visible:ring-2 focus-visible:ring-slate-300 dark:focus-visible:ring-white/20">
-      <span className="flex size-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-950 text-sm font-bold text-white transition group-hover:bg-slate-800 dark:border-white/[0.08] dark:bg-[#0d1320] dark:group-hover:bg-[#111827]">
-        L
-      </span>
-      <span className="min-w-0">
-        <span className="block text-[17px] font-semibold leading-tight text-slate-950 dark:text-white">LaunchPix</span>
-        <span className="block text-xs text-slate-500 dark:text-slate-400">Launch studio</span>
-      </span>
+      <LaunchPixLogo />
     </Link>
   );
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { LaunchPixLogo } from "@/components/brand/logo";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
@@ -12,14 +13,8 @@ export function TopNav() {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur-xl dark:border-white/8 dark:bg-[#02040a]/90">
       <div className="app-shell flex h-[74px] items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-2xl border border-slate-200 bg-slate-950 text-sm font-bold text-white dark:border-white/[0.08] dark:bg-[#0d1320]">
-            L
-          </span>
-          <div>
-            <p className="text-lg font-semibold text-slate-950 dark:text-white">LaunchPix</p>
-            <p className="text-xs text-slate-500">Launch studio</p>
-          </div>
+        <Link href="/" className="rounded-2xl outline-none transition focus-visible:ring-2 focus-visible:ring-slate-300 dark:focus-visible:ring-white/20">
+          <LaunchPixLogo />
         </Link>
 
         <div className="flex items-center gap-3 md:gap-8">
