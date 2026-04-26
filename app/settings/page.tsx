@@ -24,7 +24,7 @@ export default async function SettingsPage() {
           <CardContent className="space-y-6">
             <div className="flex items-start gap-4">
               <div className="rounded-2xl border border-border/60 bg-background/70 p-3">
-                <Mail className="size-5 text-slate-300" />
+                <Mail className="size-5 text-slate-500 dark:text-slate-300" />
               </div>
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Workspace email</p>
@@ -35,14 +35,18 @@ export default async function SettingsPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="surface-muted p-5">
-                <ShieldCheck className="size-5 text-slate-300" />
+                <ShieldCheck className="size-5 text-slate-500 dark:text-slate-300" />
                 <p className="mt-4 font-semibold">Current plan</p>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{plan.label} · {subscription.credits_remaining} credits remaining</p>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  {plan.label} - {subscription.credits_remaining} credits remaining
+                </p>
               </div>
               <div className="surface-muted p-5">
-                <Sparkles className="size-5 text-slate-300" />
+                <Sparkles className="size-5 text-slate-500 dark:text-slate-300" />
                 <p className="mt-4 font-semibold">Export mode</p>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">{plan.fullResolutionExport ? "Full-resolution export is active." : "Preview-only export is active until you upgrade."}</p>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">
+                  {plan.fullResolutionExport ? "Full-resolution export is active." : "Preview-only export is active until you upgrade."}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -56,11 +60,11 @@ export default async function SettingsPage() {
             </div>
 
             <div className="space-y-3">
-              <Link href="/settings/billing" className="surface-muted flex items-center justify-between gap-4 p-4 text-sm font-medium text-foreground transition hover:border-white/[0.14] hover:text-white">
+              <Link href="/settings/billing" className="surface-muted flex items-center justify-between gap-4 p-4 text-sm font-medium text-foreground transition hover:border-slate-300 hover:bg-white dark:hover:border-white/[0.14] dark:hover:text-white">
                 <span className="flex items-center gap-3"><CreditCard className="size-4" /> Billing and plan access</span>
                 <ArrowRight className="size-4" />
               </Link>
-              <Link href="/dashboard/projects" className="surface-muted flex items-center justify-between gap-4 p-4 text-sm font-medium text-foreground transition hover:border-white/[0.14] hover:text-white">
+              <Link href="/dashboard/projects" className="surface-muted flex items-center justify-between gap-4 p-4 text-sm font-medium text-foreground transition hover:border-slate-300 hover:bg-white dark:hover:border-white/[0.14] dark:hover:text-white">
                 <span className="flex items-center gap-3"><Sparkles className="size-4" /> View projects</span>
                 <ArrowRight className="size-4" />
               </Link>
