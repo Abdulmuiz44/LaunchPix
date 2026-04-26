@@ -9,21 +9,36 @@ const links = [
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-white/8 bg-[#02040a]">
-      <div className="app-shell grid gap-8 py-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-        <div>
-          <p className="text-lg font-semibold text-white">LaunchPix</p>
-          <p className="mt-3 max-w-xl text-sm leading-7 text-slate-400">
-            A focused launch studio for turning raw product screenshots into store-ready visuals, promo tiles, and banners.
+    <footer className="border-t border-slate-200 bg-white dark:border-white/8 dark:bg-[#02040a]">
+      <div className="app-shell py-10 sm:py-12">
+        <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+          <Link href="/" className="flex items-center gap-3">
+            <span className="flex size-10 items-center justify-center rounded-2xl bg-slate-950 text-sm font-bold text-white dark:bg-white dark:text-slate-950">
+              L
+            </span>
+            <span className="text-lg font-semibold text-slate-950 dark:text-white">LaunchPix</span>
+          </Link>
+
+          <p className="mt-4 max-w-xl text-balance text-sm leading-7 text-slate-600 dark:text-slate-400">
+            Turn unfinished screenshots into launch-ready visual packs for stores, campaigns, and product pages.
           </p>
+
+          <nav className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+            {links.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-medium text-slate-600 hover:text-slate-950 dark:text-slate-400 dark:hover:text-white"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 lg:justify-end">
-          {links.map((item) => (
-            <Link key={item.href} href={item.href} className="text-sm text-slate-400 hover:text-white">
-              {item.label}
-            </Link>
-          ))}
+        <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-slate-200 pt-6 text-center text-xs text-slate-500 dark:border-white/8 sm:flex-row sm:text-left">
+          <p>Copyright 2026 LaunchPix. All rights reserved.</p>
+          <p>Preview first. Export when it is ready.</p>
         </div>
       </div>
     </footer>
