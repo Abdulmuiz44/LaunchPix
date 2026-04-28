@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { ChevronUp, CreditCard, Folder, Gem, Home, ImageIcon, LogOut, Menu, Plus, Settings, UserCircle, Wand2, X } from "lucide-react";
 import { useState } from "react";
@@ -161,25 +162,47 @@ function AccountMenu({
         </div>
 
         <div className="mt-1 space-y-0.5">
-          {accountActions.map((action) => (
-            <Link
-              key={action.href}
-              href={action.href}
-              onClick={() => {
-                setOpen(false);
-                onNavigate?.();
-              }}
-              className={cn(
-                "flex h-9 items-center gap-2.5 rounded-xl px-2.5 text-xs font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-white/20",
-                action.href === "/auth/signout"
-                  ? "text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:text-rose-200 dark:hover:bg-rose-400/10 dark:hover:text-rose-100"
-                  : "text-slate-700 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/[0.055] dark:hover:text-white"
-              )}
-            >
-              <action.icon className="size-4 shrink-0" />
-              <span>{action.label}</span>
-            </Link>
-          ))}
+          {accountActions.map((action) => {
+            const className = cn(
+              "flex h-9 w-full items-center gap-2.5 rounded-xl px-2.5 text-left text-xs font-medium outline-none transition focus-visible:ring-2 focus-visible:ring-white/20",
+              action.href === "/auth/signout"
+                ? "text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:text-rose-200 dark:hover:bg-rose-400/10 dark:hover:text-rose-100"
+                : "text-slate-700 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-white/[0.055] dark:hover:text-white"
+            );
+
+            if (action.href === "/auth/signout") {
+              return (
+                <button
+                  key={action.href}
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    onNavigate?.();
+                    signOut({ callbackUrl: "/login" });
+                  }}
+                  className={className}
+                >
+                  <action.icon className="size-4 shrink-0" />
+                  <span>{action.label}</span>
+                </button>
+              );
+            }
+
+            return (
+              <Link
+                key={action.href}
+                href={action.href}
+                onClick={() => {
+                  setOpen(false);
+                  onNavigate?.();
+                }}
+                className={className}
+              >
+                <action.icon className="size-4 shrink-0" />
+                <span>{action.label}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>

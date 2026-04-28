@@ -9,8 +9,7 @@ export async function POST(req: Request) {
     const body = (await req.json()) as { planId: "launch_pack" | "starter" | "pro" };
     if (!body.planId) return NextResponse.json({ error: "Plan selection is required." }, { status: 400 });
 
-    const { data: profile } = await supabase.auth.getUser();
-    const email = profile.user?.email;
+    const email = user.email;
     if (!email) return NextResponse.json({ error: "No verified email found for checkout." }, { status: 400 });
 
     await trackEvent({ userId: user.id, eventType: "checkout_started", metadata: { plan: body.planId } });
