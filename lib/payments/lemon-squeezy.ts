@@ -29,7 +29,18 @@ async function lemonSqueezyRequest(path: string, init: RequestInit) {
   });
 
   const json = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(json?.errors?.[0]?.detail || json?.message || "Lemon Squeezy request failed");
+  if (!res.ok) {
+    const errors = Array.isArray(json?.errors) ? json.errors : [];
+    const details = errors
+      .map((error: { detail?: string; source?: { pointer?: string }; title?: string }) => {
+        const location = error.source?.pointer ? ` at ${error.source.pointer}` : "";
+        return `${error.detail || error.title || "Unknown Lemon Squeezy error"}${location}`;
+      })
+      .filter(Boolean)
+      .join("; ");
+
+    throw new Error(details || json?.message || "Lemon Squeezy request failed");
+  }
   return json;
 }
 
