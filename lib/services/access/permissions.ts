@@ -3,12 +3,12 @@ import { getOrCreateSubscription } from "@/lib/services/billing/subscription";
 
 export async function getAccessContext(userId: string) {
   const subscription = await getOrCreateSubscription(userId);
-  const planKey = (subscription?.plan || "free") as keyof typeof PLAN_CONFIG;
-  const plan = PLAN_CONFIG[planKey] || PLAN_CONFIG.free;
+  const planKey = (subscription?.plan || "credits") as keyof typeof PLAN_CONFIG;
+  const plan = PLAN_CONFIG[planKey] || PLAN_CONFIG.credits;
   return { subscription, plan };
 }
 
 export function canDownloadFull(planId: string) {
-  const plan = PLAN_CONFIG[(planId as keyof typeof PLAN_CONFIG) || "free"];
+  const plan = PLAN_CONFIG[(planId as keyof typeof PLAN_CONFIG) || "credits"];
   return !!plan?.fullResolutionExport;
 }

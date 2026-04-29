@@ -17,7 +17,7 @@ export default function PrivacyPage() {
         <section className="surface-muted p-6">
           <h2 className="text-xl font-semibold text-foreground">What we store</h2>
           <p className="mt-3">
-            We store your account email, project metadata, uploaded screenshots, generated assets, plan status, and usage events needed to operate LaunchPix.
+            We store your account email, project metadata, uploaded screenshots, generated assets, credit balance, billing status, and usage events needed to operate LaunchPix.
           </p>
         </section>
         <section className="surface-muted p-6">
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
         <section className="surface-muted p-6">
           <h2 className="text-xl font-semibold text-foreground">Third-party providers</h2>
           <p className="mt-3">
-            LaunchPix uses Mistral for structured planning and Paystack for billing. We do not store raw card details on our own servers.
+            LaunchPix uses Mistral for structured planning and Lemon Squeezy for credit-pack billing. We do not store raw card details on our own servers.
           </p>
         </section>
         <section className="surface-muted p-6">

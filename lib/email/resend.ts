@@ -111,7 +111,7 @@ export async function sendLifecycleEmail(input: {
       generationId: typeof input.metadata?.generationId === "string" ? input.metadata.generationId : undefined,
       projectName: typeof input.metadata?.projectName === "string" ? input.metadata.projectName : projectName ?? undefined,
       errorMessage: typeof input.metadata?.message === "string" ? input.metadata.message : undefined,
-      planLabel: typeof input.metadata?.plan === "string" ? input.metadata.plan : undefined,
+      planLabel: typeof input.metadata?.pack === "string" ? input.metadata.pack : typeof input.metadata?.plan === "string" ? input.metadata.plan : undefined,
       credits: typeof input.metadata?.credits === "number" ? input.metadata.credits : undefined
     }
   });

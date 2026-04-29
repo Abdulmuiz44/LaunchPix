@@ -36,10 +36,10 @@ export function AssetsManager({ projectId, generation, assets, canDownloadFull }
       {!canDownloadFull ? (
         <Card className="border-primary/20 bg-primary/5">
           <CardContent className="space-y-3 p-5 text-sm text-muted-foreground">
-            <p className="font-semibold text-foreground">Preview mode is active on the Free plan.</p>
-            <p>Review watermarked assets now, then upgrade when you need full-resolution PNG and ZIP export.</p>
+            <p className="font-semibold text-foreground">Credits are required for full export.</p>
+            <p>Buy credits when your balance runs out to continue downloading full-resolution PNG and ZIP exports.</p>
             <Button asChild variant="outline" size="sm">
-              <a href="/settings/billing">Upgrade plan</a>
+              <a href="/settings/billing">Buy credits</a>
             </Button>
           </CardContent>
         </Card>

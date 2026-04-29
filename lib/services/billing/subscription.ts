@@ -1,17 +1,37 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { PLAN_CONFIG, type PlanId } from "@/lib/services/billing/plans";
+import { FREE_SIGNUP_CREDITS, PLAN_CONFIG, type CreditPackId } from "@/lib/services/billing/plans";
 
 function fallbackSubscription(userId: string) {
   return {
     id: `fallback-${userId}`,
     user_id: userId,
-    plan: "free",
+    plan: "credits",
     status: "active",
-    credits_remaining: PLAN_CONFIG.free.creditsGranted,
-    provider: "paystack",
+    credits_remaining: FREE_SIGNUP_CREDITS,
+    provider: "lemon_squeezy",
     provider_reference: null,
     last_payment_at: null
   } as any;
+}
+
+async function raiseLegacyBalance(userId: string, subscription: any) {
+  if (subscription.credits_remaining >= FREE_SIGNUP_CREDITS && subscription.plan === "credits") return subscription;
+
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .update({
+      plan: "credits",
+      status: "active",
+      credits_remaining: Math.max(subscription.credits_remaining ?? 0, FREE_SIGNUP_CREDITS),
+      provider: subscription.provider || "lemon_squeezy"
+    })
+    .eq("id", subscription.id)
+    .eq("user_id", userId)
+    .select("*")
+    .single();
+
+  return error || !data ? subscription : data;
 }
 
 export async function getOrCreateSubscription(userId: string) {
@@ -19,11 +39,11 @@ export async function getOrCreateSubscription(userId: string) {
     const supabase = await createSupabaseServerClient();
     const { data, error } = await supabase.from("subscriptions").select("*").eq("user_id", userId).maybeSingle();
     if (error) throw error;
-    if (data) return data;
+    if (data) return raiseLegacyBalance(userId, data);
 
     const { data: created, error: createError } = await supabase
       .from("subscriptions")
-      .insert({ user_id: userId, plan: "free", status: "active", credits_remaining: PLAN_CONFIG.free.creditsGranted, provider: "paystack" })
+      .insert({ user_id: userId, plan: "credits", status: "active", credits_remaining: FREE_SIGNUP_CREDITS, provider: "lemon_squeezy" })
       .select("*")
       .single();
 
@@ -37,7 +57,7 @@ export async function getOrCreateSubscription(userId: string) {
 export async function consumeGenerationCredit(userId: string) {
   const supabase = await createSupabaseServerClient();
   const current = await getOrCreateSubscription(userId);
-  if (current.credits_remaining <= 0) throw new Error("No credits remaining. Upgrade to continue generating.");
+  if (current.credits_remaining <= 0) throw new Error("No credits remaining. Buy credits to continue generating.");
 
   const { data, error } = await supabase
     .from("subscriptions")
@@ -51,19 +71,19 @@ export async function consumeGenerationCredit(userId: string) {
   return data;
 }
 
-export async function grantPlanCredits(userId: string, planId: PlanId, providerRef: string) {
+export async function grantCreditPack(userId: string, packId: CreditPackId, providerRef: string) {
   const supabase = await createSupabaseServerClient();
   const current = await getOrCreateSubscription(userId);
-  const plan = PLAN_CONFIG[planId];
+  const pack = PLAN_CONFIG[packId];
 
-  const credits = plan.billingType === "one_time" ? current.credits_remaining + plan.creditsGranted : plan.creditsGranted;
+  const credits = current.credits_remaining + pack.creditsGranted;
   const { error } = await supabase
     .from("subscriptions")
     .update({
-      plan: planId,
+      plan: "credits",
       status: "active",
       credits_remaining: credits,
-      provider: "paystack",
+      provider: "lemon_squeezy",
       provider_reference: providerRef,
       last_payment_at: new Date().toISOString()
     })

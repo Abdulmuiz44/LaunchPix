@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 
 const proof = [
   "No design tool setup",
-  "Preview before paying",
+  "300 credits included",
   "Store and promo sizes",
   "Export-ready ZIP packs"
 ];
@@ -142,7 +142,7 @@ const faq = [
   },
   {
     question: "What files do I get?",
-    answer: "Paid plans unlock full-resolution PNG assets and ZIP export for app listings, promo tiles, and hero banners."
+    answer: "Credits unlock full-resolution PNG assets and ZIP export for app listings, promo tiles, and hero banners."
   },
   {
     question: "Why not just upload raw screenshots?",
@@ -172,7 +172,7 @@ export function LandingSections() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="sm:min-w-40">
-                <Link href="/pricing">View plans</Link>
+                <Link href="/pricing">View credits</Link>
               </Button>
             </div>
 
@@ -359,10 +359,10 @@ export function LandingSections() {
             <ShieldCheck className="mx-auto size-6 text-cyan-200" />
             <h3 className="mt-5 text-2xl font-semibold text-slate-950 dark:text-white">Built for review before commitment.</h3>
             <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-400">
-              Preview the visual direction first. Upgrade only when the pack is worth exporting at production quality.
+              Start with 300 included credits. Buy more only after the balance runs out and the workflow is worth continuing.
             </p>
             <div className="mt-8 space-y-3">
-              {["Watermarked preview flow", "Clear credit usage", "Full-resolution export on paid plans"].map((item) => (
+              {["300 included credits", "Clear credit usage", "One-time credit packs"].map((item) => (
                 <div key={item} className="flex items-center justify-center gap-3 text-sm text-slate-700 dark:text-slate-300">
                   <Layers3 className="size-4 text-slate-500" />
                   {item}
@@ -446,11 +446,11 @@ export function LandingSections() {
           <div className="rounded-[26px] border border-slate-200 bg-slate-50 p-5 dark:border-white/[0.08] dark:bg-[#070b12]">
             <p className="text-sm font-semibold text-slate-950 dark:text-white">Start with a preview project</p>
             <p className="mt-2 text-sm leading-7 text-slate-500">
-              No design setup. No production export charge until the generated visuals are worth shipping.
+              No design setup. No monthly subscription. Start with 300 credits and top up only when you need more.
             </p>
             <Button asChild size="lg" className="mt-5 w-full">
               <Link href="/dashboard/projects/new">
-                Start with a free preview
+                Start with included credits
                 <ArrowRight className="size-4" />
               </Link>
             </Button>
