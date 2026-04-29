@@ -24,7 +24,23 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ checkout_url: data.checkoutUrl, authorization_url: data.checkoutUrl });
-  } catch {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Checkout could not start. Please try again.";
+    console.error("Lemon Squeezy checkout failed:", message);
+
+    if (message.includes("related resource does not exist") || message.includes("/data/relationships/store") || message.includes("/data/relationships/variant")) {
+      return NextResponse.json(
+        {
+          error: "Checkout is not configured correctly. Confirm the Lemon Squeezy store ID and variant IDs belong to the same account as the API key."
+        },
+        { status: 500 }
+      );
+    }
+
+    if (message.includes("is not configured")) {
+      return NextResponse.json({ error: message }, { status: 500 });
+    }
+
     return NextResponse.json({ error: "Checkout could not start. Please try again." }, { status: 500 });
   }
 }

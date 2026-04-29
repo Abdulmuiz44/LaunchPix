@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LifeBuoy, Mail, ShieldCheck } from "lucide-react";
+import { CreditCard, FileWarning, LifeBuoy, Mail, ShieldCheck, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MarketingPageShell } from "@/components/marketing/page-shell";
 
@@ -8,6 +8,39 @@ export const metadata: Metadata = {
   description: "Contact LaunchPix support for product, billing, and account help."
 };
 
+const supportTypes = [
+  {
+    icon: Mail,
+    title: "Primary support",
+    text: "support@launchpix.app"
+  },
+  {
+    icon: CreditCard,
+    title: "Credit or billing issue",
+    text: "Include the account email, Lemon Squeezy checkout reference, credit pack name, and the time of payment."
+  },
+  {
+    icon: Sparkles,
+    title: "Generation issue",
+    text: "Share the project name, upload count, generation step, and exact error text shown in the dashboard."
+  },
+  {
+    icon: FileWarning,
+    title: "Export issue",
+    text: "Tell us whether the problem happened on individual PNG download, ZIP export, or asset preview."
+  },
+  {
+    icon: ShieldCheck,
+    title: "Account or privacy request",
+    text: "Send the request from the email tied to the account so we can verify ownership."
+  },
+  {
+    icon: LifeBuoy,
+    title: "Product feedback",
+    text: "Share the workflow you expected, what blocked you, and what asset format would help your launch."
+  }
+];
+
 export default function ContactPage() {
   return (
     <MarketingPageShell
@@ -15,26 +48,10 @@ export default function ContactPage() {
       title="Blocked by an export, credit, or generation issue? Send the context once."
       description="Launch work slows down when support asks vague follow-up questions. Tell us what broke, where it happened, and the email on the account so we can respond with concrete next steps."
     >
-      <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-        <div className="surface-muted space-y-4 p-6">
-          {[
-            {
-              icon: Mail,
-              title: "Primary support",
-              text: "support@launchpix.app"
-            },
-            {
-              icon: ShieldCheck,
-              title: "Billing help",
-              text: "Include the account email and checkout reference so we can verify the payment quickly."
-            },
-            {
-              icon: LifeBuoy,
-              title: "Generation help",
-              text: "Share the project name, the action you clicked, and the exact error text if one appeared."
-            }
-          ].map((item) => (
-            <div key={item.title} className="border-b border-border/50 pb-4 last:border-b-0 last:pb-0">
+      <div className="space-y-8">
+        <div className="grid gap-4 lg:grid-cols-3">
+          {supportTypes.map((item) => (
+            <div key={item.title} className="surface-muted p-6">
               <item.icon className="size-5 text-primary" />
               <p className="mt-3 font-semibold">{item.title}</p>
               <p className="mt-2 text-sm leading-7 text-muted-foreground">{item.text}</p>
@@ -42,9 +59,9 @@ export default function ContactPage() {
           ))}
         </div>
 
-        <div className="surface-muted p-6 sm:p-8">
+        <div className="surface-muted p-6 text-center sm:p-8">
           <h2 className="text-2xl font-semibold">The fastest support message is specific.</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
             Send the page you were on, the action you took, and any error text you saw. For billing requests, include the payment reference and the email used at checkout.
           </p>
 

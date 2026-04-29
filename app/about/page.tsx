@@ -1,0 +1,194 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, CreditCard, FileImage, Layers3, Sparkles, UploadCloud, Wand2, Zap } from "lucide-react";
+import { MarketingPageShell } from "@/components/marketing/page-shell";
+import { Button } from "@/components/ui/button";
+import { FREE_SIGNUP_CREDITS } from "@/lib/services/billing/plans";
+
+export const metadata: Metadata = {
+  title: "About | LaunchPix",
+  description: "Learn what LaunchPix does, who it is for, how the generation workflow works, and why it uses credits instead of subscriptions.",
+  openGraph: {
+    title: "About LaunchPix",
+    description: "LaunchPix turns raw screenshots into launch-ready app listing visuals, promo tiles, hero banners, and export packs.",
+    url: "https://launchpix.app/about"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About LaunchPix",
+    description: "A detailed overview of LaunchPix, the product workflow, credits, exports, and launch asset generation."
+  }
+};
+
+const problems = [
+  "Raw screenshots rarely explain a product quickly enough for launch traffic.",
+  "Founders lose time resizing, captioning, cropping, and re-exporting visuals for every channel.",
+  "A product can be ready to ship while the launch assets still feel unfinished or inconsistent."
+];
+
+const workflow = [
+  {
+    icon: UploadCloud,
+    title: "Create a launch project",
+    text: "Describe the product, audience, platform, positioning, visual style, and goal for the asset pack."
+  },
+  {
+    icon: FileImage,
+    title: "Upload screenshots",
+    text: "Add the product screenshots LaunchPix should turn into listing frames, promo tiles, and hero banners."
+  },
+  {
+    icon: Wand2,
+    title: "Generate the asset plan",
+    text: "Mistral helps structure the copy and layout direction, then LaunchPix renders the actual assets through deterministic templates."
+  },
+  {
+    icon: Layers3,
+    title: "Review and export",
+    text: "Inspect the generated visuals, download individual PNG files, or export the full ZIP pack for launch handoff."
+  }
+];
+
+const outputs = [
+  "App listing screenshots that frame product value clearly",
+  "Promo tiles for announcements, launch posts, and social campaigns",
+  "Hero banners for landing pages, changelogs, and release pages",
+  "ZIP export with organized production-ready files",
+  "Editable copy and rerender controls for faster iteration"
+];
+
+const audiences = [
+  "Solo founders preparing a first launch",
+  "SaaS teams shipping product updates often",
+  "App and extension builders refreshing store listings",
+  "Agencies producing launch visuals for multiple clients",
+  "Growth teams testing new campaign creative"
+];
+
+export default function AboutPage() {
+  return (
+    <MarketingPageShell
+      eyebrow="About LaunchPix"
+      title="LaunchPix turns unfinished screenshots into launch-ready visual packs."
+      description="LaunchPix is a focused workspace for founders, SaaS teams, and agencies that need polished product visuals without rebuilding every screenshot layout manually."
+    >
+      <div className="space-y-12">
+        <section className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="surface-muted p-6 sm:p-8">
+            <p className="eyebrow">The problem</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">Great products can still look unready at launch.</h2>
+            <p className="mt-4 text-sm leading-7 text-muted-foreground">
+              Launch week creates a practical design gap: the product exists, but the screenshots still need framing, hierarchy, captions, sizing, and a consistent visual system.
+            </p>
+          </div>
+
+          <div className="grid gap-3">
+            {problems.map((item) => (
+              <div key={item} className="surface-muted flex items-start gap-3 p-5">
+                <CheckCircle2 className="mt-1 size-4 shrink-0 text-cyan-300" />
+                <p className="text-sm leading-7 text-muted-foreground">{item}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="surface p-6 sm:p-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="eyebrow">What it does</p>
+            <h2 className="section-title mt-4">One guided workflow from brief to export.</h2>
+            <p className="section-copy mx-auto mt-4">
+              LaunchPix combines a project brief, uploaded screenshots, structured AI planning, and deterministic rendering to produce reusable launch visuals that feel connected across channels.
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {workflow.map((item) => (
+              <div key={item.title} className="surface-muted p-5">
+                <div className="flex size-11 items-center justify-center rounded-2xl border border-slate-200 bg-white dark:border-white/[0.08] dark:bg-[#050810]">
+                  <item.icon className="size-5 text-cyan-300" />
+                </div>
+                <h3 className="mt-5 text-lg font-semibold text-slate-950 dark:text-white">{item.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="grid gap-5 lg:grid-cols-2">
+          <div className="surface-muted p-6 sm:p-8">
+            <p className="eyebrow">What you get</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">A complete launch pack, not a loose image export.</h2>
+            <div className="mt-6 space-y-4">
+              {outputs.map((item) => (
+                <div key={item} className="flex items-start gap-3 text-sm leading-7 text-muted-foreground">
+                  <Sparkles className="mt-1 size-4 shrink-0 text-cyan-300" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="surface-muted p-6 sm:p-8">
+            <p className="eyebrow">Who it is for</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">Built for people shipping product, not managing design files.</h2>
+            <div className="mt-6 space-y-4">
+              {audiences.map((item) => (
+                <div key={item} className="flex items-start gap-3 text-sm leading-7 text-muted-foreground">
+                  <Zap className="mt-1 size-4 shrink-0 text-cyan-300" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="surface overflow-hidden p-6 sm:p-8">
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <p className="eyebrow">Credits and billing</p>
+              <h2 className="section-title mt-4">LaunchPix uses credits, not subscriptions.</h2>
+              <p className="section-copy mt-4">
+                Every account starts with {FREE_SIGNUP_CREDITS} credits. A generation run consumes one credit. When the balance runs out, users buy one-time credit packs through Lemon Squeezy and continue generating.
+              </p>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                ["Included", `${FREE_SIGNUP_CREDITS}`, "credits at signup"],
+                ["Model", "One-time", "credit packs"],
+                ["Provider", "Lemon", "Squeezy checkout"]
+              ].map(([label, value, detail]) => (
+                <div key={label} className="surface-muted p-5 text-center">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">{label}</p>
+                  <p className="mt-3 text-2xl font-semibold text-slate-950 dark:text-white">{value}</p>
+                  <p className="mt-2 text-xs leading-5 text-muted-foreground">{detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="surface-muted p-6 text-center sm:p-8">
+          <CreditCard className="mx-auto size-6 text-cyan-300" />
+          <h2 className="mx-auto mt-5 max-w-2xl text-3xl font-semibold tracking-tight text-slate-950 dark:text-white">
+            The goal is simple: help products look ready when the launch traffic arrives.
+          </h2>
+          <p className="section-copy mx-auto mt-4 max-w-2xl">
+            LaunchPix removes repetitive visual production from the launch process so teams can focus on positioning, shipping, and learning from the market.
+          </p>
+          <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+            <Button asChild size="lg">
+              <Link href="/dashboard/projects/new">
+                Create a launch project
+                <ArrowRight className="size-4" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link href="/pricing">View credit packs</Link>
+            </Button>
+          </div>
+        </section>
+      </div>
+    </MarketingPageShell>
+  );
+}
