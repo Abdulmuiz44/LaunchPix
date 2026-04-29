@@ -1,5 +1,8 @@
-export type PlanId = "free" | "launch_pack" | "starter" | "pro";
-export type BillingType = "free" | "one_time" | "monthly";
+export const FREE_SIGNUP_CREDITS = 300;
+
+export type CreditPackId = "starter_credits" | "creator_credits" | "studio_credits";
+export type PlanId = "credits" | CreditPackId;
+export type BillingType = "free_grant" | "credit_pack";
 
 export interface PlanConfig {
   id: PlanId;
@@ -14,24 +17,22 @@ export interface PlanConfig {
   maxProjects: number | null;
 }
 
+export interface CreditPackConfig {
+  id: CreditPackId;
+  label: string;
+  description: string;
+  creditsGranted: number;
+  priceLabel: string;
+  variantEnvKey: string;
+  featured?: boolean;
+}
+
 export const PLAN_CONFIG: Record<PlanId, PlanConfig> = {
-  free: {
-    id: "free",
-    label: "Free",
-    billingType: "free",
-    creditsGranted: 3,
-    fullResolutionExport: false,
-    zipExport: false,
-    watermarkPreview: true,
-    commercialUse: false,
-    priorityGeneration: false,
-    maxProjects: 1
-  },
-  launch_pack: {
-    id: "launch_pack",
-    label: "Launch Pack",
-    billingType: "one_time",
-    creditsGranted: 15,
+  credits: {
+    id: "credits",
+    label: "Credit balance",
+    billingType: "free_grant",
+    creditsGranted: FREE_SIGNUP_CREDITS,
     fullResolutionExport: true,
     zipExport: true,
     watermarkPreview: false,
@@ -39,11 +40,11 @@ export const PLAN_CONFIG: Record<PlanId, PlanConfig> = {
     priorityGeneration: false,
     maxProjects: null
   },
-  starter: {
-    id: "starter",
-    label: "Starter",
-    billingType: "monthly",
-    creditsGranted: 25,
+  starter_credits: {
+    id: "starter_credits",
+    label: "Starter credits",
+    billingType: "credit_pack",
+    creditsGranted: 150,
     fullResolutionExport: true,
     zipExport: true,
     watermarkPreview: false,
@@ -51,18 +52,66 @@ export const PLAN_CONFIG: Record<PlanId, PlanConfig> = {
     priorityGeneration: false,
     maxProjects: null
   },
-  pro: {
-    id: "pro",
-    label: "Pro",
-    billingType: "monthly",
-    creditsGranted: 80,
+  creator_credits: {
+    id: "creator_credits",
+    label: "Creator credits",
+    billingType: "credit_pack",
+    creditsGranted: 500,
     fullResolutionExport: true,
     zipExport: true,
     watermarkPreview: false,
     commercialUse: true,
-    priorityGeneration: true,
+    priorityGeneration: false,
+    maxProjects: null
+  },
+  studio_credits: {
+    id: "studio_credits",
+    label: "Studio credits",
+    billingType: "credit_pack",
+    creditsGranted: 1200,
+    fullResolutionExport: true,
+    zipExport: true,
+    watermarkPreview: false,
+    commercialUse: true,
+    priorityGeneration: false,
     maxProjects: null
   }
 };
 
-export const PLAN_ORDER: PlanId[] = ["free", "launch_pack", "starter", "pro"];
+export const CREDIT_PACKS: CreditPackConfig[] = [
+  {
+    id: "starter_credits",
+    label: "Starter credits",
+    description: "A light top-up for one focused launch cycle.",
+    creditsGranted: PLAN_CONFIG.starter_credits.creditsGranted,
+    priceLabel: "Pay once",
+    variantEnvKey: "LEMON_SQUEEZY_STARTER_CREDITS_VARIANT_ID"
+  },
+  {
+    id: "creator_credits",
+    label: "Creator credits",
+    description: "Best for founders testing several products or campaigns.",
+    creditsGranted: PLAN_CONFIG.creator_credits.creditsGranted,
+    priceLabel: "Pay once",
+    variantEnvKey: "LEMON_SQUEEZY_CREATOR_CREDITS_VARIANT_ID",
+    featured: true
+  },
+  {
+    id: "studio_credits",
+    label: "Studio credits",
+    description: "Higher volume credits for teams producing launch visuals often.",
+    creditsGranted: PLAN_CONFIG.studio_credits.creditsGranted,
+    priceLabel: "Pay once",
+    variantEnvKey: "LEMON_SQUEEZY_STUDIO_CREDITS_VARIANT_ID"
+  }
+];
+
+export const PLAN_ORDER: PlanId[] = ["credits", "starter_credits", "creator_credits", "studio_credits"];
+
+export function isCreditPackId(value: string): value is CreditPackId {
+  return CREDIT_PACKS.some((pack) => pack.id === value);
+}
+
+export function getCreditPack(packId: CreditPackId) {
+  return CREDIT_PACKS.find((pack) => pack.id === packId);
+}

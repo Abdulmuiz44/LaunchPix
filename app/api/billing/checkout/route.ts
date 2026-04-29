@@ -1,27 +1,29 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/supabase/auth";
-import { initializeCheckout } from "@/lib/payments/paystack";
+import { createCreditCheckout } from "@/lib/payments/lemon-squeezy";
 import { trackEvent } from "@/lib/services/analytics/events";
+import { isCreditPackId } from "@/lib/services/billing/plans";
 
 export async function POST(req: Request) {
   try {
-    const { user, supabase } = await requireUser();
-    const body = (await req.json()) as { planId: "launch_pack" | "starter" | "pro" };
-    if (!body.planId) return NextResponse.json({ error: "Plan selection is required." }, { status: 400 });
+    const { user } = await requireUser();
+    const body = (await req.json()) as { packId?: string; planId?: string };
+    const packId = body.packId || body.planId;
+    if (!packId || !isCreditPackId(packId)) return NextResponse.json({ error: "Credit pack selection is required." }, { status: 400 });
 
     const email = user.email;
     if (!email) return NextResponse.json({ error: "No verified email found for checkout." }, { status: 400 });
 
-    await trackEvent({ userId: user.id, eventType: "checkout_started", metadata: { plan: body.planId } });
+    await trackEvent({ userId: user.id, eventType: "checkout_started", metadata: { pack: packId, provider: "lemon_squeezy" } });
 
-    const data = await initializeCheckout({
+    const data = await createCreditCheckout({
       email,
-      planId: body.planId,
-      metadata: { user_id: user.id },
+      packId,
+      userId: user.id,
       callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing?checkout=success`
     });
 
-    return NextResponse.json({ authorization_url: data.authorization_url, reference: data.reference });
+    return NextResponse.json({ checkout_url: data.checkoutUrl, authorization_url: data.checkoutUrl });
   } catch {
     return NextResponse.json({ error: "Checkout could not start. Please try again." }, { status: 500 });
   }

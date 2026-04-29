@@ -14,20 +14,20 @@ It turns raw screenshots into polished listing visuals, promo tiles, and hero ba
 - Supabase (Auth, Postgres, Storage)
 - Mistral (structured planning only)
 - Deterministic SVG -> PNG rendering (`@resvg/resvg-js`)
-- Paystack-first billing and verification
+- Lemon Squeezy credit-pack billing and webhook fulfillment
 
 ## Core product flow
 1. Sign in
 2. Create project and upload screenshots
 3. Generate structured asset plan via Mistral
 4. Render deterministic asset pack (5 listing + promo + hero)
-5. Preview/download assets based on plan access
+5. Preview/download assets while credits remain
 
 ## Pricing model implemented
-- Free: 3 credits, watermarked preview exports, no full ZIP
-- Launch Pack: one-time, 15 credits
-- Starter: monthly, 25 credits
-- Pro: monthly, 80 credits + priority flag
+- Every account starts with 300 credits.
+- Existing accounts are raised to at least 300 credits by `0004_credit_balance_model.sql`.
+- Billing is credit based, not subscription based.
+- Users buy one-time Lemon Squeezy credit packs after exhausting their included credits.
 
 ## Required environment variables
 See `.env.example`.
@@ -40,9 +40,12 @@ Minimum required:
 - `MISTRAL_API_KEY`
 - `MISTRAL_MODEL_VISION`
 - `MISTRAL_MODEL_TEXT`
-- `PAYSTACK_SECRET_KEY`
-- `PAYSTACK_PUBLIC_KEY`
-- `PAYSTACK_WEBHOOK_SECRET`
+- `LEMON_SQUEEZY_API_KEY`
+- `LEMON_SQUEEZY_STORE_ID`
+- `LEMON_SQUEEZY_WEBHOOK_SECRET`
+- `LEMON_SQUEEZY_STARTER_CREDITS_VARIANT_ID`
+- `LEMON_SQUEEZY_CREATOR_CREDITS_VARIANT_ID`
+- `LEMON_SQUEEZY_STUDIO_CREDITS_VARIANT_ID`
 
 Optional for Supabase CLI workflows:
 - `SUPABASE_ACCESS_TOKEN`
@@ -78,11 +81,13 @@ Recommended validation commands:
 - Default model: `mistral-small-2506` (configurable via env).
 - The app currently uses the text model for schema-constrained planning and does not rely on image-vision inputs during generation.
 
-## Paystack notes
+## Lemon Squeezy notes
 - Checkout init: `POST /api/billing/checkout`
-- Verification: `POST /api/billing/verify`
+- Verification: purchases are fulfilled by webhook after Lemon Squeezy confirms the order
 - Webhook: `POST /api/billing/webhook`
-- Configure Paystack webhook URL to point to `/api/billing/webhook`.
+- Configure Lemon Squeezy webhook URL to point to `/api/billing/webhook`.
+- Select the `order_created` event for credit fulfillment.
+- Create three Lemon Squeezy variants and map them to the variant ID env vars in `.env.example`.
 
 ## Commands
 - `npm run dev`
@@ -101,7 +106,7 @@ Recommended validation commands:
 ## Deployment notes
 - Set all env vars in hosting provider.
 - `NEXT_PUBLIC_APP_URL` must be set in the hosting provider's production environment to your live domain; `.env.local` is only used locally.
-- Use HTTPS and production callback URLs for Paystack.
+- Use HTTPS and production callback URLs for Lemon Squeezy.
 - Auth confirmation and billing redirects are built from `NEXT_PUBLIC_APP_URL`, so production must not point this to localhost.
 - Keep `package-lock.json` committed so CI and hosting builds install the same dependency tree.
 - Confirm webhook signature secret matches deployment env.
@@ -113,5 +118,5 @@ Recommended validation commands:
 
 ## Known MVP constraints
 - Rate limiting is lightweight (in-memory).
-- Subscription renewal automation is structured but minimal.
+- Credit packs are one-time purchases; subscription renewal automation is intentionally not used.
 - Visual templates are production-capable baseline and can be expanded further.

@@ -47,7 +47,7 @@ export default async function AssetsPage({ params }: { params: Promise<{ id: str
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
               <div className="surface-muted min-w-[170px] p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Plan</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Account</p>
                 <p className="mt-3 text-lg font-semibold">{plan.label}</p>
               </div>
               <div className="surface-muted min-w-[170px] p-4">

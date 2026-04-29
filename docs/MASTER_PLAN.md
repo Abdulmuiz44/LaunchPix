@@ -22,7 +22,7 @@ LaunchPix starts extension-first (Chrome/Firefox stores), but the messaging and 
   - 1x promo tile (440x280)
   - 1x hero banner (1400x560)
 - PNG + ZIP export.
-- Paystack-first billing architecture.
+- Lemon Squeezy credit-pack billing architecture.
 
 ## Out of Scope (v1)
 - Freeform drag-and-drop canvas.
@@ -70,7 +70,7 @@ Core tables:
 - `project_inputs`: uploaded screenshots, style settings, prompts.
 - `generation_jobs`: queue/status/error metadata for deterministic rendering.
 - `assets`: rendered outputs with dimension/type/storage path.
-- `subscriptions`: Paystack subscription status and renewal metadata.
+- `subscriptions`: account credit balance and payment metadata.
 - `usage_events`: track credits and feature usage.
 
 ## Generation Pipeline Architecture
@@ -83,9 +83,9 @@ Core tables:
 7. Export service bundles PNGs + ZIP package.
 
 ## Billing Strategy
-- Paystack-first checkout and webhooks.
-- NGN-first pricing with global strategy compatibility.
-- Plan + usage model architecture to support future expansion.
+- Lemon Squeezy checkout and webhooks.
+- Credit-based model: every account starts with 300 credits.
+- One-time credit packs replace recurring subscriptions.
 
 ## Export Strategy
 - Individual PNG download per asset.
@@ -98,7 +98,7 @@ Core tables:
 - `screenshots_uploaded`
 - `generation_started`, `generation_completed`, `generation_failed`
 - `asset_downloaded`, `zip_downloaded`
-- `checkout_started`, `checkout_success`, `subscription_renewed`
+- `checkout_started`, `checkout_success`, `credits_granted`
 
 ## Launch Checklist
 - Branding and core landing copy finalized.
@@ -136,5 +136,5 @@ Core tables:
 
 ### Phase 4: Export + Billing
 - PNG + ZIP exports stable.
-- Paystack subscription lifecycle handled.
+- Lemon Squeezy credit-pack lifecycle handled.
 - Basic usage limits and analytics instrumentation live.
