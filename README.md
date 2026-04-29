@@ -1,6 +1,6 @@
 # LaunchPix
 
-LaunchPix is a Mistral-assisted, deterministic asset generator for product launches.
+LaunchPix is a Mistral-assisted asset generator for product launches.
 It turns raw screenshots into polished listing visuals, promo tiles, and hero banners.
 
 ## Design system
@@ -12,15 +12,15 @@ It turns raw screenshots into polished listing visuals, promo tiles, and hero ba
 - Next.js App Router + TypeScript
 - Tailwind CSS + reusable UI primitives
 - Supabase (Auth, Postgres, Storage)
-- Mistral (structured planning only)
-- Deterministic SVG -> PNG rendering (`@resvg/resvg-js`)
+- Mistral structured planning and image generation
+- Deterministic SVG -> PNG fallback rendering (`@resvg/resvg-js`)
 - Lemon Squeezy credit-pack billing and webhook fulfillment
 
 ## Core product flow
 1. Sign in
 2. Create project and upload screenshots
 3. Generate structured asset plan via Mistral
-4. Render deterministic asset pack (5 listing + promo + hero)
+4. Generate image assets through a Mistral image-generation agent
 5. Preview/download assets while credits remain
 
 ## Pricing model implemented
@@ -40,6 +40,8 @@ Minimum required:
 - `MISTRAL_API_KEY`
 - `MISTRAL_MODEL_VISION`
 - `MISTRAL_MODEL_TEXT`
+- `MISTRAL_IMAGE_MODEL`
+- `MISTRAL_IMAGE_AGENT_ID` (optional)
 - `LEMON_SQUEEZY_API_KEY`
 - `LEMON_SQUEEZY_STORE_ID`
 - `LEMON_SQUEEZY_WEBHOOK_SECRET`
@@ -77,9 +79,11 @@ Recommended validation commands:
 
 ## Mistral notes
 - Mistral is used for structured product/copy/layout planning.
-- Rendering remains deterministic and template-driven.
-- Default model: `mistral-small-2506` (configurable via env).
-- The app currently uses the text model for schema-constrained planning and does not rely on image-vision inputs during generation.
+- Final image assets are generated through a Mistral Agent with the built-in `image_generation` tool.
+- Planning default model: `mistral-small-2506` (configurable via env).
+- Image generation default model: `mistral-medium-latest` (configurable via `MISTRAL_IMAGE_MODEL`).
+- `MISTRAL_IMAGE_AGENT_ID` can point to a pre-created image-generation agent. If it is omitted, LaunchPix creates an agent at runtime.
+- If Mistral image generation fails, LaunchPix falls back to deterministic SVG -> PNG rendering so generation does not hard-fail.
 
 ## Lemon Squeezy notes
 - Checkout init: `POST /api/billing/checkout`

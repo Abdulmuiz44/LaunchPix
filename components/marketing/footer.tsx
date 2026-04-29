@@ -2,6 +2,7 @@ import Link from "next/link";
 import { LaunchPixLogo } from "@/components/brand/logo";
 
 const links = [
+  { href: "/about" as const, label: "About" },
   { href: "/pricing" as const, label: "Pricing" },
   { href: "/contact" as const, label: "Contact" },
   { href: "/privacy" as const, label: "Privacy" },
