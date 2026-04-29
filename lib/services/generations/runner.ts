@@ -1,6 +1,7 @@
 import JSZip from "jszip";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { mistralAdapter } from "@/lib/ai/generate-asset-plan";
+import { generateMistralAssetPng } from "@/lib/ai/mistral-image";
 import { createDeterministicGenerationPlan } from "@/lib/ai/mistral";
 import { generationPlanSchema } from "@/lib/ai/schemas/asset-plan";
 import { buildDeterministicAssets, renderAssetPng } from "@/lib/render/pipeline";
@@ -60,30 +61,39 @@ export async function runGenerationForProject(project: ProjectRecord, uploads: U
     const zip = new JSZip();
 
     for (const [index, asset] of deterministicAssets.entries()) {
-      const fullPng = await renderAssetPng({
-        width: asset.width,
-        height: asset.height,
-        templateFamily: asset.template_family,
-        headline: asset.headline,
-        subheadline: asset.subheadline,
-        callouts: asset.callouts,
-        cta: safePlan.cta_line,
-        screenshotUrls: asset.screenshotUrls,
-        primaryColor: project.primary_color
-      });
+      let renderSource: "mistral_image_generation" | "deterministic_template" = "mistral_image_generation";
+      let fullPng: Buffer | Uint8Array;
 
-      const previewPng = await renderAssetPng({
-        width: asset.width,
-        height: asset.height,
-        templateFamily: asset.template_family,
-        headline: asset.headline,
-        subheadline: asset.subheadline,
-        callouts: asset.callouts,
-        cta: safePlan.cta_line,
-        screenshotUrls: asset.screenshotUrls,
-        primaryColor: project.primary_color,
-        watermarkText: "LaunchPix Preview"
-      });
+      try {
+        fullPng = await generateMistralAssetPng({
+          plan: safePlan,
+          asset,
+          project: {
+            name: project.name,
+            product_type: project.product_type,
+            platform: project.platform,
+            description: project.description,
+            audience: project.audience,
+            primary_color: project.primary_color
+          }
+        });
+      } catch (error) {
+        renderSource = "deterministic_template";
+        console.error("Mistral image generation failed; using deterministic renderer:", error instanceof Error ? error.message : error);
+        fullPng = await renderAssetPng({
+          width: asset.width,
+          height: asset.height,
+          templateFamily: asset.template_family,
+          headline: asset.headline,
+          subheadline: asset.subheadline,
+          callouts: asset.callouts,
+          cta: safePlan.cta_line,
+          screenshotUrls: asset.screenshotUrls,
+          primaryColor: project.primary_color
+        });
+      }
+
+      const previewPng = fullPng;
 
       const filename = `${String(index + 1).padStart(2, "0")}-${asset.asset_type}.png`;
       const fullPath = `${project.user_id}/${project.id}/${generation.id}/full/${filename}`;
@@ -106,6 +116,7 @@ export async function runGenerationForProject(project: ProjectRecord, uploads: U
         preview_url: previewUrl.publicUrl,
         metadata_json: {
           template_family: asset.template_family,
+          render_source: renderSource,
           notes: asset.notes,
           callouts: asset.callouts,
           screenshot_ids: asset.screenshot_ids,
