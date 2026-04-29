@@ -89,7 +89,7 @@ function PlanCard({ credits, planLabel }: { credits: number; planLabel: string }
           </span>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-slate-950 dark:text-white">{planLabel}</p>
-            <p className="text-[11px] text-slate-500">Current plan</p>
+            <p className="text-[11px] text-slate-500">Credits left</p>
           </div>
         </div>
         <p className="text-[11px] font-medium text-slate-400">{credits} / {maxCredits}</p>
@@ -103,7 +103,7 @@ function PlanCard({ credits, planLabel }: { credits: number; planLabel: string }
         href="/settings/billing"
         className="mt-3 flex h-9 items-center justify-center rounded-2xl bg-[#5b5ff7] text-xs font-semibold text-white shadow-[0_16px_40px_-28px_rgba(91,95,247,0.85)] transition hover:bg-[#686cf8]"
       >
-        Upgrade
+        Buy credits
       </Link>
     </div>
   );
@@ -111,7 +111,7 @@ function PlanCard({ credits, planLabel }: { credits: number; planLabel: string }
 
 const accountActions = [
   { href: "/settings", label: "Account settings", icon: UserCircle },
-  { href: "/settings/billing", label: "Billing and plan", icon: CreditCard },
+  { href: "/settings/billing", label: "Billing and credits", icon: CreditCard },
   { href: "/dashboard/projects/new", label: "New project", icon: Plus },
   { href: "/auth/signout", label: "Sign out", icon: LogOut }
 ] as const;

@@ -11,7 +11,7 @@ export default function TermsPage() {
     <MarketingPageShell
       eyebrow="Terms"
       title="The operating terms for using LaunchPix."
-      description="These terms cover acceptable use, plan access, credit consumption, and the current MVP service posture for LaunchPix."
+      description="These terms cover acceptable use, credit consumption, export access, and the current MVP service posture for LaunchPix."
     >
       <div className="grid gap-4 lg:grid-cols-2 legal-copy">
         <section className="surface-muted p-6">
@@ -21,21 +21,21 @@ export default function TermsPage() {
           </p>
         </section>
         <section className="surface-muted p-6">
-          <h2 className="text-xl font-semibold text-foreground">Plans and credits</h2>
+          <h2 className="text-xl font-semibold text-foreground">Credits</h2>
           <p className="mt-3">
-            Each generation run consumes one credit. Plan limits, credit balances, and export entitlements determine what you can generate and download.
+            Each generation run consumes one credit. Every account starts with included credits, and you can buy one-time credit packs when the balance runs out.
           </p>
         </section>
         <section className="surface-muted p-6">
-          <h2 className="text-xl font-semibold text-foreground">Export access by plan</h2>
+          <h2 className="text-xl font-semibold text-foreground">Export access</h2>
           <p className="mt-3">
-            Free mode provides watermarked previews. Paid plans unlock full-resolution PNG downloads and ZIP export for launch delivery.
+            Full-resolution PNG downloads and ZIP export are available while your account has credits. You will be prompted to buy credits after exhausting your balance.
           </p>
         </section>
         <section className="surface-muted p-6">
           <h2 className="text-xl font-semibold text-foreground">Commercial use</h2>
           <p className="mt-3">
-            Commercial-use positioning is available on paid plans. The Free plan is intended for evaluation and preview workflows.
+            Launch assets generated through LaunchPix may be used for product marketing as long as you have the rights to the source materials you upload.
           </p>
         </section>
         <section className="surface-muted p-6 lg:col-span-2">

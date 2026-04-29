@@ -9,8 +9,8 @@ const copyMap = [
   { match: "/dashboard/projects/new", title: "New Project", description: "Define the brief, upload screenshots, and set the visual direction." },
   { match: "/dashboard/projects/", title: "Project Workspace", description: "Review the brief, generation state, and launch asset readiness." },
   { match: "/dashboard/projects", title: "Projects", description: "Track every launch workspace, status, and screenshot stack in one place." },
-  { match: "/settings/billing", title: "Billing", description: "Manage credits, upgrades, and export access." },
-  { match: "/settings", title: "Settings", description: "Control workspace defaults, account details, and plan posture." },
+  { match: "/settings/billing", title: "Billing", description: "Manage credits and one-time top-ups." },
+  { match: "/settings", title: "Settings", description: "Control workspace defaults, account details, and credit posture." },
   { match: "/dashboard", title: "Overview", description: "Track projects, generate packs, and export launch-ready visuals." }
 ] as const;
 

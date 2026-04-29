@@ -13,9 +13,9 @@ export default async function SettingsPage() {
     <div className="space-y-6">
       <section className="surface overflow-hidden p-6 sm:p-8">
         <p className="eyebrow">Settings</p>
-        <h1 className="section-title mt-4">Manage your account, plan access, and launch workflow defaults.</h1>
+        <h1 className="section-title mt-4">Manage your account, credits, and launch workflow defaults.</h1>
         <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-          Review the email tied to your workspace, confirm your current plan posture, and jump into billing whenever you need more generation capacity.
+          Review the email tied to your workspace, confirm your current credit balance, and jump into billing whenever you need more generation capacity.
         </p>
       </section>
 
@@ -29,14 +29,14 @@ export default async function SettingsPage() {
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Workspace email</p>
                 <p className="mt-2 text-xl font-semibold">{user.email}</p>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">This address receives magic links and account-related updates.</p>
+                <p className="mt-2 text-sm leading-7 text-muted-foreground">This address receives account-related updates.</p>
               </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="surface-muted p-5">
                 <ShieldCheck className="size-5 text-slate-500 dark:text-slate-300" />
-                <p className="mt-4 font-semibold">Current plan</p>
+                <p className="mt-4 font-semibold">Credit balance</p>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">
                   {plan.label} - {subscription.credits_remaining} credits remaining
                 </p>
@@ -45,7 +45,7 @@ export default async function SettingsPage() {
                 <Sparkles className="size-5 text-slate-500 dark:text-slate-300" />
                 <p className="mt-4 font-semibold">Export mode</p>
                 <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  {plan.fullResolutionExport ? "Full-resolution export is active." : "Preview-only export is active until you upgrade."}
+                  {plan.fullResolutionExport ? "Full-resolution export is active while credits remain." : "Export is limited until credits are available."}
                 </p>
               </div>
             </div>
@@ -61,7 +61,7 @@ export default async function SettingsPage() {
 
             <div className="space-y-3">
               <Link href="/settings/billing" className="surface-muted flex items-center justify-between gap-4 p-4 text-sm font-medium text-foreground transition hover:border-slate-300 hover:bg-white dark:hover:border-white/[0.14] dark:hover:text-white">
-                <span className="flex items-center gap-3"><CreditCard className="size-4" /> Billing and plan access</span>
+                <span className="flex items-center gap-3"><CreditCard className="size-4" /> Billing and credits</span>
                 <ArrowRight className="size-4" />
               </Link>
               <Link href="/dashboard/projects" className="surface-muted flex items-center justify-between gap-4 p-4 text-sm font-medium text-foreground transition hover:border-slate-300 hover:bg-white dark:hover:border-white/[0.14] dark:hover:text-white">

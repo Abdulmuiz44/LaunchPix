@@ -13,7 +13,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ generation
   const { plan } = await getAccessContext(user.id);
   if (!plan.zipExport) {
     await trackEvent({ userId: user.id, eventType: "paywall_viewed", metadata: { location: "zip_export" } });
-    return NextResponse.json({ error: "ZIP export is available on paid plans. Upgrade to unlock full-resolution pack downloads." }, { status: 403 });
+    return NextResponse.json({ error: "ZIP export is available while credits remain. Buy credits to unlock full-resolution pack downloads." }, { status: 403 });
   }
 
   const { data: generation } = await supabase

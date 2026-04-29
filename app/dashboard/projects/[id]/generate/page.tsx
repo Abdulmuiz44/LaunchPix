@@ -34,7 +34,7 @@ export default async function GeneratePage({ params }: { params: Promise<{ id: s
 
           <div className="grid shrink-0 grid-cols-2 gap-2 sm:grid-cols-4 xl:w-[560px]">
             {[
-              ["Plan", plan.label],
+              ["Account", plan.label],
               ["Credits", subscription.credits_remaining.toString()],
               ["Uploads", `${uploads.length}/5`],
               ["Export", plan.fullResolutionExport ? "Full" : "Preview"]

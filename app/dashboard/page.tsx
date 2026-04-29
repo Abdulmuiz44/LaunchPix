@@ -66,10 +66,10 @@ export default async function DashboardPage() {
         </div>
 
         <div className="dashboard-card p-6 sm:p-7">
-          <p className="dashboard-label">Plan posture</p>
+          <p className="dashboard-label">Credit posture</p>
           <div className="mt-4 space-y-4 text-sm">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 dark:border-white/8">
-              <span className="text-slate-500">Current plan</span>
+              <span className="text-slate-500">Account</span>
               <span className="font-medium text-slate-950 dark:text-white">{plan.label}</span>
             </div>
             <div className="flex items-center justify-between border-b border-slate-200 pb-3 dark:border-white/8">
@@ -81,8 +81,8 @@ export default async function DashboardPage() {
               <span className="font-medium text-slate-950 dark:text-white">{plan.fullResolutionExport ? "Full resolution" : "Preview only"}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-slate-500">Queue priority</span>
-              <span className="font-medium text-slate-950 dark:text-white">{plan.priorityGeneration ? "Priority" : "Standard"}</span>
+              <span className="text-slate-500">Billing model</span>
+              <span className="font-medium text-slate-950 dark:text-white">Credit packs</span>
             </div>
           </div>
         </div>

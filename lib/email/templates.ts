@@ -147,7 +147,7 @@ export function renderEmailTemplate(
       subject: "LaunchPix payment confirmed",
       html: baseEmail({
         eyebrow: "Payment confirmed",
-        title: `${input.planLabel || "Your plan"} is active.`,
+        title: `${input.planLabel || "Your credit pack"} is active.`,
         body: `Your workspace credits were updated${typeof input.credits === "number" ? ` to ${input.credits}` : ""}. You can now continue generating and exporting launch assets.`,
         ctaLabel: "Manage billing",
         ctaHref: billingUrl
@@ -178,7 +178,7 @@ export function renderEmailTemplate(
       html: baseEmail({
         eyebrow: "Credits low",
         title: "Add credits to keep generating launch packs.",
-        body: `Your workspace has ${input.credits ?? 0} credits remaining. Upgrade or top up before your next generation run.`,
+        body: `Your workspace has ${input.credits ?? 0} credits remaining. Buy a one-time credit pack before your next generation run.`,
         ctaLabel: "Manage billing",
         ctaHref: billingUrl
       })

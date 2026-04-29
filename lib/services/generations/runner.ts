@@ -14,7 +14,7 @@ const ASSET_BUCKET = process.env.STORAGE_BUCKET_ASSETS || "launchpix-assets";
 export async function runGenerationForProject(project: ProjectRecord, uploads: UploadRecord[]) {
   const supabase = await createSupabaseServerClient();
   const subscription = await consumeGenerationCredit(project.user_id);
-  const plan = PLAN_CONFIG[(subscription.plan as keyof typeof PLAN_CONFIG) || "free"];
+  const plan = PLAN_CONFIG[(subscription.plan as keyof typeof PLAN_CONFIG) || "credits"] || PLAN_CONFIG.credits;
 
   const { data: generation, error: generationError } = await supabase
     .from("generations")
