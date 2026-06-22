@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { authenticateApiCustomerRequest } from "@/lib/services/api-keys/authenticate-api-key"
 import { renderAssetSvg, renderAssetPng, buildAssetPlan } from "@/lib/render/deterministic"
+import { createSupabaseServerClient } from "@/lib/supabase/server"
 import type { GenerateAssetRequest, AssetType, Theme, OutputFormat } from "@/lib/launch/types"
 import { ASSET_DIMENSIONS, ASSET_LABELS } from "@/lib/launch/types"
 
@@ -21,15 +22,26 @@ function validateRequest(body: unknown): { ok: true; data: GenerateAssetRequest 
   if (!b.tagline || typeof b.tagline !== 'string') {
     return { ok: false, error: 'tagline is required.', status: 400 }
   }
-  if (!b.screenshotUrl || typeof b.screenshotUrl !== 'string') {
-    return { ok: false, error: 'screenshotUrl is required.', status: 400 }
+
+  const hasUrl = !!b.screenshotUrl && typeof b.screenshotUrl === 'string'
+  const hasId = !!b.screenshotId && typeof b.screenshotId === 'string'
+
+  if (!hasUrl && !hasId) {
+    return { ok: false, error: 'Either screenshotUrl or screenshotId is required.', status: 400 }
   }
-  if (!b.screenshotUrl.startsWith('https://')) {
-    return { ok: false, error: 'screenshotUrl must use HTTPS.', status: 400 }
+  if (hasUrl && hasId) {
+    return { ok: false, error: 'Provide either screenshotUrl or screenshotId, not both.', status: 400 }
   }
-  if (b.screenshotUrl.includes('localhost') || b.screenshotUrl.includes('127.0.0.1') || b.screenshotUrl.includes('192.168.') || b.screenshotUrl.includes('10.')) {
-    return { ok: false, error: 'screenshotUrl must not be a private/local URL.', status: 400 }
+
+  if (hasUrl) {
+    if (!b.screenshotUrl!.startsWith('https://')) {
+      return { ok: false, error: 'screenshotUrl must use HTTPS.', status: 400 }
+    }
+    if (b.screenshotUrl!.includes('localhost') || b.screenshotUrl!.includes('127.0.0.1') || b.screenshotUrl!.includes('192.168.') || b.screenshotUrl!.includes('10.')) {
+      return { ok: false, error: 'screenshotUrl must not be a private/local URL.', status: 400 }
+    }
   }
+
   if (!b.assetType || !VALID_ASSET_TYPES.has(b.assetType as string)) {
     return { ok: false, error: `assetType must be one of: ${[...VALID_ASSET_TYPES].join(', ')}`, status: 400 }
   }
@@ -45,13 +57,36 @@ function validateRequest(body: unknown): { ok: true; data: GenerateAssetRequest 
     data: {
       productName: b.productName.trim(),
       tagline: String(b.tagline).trim(),
-      screenshotUrl: String(b.screenshotUrl),
+      screenshotUrl: hasUrl ? String(b.screenshotUrl) : undefined,
+      screenshotId: hasId ? String(b.screenshotId) : undefined,
       assetType: b.assetType as AssetType,
       theme: b.theme as Theme,
       brandColor: typeof b.brandColor === 'string' ? b.brandColor : undefined,
       outputFormat: (b.outputFormat as OutputFormat) || 'png',
     },
   }
+}
+
+async function resolveScreenshotUrl(
+  screenshotId: string,
+  userId: string
+): Promise<{ ok: true; url: string } | { ok: false; error: string; status: number }> {
+  const supabase = await createSupabaseServerClient()
+  const { data: screenshot, error } = await supabase
+    .from("screenshots")
+    .select("id, public_url, user_id")
+    .eq("id", screenshotId)
+    .single()
+
+  if (error || !screenshot) {
+    return { ok: false, error: "Screenshot not found.", status: 404 }
+  }
+
+  if (screenshot.user_id !== userId) {
+    return { ok: false, error: "Screenshot does not belong to this account.", status: 403 }
+  }
+
+  return { ok: true, url: screenshot.public_url }
 }
 
 export async function POST(request: Request) {
@@ -71,14 +106,24 @@ export async function POST(request: Request) {
   }
 
   const input = validation.data
-  const { width, height } = ASSET_DIMENSIONS[input.assetType]
-  const plan = buildAssetPlan(input)
 
-  const svg = renderAssetSvg(input)
+  let screenshotUrl = input.screenshotUrl
+  if (input.screenshotId) {
+    const resolved = await resolveScreenshotUrl(input.screenshotId, authResult.customer.userId)
+    if (!resolved.ok) {
+      return NextResponse.json({ ok: false, error: resolved.error }, { status: resolved.status })
+    }
+    screenshotUrl = resolved.url
+  }
+
+  const { width, height } = ASSET_DIMENSIONS[input.assetType]
+  const plan = buildAssetPlan({ ...input, screenshotUrl: screenshotUrl! })
+
+  const svg = renderAssetSvg({ ...input, screenshotUrl: screenshotUrl! })
   let pngBuffer: Buffer | null = null
 
   if (input.outputFormat === 'png') {
-    pngBuffer = renderAssetPng(input)
+    pngBuffer = renderAssetPng({ ...input, screenshotUrl: screenshotUrl! })
   }
 
   const renderedPng = pngBuffer !== null
@@ -102,10 +147,11 @@ export async function POST(request: Request) {
       ...plan,
       warnings: [
         ...plan.warnings,
+        input.screenshotId ? 'Used uploaded screenshot.' : undefined,
         renderedPng
           ? 'PNG rendered deterministically. No AI image generation was used.'
           : 'SVG preview generated. PNG rendering requires @resvg/resvg-js to be available.',
-      ],
+      ].filter(Boolean),
     },
     credits: {
       used: 1,

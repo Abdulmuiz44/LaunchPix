@@ -12,7 +12,8 @@ export type OutputFormat = 'png' | 'svg'
 export interface GenerateAssetRequest {
   productName: string
   tagline: string
-  screenshotUrl: string
+  screenshotUrl?: string
+  screenshotId?: string
   assetType: AssetType
   theme: Theme
   brandColor?: string
@@ -50,6 +51,24 @@ export interface GenerateAssetResponse {
     used: number
     remaining: number
   }
+  error?: string
+}
+
+export interface UploadedScreenshot {
+  id: string
+  name: string
+  mimeType: string
+  sizeBytes: number
+  width: number
+  height: number
+  url: string
+  storageKey: string
+  storageMode: 'supabase' | 'local-dev'
+}
+
+export interface ScreenshotUploadResponse {
+  ok: boolean
+  screenshot?: UploadedScreenshot
   error?: string
 }
 
