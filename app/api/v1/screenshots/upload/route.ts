@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { authenticateApiCustomerRequest } from "@/lib/services/api-keys/authenticate-api-key"
 import { createSupabaseServerClient } from "@/lib/supabase/server"
+import { getBackend } from "@/lib/backend"
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ACCEPTED_TYPES = new Set(["image/png", "image/jpeg", "image/webp"])
@@ -57,6 +58,7 @@ export async function POST(request: Request) {
   const filename = sanitizeFilename(rawFilename) || "screenshot.png"
   const storageKey = generateStorageKey(authResult.customer.userId, filename)
 
+  // File storage still uses Supabase directly
   const supabase = await createSupabaseServerClient()
   const { error: uploadError } = await supabase.storage
     .from(BUCKET)
@@ -81,37 +83,36 @@ export async function POST(request: Request) {
     // Dimension extraction is best-effort
   }
 
-  const { data: record, error: dbError } = await supabase
-    .from("screenshots")
-    .insert({
-      user_id: authResult.customer.userId,
-      storage_key: storageKey,
-      original_filename: filename,
-      mime_type: file.type,
-      file_size: file.size,
+  // Metadata recording uses backend adapter
+  const backend = getBackend()
+  let record
+  try {
+    record = await backend.insertScreenshot({
+      userId: authResult.customer.userId,
+      storageKey,
+      originalFilename: filename,
+      mimeType: file.type,
+      fileSize: file.size,
       width,
       height,
-      public_url: pub.publicUrl,
+      publicUrl: pub.publicUrl,
     })
-    .select("id, storage_key, original_filename, mime_type, file_size, width, height, public_url, created_at")
-    .single()
-
-  if (dbError || !record) {
-    return NextResponse.json({ ok: false, error: dbError?.message || "Could not save screenshot record." }, { status: 500 })
+  } catch (err) {
+    return NextResponse.json({ ok: false, error: `Failed to record screenshot: ${err instanceof Error ? err.message : "unknown"}` }, { status: 500 })
   }
 
   return NextResponse.json({
     ok: true,
     screenshot: {
       id: record.id,
-      name: record.original_filename,
-      mimeType: record.mime_type,
-      sizeBytes: record.file_size,
+      name: record.originalFilename,
+      mimeType: record.mimeType,
+      sizeBytes: record.fileSize,
       width: record.width,
       height: record.height,
-      url: record.public_url,
-      storageKey: record.storage_key,
-      storageMode: "supabase",
+      url: record.publicUrl,
+      storageKey: record.storageKey,
+      storageMode: backend.name === "supabase" ? "supabase" : "stacklane",
     },
   }, { status: 201 })
 }

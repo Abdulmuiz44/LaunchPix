@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { authenticateApiCustomerRequest } from "@/lib/services/api-keys/authenticate-api-key"
 import { renderAssetSvg, renderAssetPng, buildAssetPlan } from "@/lib/render/deterministic"
-import { createSupabaseServerClient } from "@/lib/supabase/server"
+import { getBackend } from "@/lib/backend"
 import type { GenerateAssetRequest, AssetType, Theme, OutputFormat } from "@/lib/launch/types"
 import { ASSET_DIMENSIONS, ASSET_LABELS } from "@/lib/launch/types"
 
@@ -71,16 +71,19 @@ async function resolveScreenshotUrl(
   screenshotId: string,
   userId: string
 ): Promise<{ ok: true; url: string } | { ok: false; error: string; status: number }> {
-  const supabase = await createSupabaseServerClient()
-  const { data: screenshot, error } = await supabase
-    .from("screenshots")
-    .select("id, public_url, user_id")
-    .eq("id", screenshotId)
-    .single()
+  const backend = getBackend()
+  const screenshot = await backend.getScreenshotById({ id: screenshotId, userId })
 
-  if (error || !screenshot) {
+  if (!screenshot) {
     return { ok: false, error: "Screenshot not found.", status: 404 }
   }
+
+  if (screenshot.userId !== userId) {
+    return { ok: false, error: "Screenshot does not belong to this account.", status: 403 }
+  }
+
+  return { ok: true, url: screenshot.publicUrl }
+}
 
   if (screenshot.user_id !== userId) {
     return { ok: false, error: "Screenshot does not belong to this account.", status: 403 }
