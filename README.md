@@ -1,74 +1,97 @@
 # Talocode LaunchPix
 
-Talocode LaunchPix is an API-first, open-source launch visual engine.
-It turns product screenshots into listing frames, promo tiles, and hero banners with deterministic fallback rendering.
+**Open-source static launch asset API. Self-host first.**
 
-## Repository
-- Canonical repo: `https://github.com/talocode/launchpix`
+LaunchPix turns product screenshots into listing frames, promo tiles, and hero banners with deterministic rendering. No AI image generation — honest, reproducible output.
 
-## Product direction
-- API first: developer endpoints live under `/api/v1/*`.
-- Open source core: code is public, but API usage requires `LAUNCHPIX_API_KEY`.
-- Credits model: users start with free credits, then buy one-time credit packs.
+## Quick Start
 
-## Core stack
-- Next.js App Router + TypeScript
-- Supabase (Postgres, Storage)
-- Mistral (planning + image generation)
-- Lemon Squeezy (credit-pack checkout + webhook fulfillment)
-- Resend (transactional email)
+```bash
+# Clone and install
+git clone https://github.com/talocode/launchpix.git
+cd launchpix
+cp .env.example .env.local
+npm install
 
-## API authentication
-Every `/api/v1/*` request must include:
-- `x-launchpix-api-key: <LAUNCHPIX_API_KEY>`
-- `x-launchpix-user-id: <owner-user-uuid>`
+# Apply database migrations (requires Supabase CLI linked)
+npx supabase db push --linked
 
-Supported alternatives:
-- `x-api-key`
-- `Authorization: Bearer <LAUNCHPIX_API_KEY>`
+# Start
+npm run dev
+```
 
-## Developer API endpoints
-- `GET /api/v1/projects`
-- `POST /api/v1/projects`
-- `GET /api/v1/projects/:projectId/generate`
-- `POST /api/v1/projects/:projectId/generate`
+## Self-Host with Docker
 
-## Environment variables
-See `.env.example`.
+```bash
+docker compose up -d
+```
 
-Critical keys:
-- `NEXT_PUBLIC_APP_URL`
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `DATABASE_URL`
-- `NEXTAUTH_SECRET`
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
-- `MISTRAL_API_KEY`
-- `MISTRAL_MODEL_TEXT`
-- `MISTRAL_MODEL_VISION`
-- `MISTRAL_IMAGE_MODEL`
-- `MISTRAL_IMAGE_AGENT_ID` (optional)
-- `LAUNCHPIX_API_KEY`
-- `LEMON_SQUEEZY_*`
-- `RESEND_API_KEY`
+See [docs/deployment/SELF_HOST.md](docs/deployment/SELF_HOST.md) for VPS, Docker, and reverse proxy setup.
 
-## Local setup
-1. Copy env file: `cp .env.example .env.local`
-2. Install: `npm install`
-3. Apply DB migrations: `npx supabase db push --linked`
-4. Start app: `npm run dev`
+## API
 
-Validation:
-- `npm run typecheck`
-- `npm run build`
+Every `/api/v1/*` request requires:
 
-## Render deployment
-- Render config is in [`render.yaml`](/C:/Users/Hp/Documents/Github/LaunchPix/render.yaml).
-- Build command: `npm ci && npm run build`
-- Start command: `npm run start`
-- Set all required env vars in Render dashboard.
+```
+x-launchpix-api-key: <LAUNCHPIX_API_KEY>
+Authorization: Bearer <LAUNCHPIX_API_KEY>
+```
 
-## Legacy note
-Previous Netlify-specific deployment notes were removed in favor of Render as the primary target.
+### Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/v1/screenshots/upload` | Upload a screenshot (PNG/JPEG/WEBP, 5MB max) |
+| POST | `/api/v1/assets/generate` | Generate a launch asset (screenshotUrl or screenshotId) |
+| GET | `/api/v1/projects` | List projects |
+| POST | `/api/v1/projects` | Create a project |
+
+### Example
+
+```bash
+# Upload screenshot
+curl -X POST http://localhost:3000/api/v1/screenshots/upload \
+  -H "x-launchpix-api-key: YOUR_KEY" \
+  -F "file=@screenshot.png"
+
+# Generate hero banner
+curl -X POST http://localhost:3000/api/v1/assets/generate \
+  -H "x-launchpix-api-key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "productName": "My App",
+    "tagline": "Ship faster",
+    "screenshotUrl": "https://example.com/screenshot.png",
+    "assetType": "hero_banner",
+    "theme": "dark"
+  }'
+```
+
+## Deployment
+
+Self-host first. Docker-ready. VPS-ready.
+
+- See [docs/deployment/SELF_HOST.md](docs/deployment/SELF_HOST.md)
+- See [docs/deployment/TALOCODE_INFRA.md](docs/deployment/TALOCODE_INFRA.md) for Talocode infrastructure roadmap
+- See [render.yaml](render.yaml) for optional Render deployment (community/legacy)
+
+## Environment
+
+See `.env.example` for all variables. Key sections:
+
+- **Core**: `NEXT_PUBLIC_APP_URL`, `NEXTAUTH_SECRET`
+- **Database/Storage**: `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+- **Rendering**: `MISTRAL_API_KEY` (optional, for planning)
+- **API Auth**: `LAUNCHPIX_API_KEY`
+- **Billing** (optional): `LEMON_SQUEEZY_*`
+
+## Documentation
+
+- [API Reference](docs/API.md)
+- [Self-Host Guide](docs/deployment/SELF_HOST.md)
+- [Talocode Infra Roadmap](docs/deployment/TALOCODE_INFRA.md)
+- [API Authentication](docs/API_AUTHENTICATION.md)
+
+## License
+
+MIT
