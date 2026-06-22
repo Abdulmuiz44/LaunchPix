@@ -1,0 +1,9 @@
+{
+  "productName": "Codra Code",
+  "tagline": "AI coding agent that understands your codebase",
+  "screenshotUrl": "https://codra.app/og-image.png",
+  "assetType": "promo_tile",
+  "theme": "dark",
+  "brandColor": "#22c55e",
+  "outputFormat": "png"
+}

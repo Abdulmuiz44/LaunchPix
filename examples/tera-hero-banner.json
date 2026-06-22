@@ -1,0 +1,9 @@
+{
+  "productName": "TeraAI",
+  "tagline": "Your AI learning companion for deep learning and research",
+  "screenshotUrl": "https://teraai.chat/og-image.png",
+  "assetType": "hero_banner",
+  "theme": "dark",
+  "brandColor": "#58C4DD",
+  "outputFormat": "png"
+}

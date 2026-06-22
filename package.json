@@ -17,7 +17,8 @@
     "resend:setup": "node scripts/resend/setup-cli.mjs",
     "resend:test": "node scripts/resend/test-send.mjs",
     "resend:domains": "resend domains list",
-    "resend:logs": "resend logs list"
+    "resend:logs": "resend logs list",
+    "supabase:setup": "node scripts/setup-supabase.mjs"
   },
   "dependencies": {
     "@mistralai/mistralai": "^1.3.6",
