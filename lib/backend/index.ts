@@ -1,6 +1,7 @@
-export { getBackend, getBackendName, resetBackend } from "./selectBackend"
+export { getBackend, getBackendName, getBackendConfigStatus, resetBackend } from "./selectBackend"
+export { createLocalAdapter } from "./localAdapter"
 export { createSupabaseAdapter } from "./supabaseAdapter"
-export { createStacklaneAdapter } from "./stacklaneAdapter"
+export { createStacklaneAdapter, buildStacklaneUsagePayload, buildStacklaneAssetPayload } from "./stacklaneAdapter"
 export type {
   LaunchPixBackend,
   BackendName,

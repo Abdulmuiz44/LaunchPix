@@ -17,16 +17,18 @@ This is a **temporary adapter pattern**, not a permanent dependency.
 | v0.2 | Self-host Docker runtime | Supabase (local) |
 | v0.3 | Stacklane adapter for metadata/API keys | Stacklane |
 | v0.4 | Stacklane storage/file metadata | Stacklane |
+| v0.4.1 | Real Stacklane backend option for metadata, usage, and file records | Stacklane |
 | v0.5 | Talocode API gateway + usage billing | Talocode infra |
 
 ## Why Stacklane
 
 Stacklane is Talocode's open-source lightweight backend/database layer. As Stacklane matures, LaunchPix will migrate from Supabase to Stacklane for:
 
-- API key management
+- Customer/API key-linked metadata and usage tracking
 - Project metadata
 - Credit/usage tracking
-- Connection storage
+- Asset metadata
+- File metadata
 - Audit logging
 
 ## Migration Principles
@@ -50,7 +52,7 @@ Render was previously used but is no longer the default deployment target. Launc
 
 ## What We Don't Control (Yet)
 
-- Database hosting (currently Supabase, migrating to Stacklane)
-- Object storage (currently Supabase, migrating to Stacklane)
+- Database hosting (currently Supabase-backed for LaunchPix app data)
+- Object storage (current upload path retained for compatibility while Stacklane records metadata/files)
 - Payment processing (Lemon Squeezy, replaceable)
 - Email (Resend, replaceable)

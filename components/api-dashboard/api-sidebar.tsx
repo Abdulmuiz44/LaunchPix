@@ -3,7 +3,7 @@
 import type { Route } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { LucideIcon } from "lucide-react";
+import type { ComponentType, SVGProps } from "react";
 import {
   Activity,
   AppWindow,
@@ -19,7 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-type NavItem = { href: Route; label: string; icon: LucideIcon };
+type NavItem = { href: Route; label: string; icon: ComponentType<SVGProps<SVGSVGElement>> };
 
 const manageItems: NavItem[] = [
   { href: "/dashboard/api", label: "Dashboard", icon: LayoutDashboard },

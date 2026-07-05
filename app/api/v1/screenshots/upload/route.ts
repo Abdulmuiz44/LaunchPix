@@ -72,10 +72,10 @@ export async function POST(request: Request) {
 
   let width = 0
   let height = 0
+  const fileBuffer = Buffer.from(await file.arrayBuffer())
   try {
     if (file.type === "image/png" || file.type === "image/jpeg") {
-      const buffer = Buffer.from(await file.arrayBuffer())
-      const dimensions = getImageDimensions(buffer, file.type)
+      const dimensions = getImageDimensions(fileBuffer, file.type)
       width = dimensions.width
       height = dimensions.height
     }
@@ -97,6 +97,37 @@ export async function POST(request: Request) {
       height,
       publicUrl: pub.publicUrl,
     })
+    if (backend.recordStoredFile) {
+      const stored = await backend.recordStoredFile({
+        userId: authResult.customer.userId,
+        filename,
+        contentType: file.type,
+        bytesBase64: fileBuffer.toString("base64"),
+        metadata: {
+          screenshotId: record.id,
+          contentType: file.type,
+          sizeBytes: file.size,
+          kind: "screenshot_upload",
+        },
+      })
+      if (!stored.ok && backend.name === "stacklane") {
+        return NextResponse.json({ ok: false, error: `Failed to record Stacklane file storage: ${stored.error || "unknown"}` }, { status: 502 })
+      }
+    }
+    const usage = await backend.recordUsage({
+      userId: authResult.customer.userId,
+      apiKeyId: authResult.customer.apiKeyId,
+      action: "launchpix.screenshot.upload",
+      units: 1,
+      metadata: {
+        screenshotId: record.id,
+        contentType: file.type,
+        sizeBytes: file.size,
+      },
+    })
+    if (!usage.ok && backend.name === "stacklane") {
+      return NextResponse.json({ ok: false, error: `Failed to record Stacklane usage: ${usage.error || "unknown"}` }, { status: 502 })
+    }
   } catch (err) {
     return NextResponse.json({ ok: false, error: `Failed to record screenshot: ${err instanceof Error ? err.message : "unknown"}` }, { status: 500 })
   }
@@ -112,7 +143,7 @@ export async function POST(request: Request) {
       height: record.height,
       url: record.publicUrl,
       storageKey: record.storageKey,
-      storageMode: backend.name === "supabase" ? "supabase" : "stacklane",
+      storageMode: backend.name,
     },
   }, { status: 201 })
 }

@@ -34,10 +34,11 @@ function validateRequest(body: unknown): { ok: true; data: GenerateAssetRequest 
   }
 
   if (hasUrl) {
-    if (!b.screenshotUrl!.startsWith('https://')) {
+    const screenshotUrl = String(b.screenshotUrl)
+    if (!screenshotUrl.startsWith('https://')) {
       return { ok: false, error: 'screenshotUrl must use HTTPS.', status: 400 }
     }
-    if (b.screenshotUrl!.includes('localhost') || b.screenshotUrl!.includes('127.0.0.1') || b.screenshotUrl!.includes('192.168.') || b.screenshotUrl!.includes('10.')) {
+    if (screenshotUrl.includes('localhost') || screenshotUrl.includes('127.0.0.1') || screenshotUrl.includes('192.168.') || screenshotUrl.includes('10.')) {
       return { ok: false, error: 'screenshotUrl must not be a private/local URL.', status: 400 }
     }
   }
@@ -72,7 +73,12 @@ async function resolveScreenshotUrl(
   userId: string
 ): Promise<{ ok: true; url: string } | { ok: false; error: string; status: number }> {
   const backend = getBackend()
-  const screenshot = await backend.getScreenshotById({ id: screenshotId, userId })
+  let screenshot
+  try {
+    screenshot = await backend.getScreenshotById({ id: screenshotId, userId })
+  } catch (error) {
+    return { ok: false, error: error instanceof Error ? error.message : "Backend lookup failed.", status: 502 }
+  }
 
   if (!screenshot) {
     return { ok: false, error: "Screenshot not found.", status: 404 }
@@ -83,13 +89,6 @@ async function resolveScreenshotUrl(
   }
 
   return { ok: true, url: screenshot.publicUrl }
-}
-
-  if (screenshot.user_id !== userId) {
-    return { ok: false, error: "Screenshot does not belong to this account.", status: 403 }
-  }
-
-  return { ok: true, url: screenshot.public_url }
 }
 
 export async function POST(request: Request) {
@@ -131,6 +130,7 @@ export async function POST(request: Request) {
 
   const renderedPng = pngBuffer !== null
   const assetId = `asset_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+  const backend = getBackend()
 
   const asset = {
     id: assetId,
@@ -141,6 +141,42 @@ export async function POST(request: Request) {
     height,
     renderedPng,
     svgPreview: renderedPng ? undefined : svg,
+  }
+
+  const usageAction = renderedPng ? "launchpix.asset.generate" : "launchpix.asset.preview"
+  const assetMetadata = {
+    assetId,
+    screenshotId: input.screenshotId,
+    dimensions: { width, height },
+    template: input.assetType,
+    generatedAt: new Date().toISOString(),
+    generationType: renderedPng ? "png" : "svg_preview",
+  }
+
+  if (backend.recordAssetMetadata) {
+    const storedAsset = await backend.recordAssetMetadata({
+      userId: authResult.customer.userId,
+      assetId,
+      filename: `${assetId}.${renderedPng ? "png" : "svg"}`,
+      contentType: renderedPng ? "image/png" : "image/svg+xml",
+      sizeBytes: renderedPng ? pngBuffer!.byteLength : Buffer.byteLength(svg),
+      publicUrl: screenshotUrl,
+      metadata: assetMetadata,
+    })
+    if (!storedAsset.ok && backend.name === "stacklane") {
+      return NextResponse.json({ ok: false, error: `Failed to record Stacklane asset metadata: ${storedAsset.error || "unknown"}` }, { status: 502 })
+    }
+  }
+
+  const usage = await backend.recordUsage({
+    userId: authResult.customer.userId,
+    apiKeyId: authResult.customer.apiKeyId,
+    action: usageAction,
+    units: 1,
+    metadata: assetMetadata,
+  })
+  if (!usage.ok && backend.name === "stacklane") {
+    return NextResponse.json({ ok: false, error: `Failed to record backend usage: ${usage.error || "unknown"}` }, { status: 502 })
   }
 
   return NextResponse.json({

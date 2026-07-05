@@ -75,6 +75,12 @@ Self-host first. Docker-ready. VPS-ready.
 - See [docs/deployment/TALOCODE_INFRA.md](docs/deployment/TALOCODE_INFRA.md) for Talocode infrastructure roadmap
 - See [render.yaml](render.yaml) for optional Render deployment (community/legacy)
 
+## Backend Options
+
+- `LAUNCHPIX_BACKEND=local` keeps metadata and usage local to LaunchPix and is the safe default
+- `LAUNCHPIX_BACKEND=supabase` preserves the existing Supabase-backed adapter path
+- `LAUNCHPIX_BACKEND=stacklane` sends customer, usage, asset, and file metadata to Stacklane v0.4.1 over HTTP
+
 ## Environment
 
 See `.env.example` for all variables. Key sections:
@@ -83,14 +89,26 @@ See `.env.example` for all variables. Key sections:
 - **Database/Storage**: `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
 - **Rendering**: `MISTRAL_API_KEY` (optional, for planning)
 - **API Auth**: `LAUNCHPIX_API_KEY`
+- **Backend**: `LAUNCHPIX_BACKEND`, `LAUNCHPIX_STACKLANE_BASE_URL`, `LAUNCHPIX_STACKLANE_API_KEY`
 - **Billing** (optional): `LEMON_SQUEEZY_*`
 
 ## Documentation
 
-- [API Reference](docs/API.md)
 - [Self-Host Guide](docs/deployment/SELF_HOST.md)
 - [Talocode Infra Roadmap](docs/deployment/TALOCODE_INFRA.md)
 - [API Authentication](docs/API_AUTHENTICATION.md)
+- [Stacklane Backend](docs/STACKLANE_BACKEND.md)
+
+## Talocode Domains
+
+| Domain | Purpose |
+|--------|---------|
+| [talocode.site](https://talocode.site) | Main site / homepage |
+| [docs.talocode.site](https://docs.talocode.site) | Documentation |
+| [api.talocode.site](https://api.talocode.site) | API endpoint |
+| [cloud.talocode.site](https://cloud.talocode.site) | Cloud dashboard |
+| [stacklane.talocode.site](https://stacklane.talocode.site) | Stacklane platform |
+| [dashboard.talocode.site](https://dashboard.talocode.site) | Dashboard |
 
 ## License
 

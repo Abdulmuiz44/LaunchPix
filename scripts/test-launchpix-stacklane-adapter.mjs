@@ -1,106 +1,113 @@
 #!/usr/bin/env node
 
-/**
- * LaunchPix Stacklane adapter tests.
- * Run: node scripts/test-launchpix-stacklane-adapter.mjs
- */
-
-import * as fs from 'fs'
-
 let passed = 0
 let failed = 0
 
 function assert(condition, label) {
-  if (condition) { console.log(`  ✓ ${label}`); passed++; }
-  else { console.log(`  ✗ ${label}`); failed++; }
+  if (condition) {
+    console.log(`  ✓ ${label}`)
+    passed += 1
+  } else {
+    console.log(`  ✗ ${label}`)
+    failed += 1
+  }
 }
 
-console.log('\n=== LaunchPix Stacklane Adapter Tests ===\n')
+async function run() {
+  console.log('\n=== LaunchPix Stacklane Adapter Tests ===\n')
 
-// Test 1: Backend adapter files exist
-console.log('1. Adapter Files')
-assert(fs.existsSync('lib/backend/types.ts'), 'types.ts exists')
-assert(fs.existsSync('lib/backend/index.ts'), 'index.ts exists')
-assert(fs.existsSync('lib/backend/supabaseAdapter.ts'), 'supabaseAdapter.ts exists')
-assert(fs.existsSync('lib/backend/stacklaneAdapter.ts'), 'stacklaneAdapter.ts exists')
-assert(fs.existsSync('lib/backend/selectBackend.ts'), 'selectBackend.ts exists')
+  const backend = await import('../lib/backend/stacklaneAdapter.ts')
+  const backendConfig = await import('../lib/backend/config.ts')
+  const localBackend = await import('../lib/backend/localAdapter.ts')
 
-// Test 2: Backend interface
-console.log('\n2. Backend Interface')
-const types = fs.readFileSync('lib/backend/types.ts', 'utf-8')
-assert(types.includes('LaunchPixBackend'), 'Has LaunchPixBackend interface')
-assert(types.includes('health()'), 'Has health method')
-assert(types.includes('insertScreenshot'), 'Has insertScreenshot')
-assert(types.includes('getScreenshotById'), 'Has getScreenshotById')
-assert(types.includes('recordUsage'), 'Has recordUsage')
-assert(types.includes('supabase'), 'Has supabase backend name')
-assert(types.includes('stacklane'), 'Has stacklane backend name')
+  console.log('1. Stacklane backend config is detected safely')
+  delete process.env.LAUNCHPIX_BACKEND
+  delete process.env.LAUNCHPIX_STACKLANE_BASE_URL
+  delete process.env.LAUNCHPIX_STACKLANE_API_KEY
+  assert(backendConfig.getBackendName() === 'local', 'default backend is local')
+  const defaultStatus = backendConfig.getStacklaneConfig()
+  assert(defaultStatus.status.baseUrl === 'missing', 'missing Stacklane base URL is reported safely')
+  assert(defaultStatus.status.apiKey === 'missing', 'missing Stacklane API key is reported safely')
+  assert(localBackend.createLocalAdapter().name === 'local', 'local adapter exists')
 
-// Test 3: Backend selector
-console.log('\n3. Backend Selector')
-const selector = fs.readFileSync('lib/backend/selectBackend.ts', 'utf-8')
-assert(selector.includes('LAUNCHPIX_BACKEND'), 'Uses LAUNCHPIX_BACKEND env')
-assert(selector.includes('supabase'), 'Defaults to supabase')
-assert(selector.includes('stacklane'), 'Supports stacklane')
-assert(selector.includes('STACKLANE_PROJECT_URL'), 'Checks Stacklane env')
-assert(selector.includes('STACKLANE_ACCESS_TOKEN'), 'Checks Stacklane token')
+  console.log('\n2. Usage event payload is built correctly')
+  const usagePayload = backend.buildStacklaneUsagePayload({
+    userId: 'usr_1',
+    apiKeyId: 'key_1',
+    action: 'launchpix.asset.generate',
+    units: 2,
+    metadata: {
+      assetId: 'asset_1',
+      screenshotId: 'shot_1',
+      contentType: 'image/png',
+      sizeBytes: 2048,
+      generationType: 'png'
+    }
+  })
+  assert(usagePayload.product === 'launchpix', 'usage payload sets launchpix product')
+  assert(usagePayload.action === 'launchpix.asset.generate', 'usage payload preserves action')
+  assert(usagePayload.units === 2, 'usage payload preserves units')
+  assert(!('apiKey' in usagePayload.metadata), 'usage payload does not expose raw key metadata')
 
-// Test 4: Supabase adapter
-console.log('\n4. Supabase Adapter')
-const supaAdapter = fs.readFileSync('lib/backend/supabaseAdapter.ts', 'utf-8')
-assert(supaAdapter.includes('createSupabaseServerClient'), 'Uses Supabase client')
-assert(supaAdapter.includes('screenshots'), 'Accesses screenshots table')
-assert(supaAdapter.includes('usage_events'), 'Records usage events')
+  console.log('\n3. Asset metadata payload is built correctly')
+  const assetPayload = backend.buildStacklaneAssetPayload({
+    userId: 'usr_1',
+    assetId: 'asset_1',
+    filename: 'hero.png',
+    contentType: 'image/png',
+    sizeBytes: 2048,
+    publicUrl: 'https://example.com/hero.png',
+    metadata: {
+      screenshotId: 'shot_1',
+      dimensions: { width: 1400, height: 560 },
+      template: 'hero_banner',
+      generationType: 'png'
+    }
+  }, 'cust_1')
+  assert(assetPayload.product === 'launchpix', 'asset payload sets launchpix product')
+  assert(assetPayload.customerId === 'cust_1', 'asset payload includes customer id')
+  assert(assetPayload.metadata.screenshotId === 'shot_1', 'asset payload preserves screenshot id')
 
-// Test 5: Stacklane adapter
-console.log('\n5. Stacklane Adapter')
-const stackAdapter = fs.readFileSync('lib/backend/stacklaneAdapter.ts', 'utf-8')
-assert(stackAdapter.includes('STACKLANE_PROJECT_URL'), 'Uses Stacklane URL')
-assert(stackAdapter.includes('STACKLANE_ACCESS_TOKEN'), 'Uses Stacklane token')
-assert(stackAdapter.includes('health'), 'Has health check')
-assert(stackAdapter.includes('insertScreenshot'), 'Has screenshot insert')
-assert(stackAdapter.includes('getScreenshotById'), 'Has screenshot lookup')
-assert(stackAdapter.includes('recordUsage'), 'Has usage recording')
-assert(stackAdapter.includes('Stacklane not configured'), 'Safe error for missing config')
+  console.log('\n4. Stacklane unavailable stays safe when selected explicitly')
+  const stacklaneBackend = backend.createStacklaneAdapter()
+  const health = await stacklaneBackend.health()
+  assert(health.ok === false, 'stacklane health fails safely when config is missing')
+  assert(!health.message.includes('sk_lane_'), 'stacklane health message does not expose API key text')
 
-// Test 6: Upload route uses backend adapter
-console.log('\n6. Upload Route Integration')
-const uploadRoute = fs.readFileSync('app/api/v1/screenshots/upload/route.ts', 'utf-8')
-assert(uploadRoute.includes('getBackend'), 'Upload uses backend adapter')
-assert(uploadRoute.includes('backend.insertScreenshot'), 'Upload calls backend insertScreenshot')
-assert(uploadRoute.includes('backend.name'), 'Upload uses backend name for storageMode')
+  console.log('\n5. Existing upload/generate behavior still uses backend adapter')
+  const fs = await import('node:fs')
+  const uploadRoute = fs.readFileSync('app/api/v1/screenshots/upload/route.ts', 'utf8')
+  const generateRoute = fs.readFileSync('app/api/v1/assets/generate/route.ts', 'utf8')
+  assert(uploadRoute.includes('backend.insertScreenshot'), 'upload route still calls backend insertScreenshot')
+  assert(uploadRoute.includes('backend.recordUsage'), 'upload route records usage via backend')
+  assert(generateRoute.includes('backend.recordAssetMetadata'), 'generate route records asset metadata via backend')
+  assert(generateRoute.includes('backend.recordUsage'), 'generate route records usage via backend')
 
-// Test 7: Generate route uses backend adapter
-console.log('\n7. Generate Route Integration')
-const genRoute = fs.readFileSync('app/api/v1/assets/generate/route.ts', 'utf-8')
-assert(genRoute.includes('getBackend'), 'Generate uses backend adapter')
-assert(genRoute.includes('backend.getScreenshotById'), 'Generate calls backend screenshot lookup')
+  console.log('\n6. No raw API key appears in routes or docs')
+  const stacklaneAdapterSource = fs.readFileSync('lib/backend/stacklaneAdapter.ts', 'utf8')
+  const docs = fs.readFileSync('docs/STACKLANE_BACKEND.md', 'utf8')
+  assert(!stacklaneAdapterSource.includes('console.log('), 'adapter does not log secrets')
+  assert(!docs.includes('sk_lane_live_actual'), 'docs do not contain raw real keys')
 
-// Test 8: .env.example updated
-console.log('\n8. Environment Config')
-const env = fs.readFileSync('.env.example', 'utf-8')
-assert(env.includes('LAUNCHPIX_BACKEND'), 'Has LAUNCHPIX_BACKEND')
-assert(env.includes('STACKLANE_PROJECT_URL'), 'Has STACKLANE_PROJECT_URL')
-assert(env.includes('STACKLANE_ACCESS_TOKEN'), 'Has STACKLANE_ACCESS_TOKEN')
-assert(env.includes('STACKLANE_PROJECT_ID'), 'Has STACKLANE_PROJECT_ID')
+  console.log('\n7. Health route shows stacklane present/missing only')
+  const healthRoute = fs.readFileSync('app/api/health/route.ts', 'utf8')
+  assert(healthRoute.includes('stacklane'), 'health route exposes stacklane block')
+  assert(healthRoute.includes('getBackendConfigStatus'), 'health route uses backend config status helper')
 
-// Test 9: Stacklane adapter does not fake auth
-console.log('\n9. No Fake Auth')
-assert(!stackAdapter.includes('authenticateApiCustomer'), 'Stacklane does not fake customer auth')
-assert(stackAdapter.includes('experimental') || stackAdapter.includes('v0.1'), 'Stacklane adapter documents as experimental')
+  console.log('\n8. Existing LaunchPix tests and Supabase path remain')
+  assert(fs.existsSync('scripts/test-launchpix-api.mjs'), 'existing API tests still exist')
+  assert(fs.existsSync('scripts/test-launchpix-upload.mjs'), 'existing upload tests still exist')
+  assert(fs.existsSync('lib/backend/supabaseAdapter.ts'), 'supabase adapter remains present')
 
-// Test 10: Docs exist
-console.log('\n10. Docs')
-assert(fs.existsSync('docs/STACKLANE_BACKEND.md'), 'Stacklane backend doc exists')
-const stackDocs = fs.readFileSync('docs/STACKLANE_BACKEND.md', 'utf-8')
-assert(stackDocs.includes('experimental'), 'Doc states experimental')
-assert(stackDocs.includes('Supabase'), 'Doc mentions Supabase as default')
-assert(stackDocs.includes('Stacklane'), 'Doc mentions Stacklane')
+  console.log('\n9. No cross-repo import')
+  assert(!stacklaneAdapterSource.includes('/workspace/projects/Stacklane'), 'adapter does not reference Stacklane repo path directly')
+  assert(!stacklaneAdapterSource.includes('/root/projects/Stacklane'), 'adapter does not reference root Stacklane repo path directly')
 
-// Test 11: No secrets
-console.log('\n11. No Secrets')
-assert(!supaAdapter.includes('sk_live'), 'No raw tokens')
-assert(!stackAdapter.includes('sk_live'), 'No raw tokens')
+  console.log(`\n=== Results: ${passed} passed, ${failed} failed ===\n`)
+  process.exit(failed > 0 ? 1 : 0)
+}
 
-console.log(`\n=== Results: ${passed} passed, ${failed} failed ===\n`)
-process.exit(failed > 0 ? 1 : 0)
+run().catch((error) => {
+  console.error(error instanceof Error ? error.stack : error)
+  process.exit(1)
+})

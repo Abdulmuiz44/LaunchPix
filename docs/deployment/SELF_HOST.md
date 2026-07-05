@@ -66,15 +66,29 @@ server {
 | `DATABASE_URL` | Yes | PostgreSQL connection string |
 | `NEXTAUTH_SECRET` | Yes | NextAuth session secret |
 | `LAUNCHPIX_API_KEY` | Yes | API key for customer auth |
+| `LAUNCHPIX_BACKEND` | No | `local`, `supabase`, or `stacklane` |
+| `LAUNCHPIX_STACKLANE_BASE_URL` | If stacklane | Stacklane base URL |
+| `LAUNCHPIX_STACKLANE_API_KEY` | If stacklane | Stacklane API key |
 | `MISTRAL_API_KEY` | Optional | For AI-assisted planning |
 
 ## Storage Requirement
 
-LaunchPix uses Supabase Storage for screenshot uploads. You need:
+LaunchPix keeps the current screenshot storage path for compatibility. When `LAUNCHPIX_BACKEND=stacklane`, it also records customer, usage, asset, and file metadata through Stacklane.
+
+You still need:
 
 - A Supabase project with Storage enabled
 - A `screenshots` bucket (run `npm run supabase:setup` to create it)
 - Or migrate to another object storage (S3, MinIO) with adapter changes
+
+## Stacklane Local Run
+
+If you want to test the Stacklane backend locally:
+
+1. Run Stacklane locally
+2. Set `LAUNCHPIX_BACKEND=stacklane`
+3. Set `LAUNCHPIX_STACKLANE_BASE_URL` and `LAUNCHPIX_STACKLANE_API_KEY`
+4. Start LaunchPix with `npm run dev`
 
 ## Security Checklist
 

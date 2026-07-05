@@ -51,8 +51,8 @@ assert(uploadRoute.includes('replace'), 'Sanitizes special characters')
 console.log('\n5. Storage Safety')
 assert(uploadRoute.includes('getPublicUrl'), 'Gets public URL')
 assert(uploadRoute.includes('screenshots'), 'Uses screenshots bucket')
-assert(uploadRoute.includes('user_id'), 'Stores user ID')
-assert(uploadRoute.includes('storage_key'), 'Stores storage key')
+assert(uploadRoute.includes('userId'), 'Stores user ID')
+assert(uploadRoute.includes('storageKey'), 'Stores storage key')
 
 // Test 6: Response structure
 console.log('\n6. Response Structure')
@@ -65,7 +65,7 @@ assert(uploadRoute.includes('width'), 'Returns width')
 assert(uploadRoute.includes('height'), 'Returns height')
 assert(uploadRoute.includes('url'), 'Returns public URL')
 assert(uploadRoute.includes('storageKey'), 'Returns storage key')
-assert(uploadRoute.includes('supabase'), 'Returns storage mode')
+assert(uploadRoute.includes('storageMode'), 'Returns storage mode field')
 
 // Test 7: Generate endpoint accepts screenshotId
 console.log('\n7. Generate Endpoint screenshotId Support')
