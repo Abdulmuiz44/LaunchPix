@@ -113,3 +113,9 @@ See `.env.example` for all variables. Key sections:
 ## License
 
 MIT
+
+## Support
+
+Open-source Talocode products are built and maintained by Abdulmuiz Adeyemo.
+
+Sponsor the work: https://github.com/sponsors/Abdulmuiz44
