@@ -1,122 +1,157 @@
-# LaunchPix
+# Talocode LaunchPix
 
-LaunchPix is a Mistral-assisted, deterministic asset generator for product launches.
-It turns raw screenshots into polished listing visuals, promo tiles, and hero banners.
+**Open-source static launch asset API. Self-host first.**
 
-## Design system
-- `DESIGN.md` is the canonical design brain for the product UI.
-- `docs/design-md/google-designmd-spec.md` is a local copy of the Google DESIGN.md specification.
-- `docs/design-md/README.md` explains how to use both files in this repo.
+LaunchPix turns product screenshots into listing frames, promo tiles, and hero banners with deterministic rendering. No AI image generation — honest, reproducible output.
 
-## Tech stack
-- Next.js App Router + TypeScript
-- Tailwind CSS + reusable UI primitives
-- Supabase (Auth, Postgres, Storage)
-- Mistral (structured planning only)
-- Deterministic SVG -> PNG rendering (`@resvg/resvg-js`)
-- Lemon Squeezy credit-pack billing and webhook fulfillment
+## Quick Start
 
-## Core product flow
-1. Sign in
-2. Create project and upload screenshots
-3. Generate structured asset plan via Mistral
-4. Render deterministic asset pack (5 listing + promo + hero)
-5. Preview/download assets while credits remain
+```bash
+# Clone and install
+git clone https://github.com/talocode/launchpix.git
+cd launchpix
+cp .env.example .env.local
+npm install
 
-## Pricing model implemented
-- Every account starts with 300 credits.
-- Existing accounts are raised to at least 300 credits by `0004_credit_balance_model.sql`.
-- Billing is credit based, not subscription based.
-- Users buy one-time Lemon Squeezy credit packs after exhausting their included credits.
+# Apply database migrations (requires Supabase CLI linked)
+npx supabase db push --linked
 
-## Required environment variables
-See `.env.example`.
-Minimum required:
-- `NEXT_PUBLIC_APP_URL`
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `DATABASE_URL`
-- `MISTRAL_API_KEY`
-- `MISTRAL_MODEL_VISION`
-- `MISTRAL_MODEL_TEXT`
-- `LEMON_SQUEEZY_API_KEY`
-- `LEMON_SQUEEZY_STORE_ID`
-- `LEMON_SQUEEZY_WEBHOOK_SECRET`
-- `LEMON_SQUEEZY_STARTER_CREDITS_VARIANT_ID`
-- `LEMON_SQUEEZY_CREATOR_CREDITS_VARIANT_ID`
-- `LEMON_SQUEEZY_STUDIO_CREDITS_VARIANT_ID`
+# Start
+npm run dev
+```
 
-Optional for Supabase CLI workflows:
-- `SUPABASE_ACCESS_TOKEN`
-- `SUPABASE_DB_PASSWORD`
+## Self-Host with Docker
 
-## Local setup
-1. Copy env:
-   - `cp .env.example .env.local`
-2. Install dependencies:
-   - `npm install`
-4. Apply database migrations using one of these options:
-   - Supabase CLI: `npx supabase db push --linked`
-   - or run the SQL files in `supabase/migrations/` in order
-5. Start dev server:
-   - `npm run dev`
+```bash
+docker compose up -d
+```
 
-Recommended validation commands:
-- `npm run typecheck`
-- `npm run build`
+See [docs/deployment/SELF_HOST.md](docs/deployment/SELF_HOST.md) for VPS, Docker, and reverse proxy setup.
 
-## Supabase notes
-- Enable email auth.
-- Ensure storage buckets exist:
-  - `project-uploads-raw`
-  - `project-uploads-normalized`
-  - `launchpix-assets`
-- Apply RLS policies from migrations.
-- If you use the Supabase CLI, link the project first with `npx supabase link`.
+## API
 
-## Mistral notes
-- Mistral is used for structured product/copy/layout planning.
-- Rendering remains deterministic and template-driven.
-- Default model: `mistral-small-2506` (configurable via env).
-- The app currently uses the text model for schema-constrained planning and does not rely on image-vision inputs during generation.
+Every `/api/v1/*` request requires:
 
-## Lemon Squeezy notes
-- Checkout init: `POST /api/billing/checkout`
-- Verification: purchases are fulfilled by webhook after Lemon Squeezy confirms the order
-- Webhook: `POST /api/billing/webhook`
-- Configure Lemon Squeezy webhook URL to point to `/api/billing/webhook`.
-- Select the `order_created` event for credit fulfillment.
-- Create three Lemon Squeezy variants and map them to the variant ID env vars in `.env.example`.
+```
+x-launchpix-api-key: <LAUNCHPIX_API_KEY>
+Authorization: Bearer <LAUNCHPIX_API_KEY>
+```
 
-## Commands
-- `npm run dev`
-- `npm run lint`
-- `npm run typecheck`
-- `npm run build`
-- `npm run video:studio`
-- `npm run video:render`
-- `npm run video:render:chrome` on Windows if Remotion cannot download Chrome Headless Shell
+### Endpoints
 
-## Demo video
-- The Remotion demo composition lives in `remotion/`.
-- Rendered output is written to `output/launchpix-demo.mp4`.
-- The video explains the core LaunchPix story: project brief, screenshot uploads, Mistral planning, deterministic rendering, exports, credits, and billing.
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/api/v1/screenshots/upload` | Upload a screenshot (PNG/JPEG/WEBP, 5MB max) |
+| POST | `/api/v1/assets/generate` | Generate a launch asset (screenshotUrl or screenshotId) |
+| GET | `/api/v1/projects` | List projects |
+| POST | `/api/v1/projects` | Create a project |
 
-## Deployment notes
-- Set all env vars in hosting provider.
-- `NEXT_PUBLIC_APP_URL` must be set in the hosting provider's production environment to your live domain; `.env.local` is only used locally.
-- Use HTTPS and production callback URLs for Lemon Squeezy.
-- Auth confirmation and billing redirects are built from `NEXT_PUBLIC_APP_URL`, so production must not point this to localhost.
-- Keep `package-lock.json` committed so CI and hosting builds install the same dependency tree.
-- Confirm webhook signature secret matches deployment env.
+### Example
 
-## Netlify notes
-- Build command: `npm run build`
-- Install command: `npm install` or `npm ci`
-- The app relies on `@resvg/resvg-js` during server rendering, so the current `next.config.ts` must be preserved in deployments.
+```bash
+# Upload screenshot
+curl -X POST http://localhost:3000/api/v1/screenshots/upload \
+  -H "x-launchpix-api-key: YOUR_KEY" \
+  -F "file=@screenshot.png"
 
-## Known MVP constraints
-- Rate limiting is lightweight (in-memory).
-- Credit packs are one-time purchases; subscription renewal automation is intentionally not used.
-- Visual templates are production-capable baseline and can be expanded further.
+# Generate hero banner
+curl -X POST http://localhost:3000/api/v1/assets/generate \
+  -H "x-launchpix-api-key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "productName": "My App",
+    "tagline": "Ship faster",
+    "screenshotUrl": "https://example.com/screenshot.png",
+    "assetType": "hero_banner",
+    "theme": "dark"
+  }'
+```
+
+## Deployment
+
+Self-host first. Docker-ready. VPS-ready.
+
+- See [docs/deployment/SELF_HOST.md](docs/deployment/SELF_HOST.md)
+- See [docs/deployment/TALOCODE_INFRA.md](docs/deployment/TALOCODE_INFRA.md) for Talocode infrastructure roadmap
+- See [render.yaml](render.yaml) for optional Render deployment (community/legacy)
+
+## Backend Options
+
+- `LAUNCHPIX_BACKEND=local` keeps metadata and usage local to LaunchPix and is the safe default
+- `LAUNCHPIX_BACKEND=supabase` preserves the existing Supabase-backed adapter path
+- `LAUNCHPIX_BACKEND=stacklane` sends customer, usage, asset, and file metadata to Stacklane v0.4.1 over HTTP
+
+## Environment
+
+See `.env.example` for all variables. Key sections:
+
+- **Core**: `NEXT_PUBLIC_APP_URL`, `NEXTAUTH_SECRET`
+- **Database/Storage**: `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`
+- **Rendering**: `MISTRAL_API_KEY` (optional, for planning)
+- **API Auth**: `LAUNCHPIX_API_KEY`
+- **Backend**: `LAUNCHPIX_BACKEND`, `LAUNCHPIX_STACKLANE_BASE_URL`, `LAUNCHPIX_STACKLANE_API_KEY`
+- **Billing** (optional): `LEMON_SQUEEZY_*`
+
+## Documentation
+
+- [Self-Host Guide](docs/deployment/SELF_HOST.md)
+- [Talocode Infra Roadmap](docs/deployment/TALOCODE_INFRA.md)
+- [API Authentication](docs/API_AUTHENTICATION.md)
+- [Stacklane Backend](docs/STACKLANE_BACKEND.md)
+
+## Talocode Domains
+
+| Domain | Purpose |
+|--------|---------|
+| [talocode.site](https://talocode.site) | Main site / homepage |
+| [docs.talocode.site](https://docs.talocode.site) | Documentation |
+| [api.talocode.site](https://api.talocode.site) | API endpoint |
+| [dashboard.talocode.site](https://dashboard.talocode.site) | Cloud dashboard |
+| [stacklane.talocode.site](https://stacklane.talocode.site) | Stacklane platform |
+| [dashboard.talocode.site](https://dashboard.talocode.site) | Dashboard |
+
+## Talocode ecosystem
+
+Part of **[Talocode](https://github.com/talocode)** — open-source workflow layers for builders. Explore sibling projects:
+
+| Project | What it is |
+|---------|------------|
+| **[ScreenLane](https://github.com/talocode/screenlane)** | Screen-aware voice command layer |
+| **[Tera](https://github.com/talocode/tera)** | AI chat & assistant |
+| **[Codra](https://github.com/talocode/codra)** | Local coding agent |
+| **[GateLane](https://github.com/talocode/gatelane)** | MCP gateway & agent tool control plane |
+| **[ContextLane](https://github.com/talocode/contextlane)** | Context ingestion for persistent agents |
+| **[MemoryLane](https://github.com/talocode/memorylane)** | Persistent agent memory |
+| **[SignalLane](https://github.com/talocode/signallane)** | X growth intelligence |
+| **[ReplyLane](https://github.com/talocode/replylane)** | X reply opportunity intelligence |
+| **[CrawlerLane](https://github.com/talocode/crawlerlane)** | Crawler / SEO intelligence |
+| **[WebDataLane](https://github.com/talocode/webdatalane)** | Web extraction to structured data |
+| **[SearchLane](https://github.com/talocode/searchlane)** | Search layer for agents |
+| **[InvoiceLane](https://github.com/talocode/invoicelane)** | Invoicing tools |
+| **[GeoLane](https://github.com/talocode/geolane)** | Geo intelligence |
+| **[UgcLane](https://github.com/talocode/ugclane)** | UGC workflows |
+| **[OpenSourceLane](https://github.com/talocode/opensourcelane)** | Open-source distribution tools |
+| **[StackLane](https://github.com/talocode/stacklane)** | Builder stack platform |
+| **[Tradia](https://github.com/talocode/tradia)** | Trading intelligence |
+| **[Agent Browser](https://github.com/talocode/agent-browser)** | Browser automation for agents |
+| **[Talocode](https://github.com/talocode/talocode)** | Org home & control plane |
+| **[Skills](https://github.com/talocode/skills)** | Shared agent skills |
+| **[X Agent](https://github.com/talocode/x-agent)** | X automation agent |
+| **[LaunchPix](https://github.com/talocode/launchpix)** | Launch tooling **(this repo)** |
+| **[ForgeCAD](https://github.com/talocode/forgecad)** | CAD workflows |
+| **[WorkLane](https://github.com/talocode/worklane)** | Work automation |
+| **[ClipLoop](https://github.com/talocode/cliploop)** | Clip / video loops |
+
+MCP-compatible agents integrate via each product's MCP server where available ([Model Context Protocol](https://modelcontextprotocol.io/)).
+
+More: [github.com/talocode](https://github.com/talocode) · [talocode.site](https://talocode.site) · [docs.talocode.site](https://docs.talocode.site)
+
+## License
+
+MIT
+
+## Support
+
+Open-source Talocode products are built and maintained by Abdulmuiz Adeyemo.
+
+Sponsor the work: https://github.com/sponsors/Abdulmuiz44
